@@ -1,0 +1,71 @@
+<app-shell class="bg-white">
+        <div class="w-full flex items-start flex-col max-w-lg mx-auto">
+                <h2 class="text-left mb-2 text-sm">Manage Users:</h2>
+                <div class="w-full bg-white flex items-center pr-0 border border-gray-400 focus-within:border-gray-700 border-r-0 border-t-0 border-l-0">
+                        <input matInput
+                                #searchInput
+                                [value]="search"
+                                class="py-2 pl-2 my-auto w-full"
+                                (keyup)="search = $event.target.value"
+                                (change)="search = $event.target.value">
+                        <mat-icon [ngClass]="['mr-1 transform scale-06 cursor-pointer']"
+                                (click)="search.length > 0 ? search = '' : searchInput.select()">
+                                {{ search.length === 0 ? 'search' : 'close' }}
+                        </mat-icon>
+                </div>
+        </div>
+        <div *ngIf="!!users"
+                style="height: calc(100vh - 54px); overflow-y: scroll;"
+                class="users-list py-2 max-w-lg mx-auto">
+                <ng-container *ngIf="!!users && users.length > 0">
+                        <ng-template ngFor let-user [ngForOf]="filteredUsers">
+                                
+                                <ng-container *ngTemplateOutlet="userCard; context:{ user: user }"></ng-container>
+
+                        </ng-template>
+                </ng-container>
+        </div>
+
+        <ng-template #userCard let-user="user" let-avatarSize="avatarSize">
+                <div class="my-1 cursor-pointer user-card flex flex-nowrap w-full items-center justify-start p-3 bg-lighten-01 border border-1 border-darken-02 border-white-hvr bg-white-hvr mat-elevation-z0 mat-elevation-z8-hvr transform scale-098 scale-1-hvr"
+                        (click)="editUser(user)"
+                        style="max-width: 100%; border-radius: .6em;">
+                        <ng-container *ngTemplateOutlet="userAvatar; context: {
+                                src: user.photoURL,
+                                role: user.access.role,
+                                size: !!avatarSize ? avatarSize : '70px'
+                        }"></ng-container>
+                        <div class="flex my-auto mx-0 flex-col items-start justify-center">
+                                <h3 class="heading-5 mb-1">{{ user.name }}</h3>
+                                <ng-template ngFor let-key [ngForOf]="['email', 'phoneNumber']" >
+                                        <p class="mb-1" *ngIf="user[key]">
+                                                <small class="text-darken-04">{{key}}: </small>{{ user[key] }}
+                                        </p>
+                                </ng-template>
+                                <p class="can-access" *ngIf="user.access.role === 'team'">
+                                        <small class="text-darken-04">access: </small>
+                                        <small *ngFor="let handle of user.access.canAccess"
+                                                class="tag can-access-label transform scale-09">
+                                                {{ handle }}
+                                        </small>
+                                </p>
+                        </div>
+                        <small [ngClass]="['tag user-role-label text-black tracking-wider text-opacity-70 py-1 px-2 rounded inline-block uppercase ml-auto mr-0 my-auto', 'bg-' + roleColor[user.access.role]]">
+                                {{ user.access.role }}
+                        </small>
+                </div>
+        </ng-template>
+
+        <ng-template #userAvatar let-src="src" let-size="size" let-role="role">
+                <div [ngClass]="['user-avatar my-auto ml-0 mr-3', 'role-' + role ]"
+                        [style.width]="size"
+                        [style.height]="size"
+                        [style.min-width]="size"
+                        [style.min-height]="size"
+                        [style.border-radius]="size"
+                        [style.background-image]="'url(' + src + ')'"
+                        [style.background-size]="'cover'"
+                        [style.background-position]="'center'">
+                </div>
+        </ng-template>
+</app-shell>

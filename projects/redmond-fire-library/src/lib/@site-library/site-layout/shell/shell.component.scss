@@ -1,0 +1,46 @@
+:host {
+        @apply w-full overflow-x-hidden block mx-auto z-50 -mt-px;
+
+        &:not(.has-overlay-nav) {
+                        main,
+                        footer,
+                        app-header {
+                                @apply 2xl:max-w-screen-xl max-w-[calc(100%-1em)] md:max-w-[calc(100%-2em)] mx-auto;
+                                padding-left: 0 !important;
+                                padding-right: 0 !important;
+                                .header-title {
+                                        @apply pr-3 my-auto mr-0;
+                                }
+                                .header-text  {
+                                        @apply ml-0 my-auto mr-auto pl-0;
+                                }
+                        }
+                }
+}
+::ng-deep {
+        .home-page {
+                main, .page-content {
+                        @apply mx-0 w-screen;
+                }
+                @media screen and (max-width: 640px) {
+                        .swiper {
+                                min-height: 75vw !important;
+                        }
+                        .swiper img {
+                                min-height: 75vw !important;
+                        }
+                }
+                @media screen and (max-width: 480px) {
+                        .swiper {
+                                min-height: 100vw !important;
+                        }
+                        .swiper img {
+                                min-height: 100vw !important;
+                        }
+                }
+        }
+
+        .page-content {
+                @apply mx-auto;
+        }
+}

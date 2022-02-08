@@ -1,0 +1,36 @@
+:host {
+        @apply flex w-full flex-col relative min-h-[60vw];
+        .grid-blocks {
+                @apply grid grid-cols-12 relative auto-rows-min transform scale-100 mr-2 p-1 border border-transparent transition-all ease-quick-in;
+        }
+        app-edit-block-option-menu {
+                @apply opacity-0 transition-all ease-quick-in transform scale-50;
+        }
+        &.hovering {
+                box-shadow: 0 0 0 2px rgba(0,0,0,.2);
+                app-edit-block-option-menu.blocks-options-menu {
+                        @apply opacity-100 scale-100;
+                }
+                .grid-blocks {
+                        @apply border-gray-100 rounded border;
+                }
+        }
+        ::ng-deep {
+                app-block-card {
+                        a.card-link {
+                                display: none !important;
+                        }
+                }
+        }
+}
+
+.grid-block {
+        &:hover, &.hovering {
+                app-edit-block-option-menu {
+                        @apply opacity-100 scale-100;
+                }
+        }
+        app-edit-block-option-menu:hover {
+                @apply opacity-100 scale-100;
+        }
+}

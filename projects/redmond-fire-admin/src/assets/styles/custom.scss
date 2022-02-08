@@ -1,0 +1,45 @@
+@import './_inputs.scss';
+@import './_buttons.scss';
+@import './_dialog.scss';
+@import './_animations.scss';
+@import './_layout.scss';
+@import './_typography.scss';
+@import './_ck-editor.scss';
+
+
+[style*="font-size:0xs"] {
+        @apply text-xs;
+}
+[style*="font-size:0sm"] {
+        @apply text-sm;
+}
+[style*="font-size:0base"] {
+        @apply text-base;
+}
+[style*="font-size:0md"] {
+        @apply text-base;
+}
+[style*="font-size:0lg"] {
+        @apply text-lg;
+}
+[style*="font-size:0xl"] {
+        @apply text-xl;
+}
+[style*="font-size:02xl"] {
+        @apply text-2xl;
+}
+[style*="font-size:03xl"] {
+        @apply text-3xl;
+}
+[style*="font-size:04xl"] {
+        @apply text-4xl;
+}
+[style*="font-size:05xl"] {
+        @apply text-5xl;
+}
+[style*="font-size:06xl"] {
+        @apply text-6xl;
+}
+[style*="font-size:07xl"] {
+        @apply text-7xl;
+}

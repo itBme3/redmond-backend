@@ -1,0 +1,43 @@
+<div  class="mx-auto pt-5 h-screen flex flex-col items-center" style="max-width: 280px; width: calc(100% - .5em)">
+
+        <a href="/" target="_blank"
+                class="py-10 w-full text-center block">
+                        <i class="gicon gicon-logo-type text-rcc-red text-3xl"></i>
+        </a>
+        
+        <div class="email-login-wrapper">
+                <div *ngIf="!(afAuth.authState | async)"
+                        class="flex content-start items-center flex-col">
+                        
+                        <div class="w-full">
+                                <app-login-email></app-login-email>
+                        </div>
+                        
+
+                </div>
+
+                <div *ngIf="afAuth.authState | async as user;"
+                class="logout text-center my-4">
+                        <p class="mb-3">
+                                Logged in as: <strong>{{ user.email }}</strong>
+                        </p>
+
+                        <button mat-stroked-button
+                                class="mt-3"
+                                (click)="afAuth.signOut()">Logout</button>
+                </div>
+        </div>
+
+        <button mat-button
+                *ngIf="!(afAuth.authState | async) as user"
+                appGoogleSignin
+                class="w-full transform mb-5 px-5 bg-white shadow-xl rounded-md flex items-center flex-nowrap text-center border-gray-100 border-b hover:bg-gray-50 py-4">
+               <span class="w-100 flex flex-nowrap items-center">
+                        <img  class="mx-0 w-6 h-auto" src="/assets/media/google-logo.svg" />
+                        <span class="ml-6">Login with Google</span>
+                </span>
+        </button>
+        <div class="w-full flex content-center items-center mt-2">
+                <mat-icon class="opacity-10 transform scale-75 my-auto mr-2 ml-auto">lock</mat-icon> <small class="text-gray-400 my-auto mr-auto">Redmond Construction © {{ year }}</small>
+        </div>
+</div>

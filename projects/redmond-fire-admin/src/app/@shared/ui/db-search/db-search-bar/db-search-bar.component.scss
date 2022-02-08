@@ -1,0 +1,21 @@
+:host {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify: flex-start;
+}
+::ng-deep {
+        .search_field {
+                .mat-form-field-infix {
+                        border: 0;
+                        padding: 1em 0 .75em;
+                }
+                .mat-form-field-wrapper {
+                        padding: 0;
+                }
+                .mat-form-field-prefix {
+                        top: .15em !important;
+                }
+        }
+}

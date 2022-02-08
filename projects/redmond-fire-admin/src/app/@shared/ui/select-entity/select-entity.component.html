@@ -1,0 +1,57 @@
+<div class="flex flex-nowrap items-center w-full overflow-scroll"
+         *ngIf="collections.length > 1">
+        <ng-content></ng-content>
+        <mat-button-toggle-group
+                [value]="collection"
+                (change)="collection = $event.value"
+                class="overflow-scroll m-1 max-w-full">
+                <mat-button-toggle 
+                        *ngFor="let collectionType of collections"
+                        style="font-size: 65%"
+                        class="uppercase tracking-wide rounded border-0 bg-gray-50 transform scale-95"
+                        [value]="collectionType"
+                        [checked]="collection === collectionType">
+                        {{ collectionType }}
+                </mat-button-toggle>
+        </mat-button-toggle-group>
+</div>
+
+<app-loading-element *ngIf="changingCollection" title=""></app-loading-element>
+
+<ng-template [ngIf]="!!collections && collections.length >= 1">
+                <ng-template ngFor let-collectionType [ngForOf]="collections">
+                        <ng-container *ngTemplateOutlet="searchCollection; context: { collectionType: collectionType }"></ng-container>
+                </ng-template>
+</ng-template>
+
+<ng-template [ngIf]="!!!collections || collections.length === 2">
+        <ng-container *ngTemplateOutlet="searchCollection; context: { collectionType: collection }"></ng-container>
+</ng-template>
+
+
+
+<ng-template #searchCollection 
+        let-collectionType="collectionType">
+        <app-db-search 
+                *ngIf="!!!collectionType || collection === collectionType"
+                [data]="{ 
+                        searchData: { 
+                                path: !!this.data?.path ? this.data.path : 'admin/'  + collection + '/collection', 
+                                query: query, 
+                                externalDocs: !!data.searchData && data.searchData.externalDocs === true, 
+                                noFilters: !!data.searchData && data.searchData.noFilters === true, 
+                                externalSearch: !!data.searchData && data.searchData.externalSearch === true, 
+                                searchField: !!data.searchData && data.searchData.searchField ? data.searchField : 'title' 
+                        },
+                        containerClasses: !!data.containerClasses ? data.containerClasses : 'grid gap-2 grid-cols-2',
+                        selected: selected,
+                        scrollHeight: scrollHeight
+                }"
+                (updateSelection)="selected = $event"
+                (theDocs)="items = $event"
+                (submitSelection)="saved.emit($event)"
+                class="h-full block"
+                style="max-width: 100%">
+
+        </app-db-search>
+</ng-template>

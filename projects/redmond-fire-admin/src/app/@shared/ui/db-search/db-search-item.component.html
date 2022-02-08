@@ -1,0 +1,52 @@
+<!-- <mat-card *ngIf="!!doc && !!doc.filetype"
+      style="max-width: 100%"
+      class="p-1">
+      <image *ngIf="!!doc && !!doc.filetype && doc.filetype.includes && doc.filetype.includes('image')"
+        class="w-full"
+        [data]="{doc: doc}"></image>
+      <embed-pdf *ngIf="!!doc && !!doc.filetype && !!doc.filetype.includes && !!doc.filetype.includes('pdf')"
+        class="w-full"
+        [data]="{doc: doc}"
+        style="min-height: 300px; display: grid"></embed-pdf>
+      <button mat-mini-fab
+        class="select-item m-auto absolute bg-light-red"
+        *ngIf="!!data && !!data.selecting"
+        (click)="selectItem()"
+        style="left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2">
+        <mat-icon style="position: relative; top: -2px">add</mat-icon>
+      </button>
+</mat-card> -->
+
+
+<app-card *ngIf="!!doc"
+        [aspectRatio]="'6:4'"
+        (click)="selectItem()"
+        class="w-full bg-center bg-cover">
+        <div card-image *ngIf="(!!doc.src && (doc?.fileType?.includes('image') || doc?.mediaType === 'image')) || !!doc?.image || (!!doc?.images?.length)">
+                <img imageLoader 
+                        [aspectRatio]="'6:4'"
+                        class="w-full h-auto text-white"
+                        [attr.src]="!!doc.src ? 
+                                doc.src : 
+                                !!doc.image ? 
+                                !!doc.image.src ? 
+                                        doc.image.src : 
+                                        doc.image : 
+                                !!doc?.images && !!doc?.images[0] ? 
+                                !!doc?.images[0]?.src ? 
+                                        doc.images[0].src : 
+                                        doc.images[0] : 
+                                null"
+                        [thumbs]="!!doc.thumbs ? doc.thumbs : !!doc?.image?.thumbs ? doc.image.thumbs : null" />
+        </div>
+        <h2 card-title *ngIf="!!!mediaOnly && (!!doc?.title || !!doc?.name)"
+                class="project-card-title text-white text-semibold tracking-wider">{{ !!doc?.title?.length ? doc.title : !!doc?.name ? doc.name : !!doc?.filename ? doc.filename : '' }}</h2>
+        <button mat-mini-fab
+                *ngIf="!!data && !!data.selecting"
+                card-after
+                class="select-item m-auto absolute bg-light-red"
+                style="left: 50%; top: 50%; transform: translateY(-50%, -50%); z-index: 2">
+                <mat-icon style="position: relative; top: -2px">add</mat-icon>
+        </button>
+        
+</app-card>

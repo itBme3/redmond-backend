@@ -1,0 +1,18 @@
+:host {
+        @apply flex w-full items-center;
+        ::ng-deep {
+                .card-content {
+                        @apply p-4 lg:p-6;
+                }
+                .editing-block {
+                        .card-content {
+                                @apply pb-1 leading-snug;
+                        }
+                }
+                app-team-card {
+                        .card-content {
+                                padding: 0 !important;
+                        }
+                }
+        }
+}

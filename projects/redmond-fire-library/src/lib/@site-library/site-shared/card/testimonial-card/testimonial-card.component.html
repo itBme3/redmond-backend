@@ -1,0 +1,20 @@
+<app-card #appCard
+      [cardStyle]="'text'"
+      [aspectRatio]="block.aspectRatio" [linkPath]="block.link"
+      [ngClass]="['pr-6 pl-8 my-auto overflow-visible', 'testimonial-block']">
+      <div card-title class="relative">
+              <span class="absolute -left-5 -top-1 text-xl overflow-visible">"</span>
+              <h3  [ngClass]="[
+                      'prose leading-normal font-serif',
+                      !!block?.classes?.text ? block.classes.text : '',
+              ]"
+              [innerHTML]="block.text | safeHtml"></h3>
+
+              <p [ngClass]="['w-full block text-sm text-grey-dark mt-3 relative font-semibold',  !!block?.classes?.title ? block.classes.title : '',]"
+                      style="text-indent: -3ch">
+                      <span>—&nbsp;&nbsp;</span>
+                      <i>{{ block.title }}</i>
+              </p>
+      </div>
+      <small card-after class="w-full border-t border-rcc-red mt-4 py-4 text-rcc-red text-base flex align-items-center justify-content-between">{{ block.linkText }} <i class="gicon gicon-angle-right ml-auto my-auto"></i></small>
+    </app-card>

@@ -1,0 +1,11 @@
+<mat-card [ngClass]="'mx-auto bg-' + cardBackground + ' mat-elevation-z' + cardElevation + ' p-' + cardPadding"
+          [style.max-width]="maxWidth"
+          [style.min-width]="minWidth">
+        <small [ngClass]="'mx-0 mt-0 mb-2 block text-' + titleColor">
+                {{ title }}
+        </small>
+        <mat-progress-bar [mode]="loaderMode"
+                        [bufferValue]="bufferValue"
+                          [ngClass]="'mx-0 block text-' + loaderColor"
+                          class="w-full p-0 m-0"></mat-progress-bar>
+</mat-card>

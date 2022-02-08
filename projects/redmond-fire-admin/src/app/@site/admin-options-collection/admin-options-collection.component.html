@@ -1,0 +1,22 @@
+<app-shell class="bg-white">
+
+        <div *ngIf="optionsDoc$ | async as optionsDoc"
+                class="flex flex-col max-w-xs mx-auto">
+                <ng-template ngFor let-key [ngForOf]="optionsDoc.filters | objectKeys">
+                        <div *ngFor="let option of optionsDoc.filters[key]; let i = index"
+                                class="list-item-option">
+                                <div class="flex w-full rounded items-center content-stretch bg-gray-100 hover:bg-gray-200 focus-within:bg-gray-200">
+                                        <input #labelInput
+                                                matInput
+                                                [ngClass]="['text-field bg-transparent px-2 w-full']"
+                                                [placeholder]="optionsCollection + ' Name'"
+                                                [value]="option.label" 
+                                                (keyup)="updateValue({val: $event.target.value, key: key, optionIndex: i, debounce: true})"
+                                                (keyup.tab)="updateValue({val: $event.target.value, key: key, optionIndex: i, debounce: true})"
+                                                (keyup.return)="updateValue({val: $event.target.value, key: key, optionIndex: i, debounce: true})"
+                                                (change)="updateValue({val: $event.target.value, key: key, optionIndex: i, debounce: true})" />
+                                </div>
+                        </div>
+                </ng-template>
+        </div>
+</app-shell>

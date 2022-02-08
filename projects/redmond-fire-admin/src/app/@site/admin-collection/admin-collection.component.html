@@ -1,0 +1,143 @@
+
+        <ng-container *ngIf="!hideFiltersForPaths.includes(searchData.path); else searchContent">
+                
+                <ng-container *ngTemplateOutlet="searchWithFilters"
+                        [opened]="reorderingProjects"
+                        (isOpened)="reorderingProjects = $event"></ng-container>
+                
+        </ng-container>
+                        
+        <ng-template #searchContent>
+                <mat-card class="w-full h-full mat-elevation-z0 p-4 bg-transparent block max-w-5xl mx-auto">
+                        <mat-toolbar mat-card-header
+                                [ngClass]="['flex overflow-hidden flex-nowrap w-full py-1 px-0 mx-auto', 
+                                        selected && selected.length > 0 ? 'bg-gray-900 mat-elevation-z20 transform scale-099' : 'bg-transparent']"
+                                style="position:relative; z-index: 2; border-radius: .3em; height: 50px;">
+
+                                <ng-template #bulkActions>
+                                        <app-admin-collection-bulk-actions
+                                                class="flex flex-nowrap items-center justify-around"
+                                                [selected]="selected"
+                                                (updateDocs)="updatingDocs($event)"
+                                                (deletedDocs)="deletingDocs($event)"
+                                                (updateSelection)="selected = $event">
+                                        </app-admin-collection-bulk-actions>
+                                </ng-template>
+
+                                <ng-template [ngIf]="!!!selected || selected.length === 0" [ngIfElse]="bulkActions">
+
+                                        <h1 [ngClass]="[
+                                                'text-left my-auto mr-3 flex-grow text-xl md:text-3xl sm:text-2xl font-semibold',
+                                                !!adminColors[collection] ? 'text-' + adminColors[collection] : 'text-gray-500'
+                                                ]"
+                                                #collectionTitleElem>
+                                                <button *ngIf="!!collectionDoc$?.pipe; else collectionTitleTemplate"
+                                                        class="edit-collection-button appearance-none"
+                                                        (click)="editCollectionDoc(collectionTitleElem)">
+                                                        <ng-container *ngIf="collectionDoc$ | async as collectionDoc">
+                                                                <ng-container *ngTemplateOutlet="collectionTitleTemplate; context: {collectionTitle: collectionDoc.handle | formatString: 'fromHandle' | formatString: 'capitalize'}"></ng-container>
+                                                        </ng-container>
+                                                        <mat-icon class="my-auto mr-2">edit</mat-icon>
+                                                </button>
+                                                <ng-template #collectionTitleTemplate let-collectionTitle="collectionTitle">
+                                                        {{ (!!collectionTitle?.length ? collectionTitle : collection) | formatString: 'capitalize'}}
+                                                </ng-template>
+                                        </h1>
+                                        
+                                        <button mat-stroked-button
+                                                #newEntityButton
+                                                *ngIf="!!!selected || selected.length === 0"
+                                                [ngClass]="['my-auto ml-0 mr-1 text-black text-opacity-75 min-w-12', 'hover:bg-' + adminColors[collection], 'hover:border-' + adminColors[collection] ]"
+                                                style="height: 40px"
+                                                matTooltip="new"
+                                                matTooltipPosition="below"
+                                                [matTooltipClass]="['text-gray-300', 'bg-gray-800']"
+                                                (click)="newEntity($event.srcElement)">
+                                                <mat-icon class="m-auto relative transform scale-90 -top-px">add</mat-icon>
+                                        </button>
+
+                                        <button mat-stroked-button
+                                                *ngIf="collection === 'projects'"
+                                                style="height: 40px"
+                                                class="my-auto ml-0 mr-1 text-black text-opacity-75 min-w-12"
+                                                matTooltip="reorder"
+                                                matTooltipPosition="below"
+                                                [matTooltipClass]="['text-gray-300', 'bg-gray-800']"
+                                                (click)="reorderProjects()">
+                                                <i class="gicon gicon-reorder"></i>
+                                        </button>
+
+                                        <app-db-search-bar
+                                                [data]="searchData"
+                                                class="flex items-center justify-start md:mx-auto w-full"
+                                                (updateSearch)="searchData = $event; updatingSearch($event)"
+                                                (toggleFiltersNav)="hideFiltersForPaths.includes(searchData.path) ? '' : !!$event ? searchData.showFilters = true : searchData.showFilters = false"></app-db-search-bar>
+                                </ng-template>
+                        </mat-toolbar>
+                        <ng-template #loading><app-loading-element title=""></app-loading-element></ng-template>
+                        
+                        <app-db-search *ngIf="!!searchData && !!!reloadingCollection; else loading"
+                                [data]="{searchData: searchData}"
+                                (theDocs)="setDocs($event)"
+                                [@animatedList]="docs"
+                                [ngClass]="">
+                                <ng-template [ngIf]="!!docs && docs !== 'loading'">
+                                        <div [ngClass]="['grid grid-cols-2 gap-4', collection === 'uploads' ? 'md:grid-cols-3' : 'sm:grid-cols-1 sm:gap-1']">
+                                                <ng-template ngFor let-doc [ngForOf]="docs" let-i="index">
+                                                
+                                                        <mat-card *ngIf="!deleted.includes(doc.docPath) && show(searchData.search, doc)"
+                                                                [ngClass]="[
+                                                                        'relative mx-auto mb-1 w-full border border-1 transform transition ease-in hover:scale-98 scale-100 mat-elevation-z0',
+                                                                        !!doc.type ? 'max-w-5xl' : 'p-0 max-w-full'
+                                                                ]"
+                                                                style="transition:all .2s ease; border-radius: .3em"
+                                                                [style.box-shadow]="!isSelected(doc) ? 'none' : '#772273 1px 2px 2px 1px inset, #12165e 0px 0px 1px 3px inset'">
+                                                                <app-admin-collection-item 
+                                                                        [doc]="doc" 
+                                                                        [isSelected]="isSelected(doc)"
+                                                                        [selectedItems]="selected"
+                                                                        (selectItem)="selectingItems(i, $event)"
+                                                                        [ngClass]="['z-1', collection === 'uploads' ? '' : 'sm:py-0 sm:pl-9']">
+                                                                </app-admin-collection-item>
+                                                        </mat-card>
+                                                </ng-template>
+                                        </div>
+                                </ng-template>
+                        </app-db-search>
+                </mat-card>
+        </ng-template>
+
+        <ng-template #searchWithFilters>
+
+                <mat-sidenav-container 
+                        class="bg-transparent p-0 w-full"
+                        style="height: 100vh">
+                        <mat-sidenav #filtersNav
+                                [opened]="(isHandset$ | async) ? false : !!searchData && !!searchData.showFilters"
+                                [mode]="(isHandset$ | async) ? 'over' : 'side'"
+                                [disableClose]="true"
+                                (openStart)="searchData.showFilters = true"
+                                (closeStart)="searchData.showFilters = false"
+                                position="end"
+                                style="max-width: 180px"
+                                class="bg-transparent border-0 w-full">
+                                <app-db-filters
+                                        *ngIf="!!searchData"
+                                        class="block w-full p-2"
+                                        (updateQuery)="updateDbQuery($event)"
+                                        [data]="{ 
+                                                query: !!searchData.query ? searchData.query : defaultSearchData.query,
+                                                collection: collection,
+                                                showFilters: !!searchData.showFilters,
+                                                activeFilter: collection === 'projects' ? 'ordered' : collection === 'posts' ? 'published (newest)' : 'updated (newest)',
+                                                filterOptionTypes: !!searchData.filterOptionTypes ? searchData.filterOptionTypes : defaultSearchData.filterOptionTypes,
+                                                path: ['uploads'].includes(collection) ? collection : 'admin/' + collection + '/collection'
+                                        }">
+                                </app-db-filters>
+                        </mat-sidenav>
+                        <mat-sidenav-content class="px-0 bg-transparent overflow-hidden">
+                                <ng-container *ngTemplateOutlet="searchContent"></ng-container>
+                        </mat-sidenav-content>
+                </mat-sidenav-container>
+
+        </ng-template>

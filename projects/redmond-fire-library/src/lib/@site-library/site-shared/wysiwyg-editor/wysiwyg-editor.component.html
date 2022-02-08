@@ -1,0 +1,11 @@
+<ng-template #loading><app-loading-element title=""></app-loading-element> </ng-template>
+
+<ckeditor *ngIf="!!Editor && !!config; else loading"
+        [editor]="Editor" 
+        [config]="config"
+        [disabled]="readOnly"
+        [data]="data"
+        (ready)="onReady($event)"
+        (change)="editorChanged($event)"
+        (blur)="editorChanged($event)"
+        (focus)="editorChanged($event)"></ckeditor>

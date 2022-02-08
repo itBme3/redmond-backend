@@ -1,0 +1,14 @@
+                                
+<mat-select (selectionChange)="changeSelected($event.value)"
+        #selectElem
+        class="pr-2 pl-2 py-5"
+        style="min-width: 200px; max-width: 300px"
+        [value]="selectedValue"
+        [placeholder]="placeholder"
+        panelClass="p-1 bg-white"
+        name="'filter'">
+        <mat-option *ngFor="let option of options"
+                [value]="option.handle">
+                {{ option.label }}
+        </mat-option>
+</mat-select>

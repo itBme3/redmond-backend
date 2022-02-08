@@ -1,0 +1,57 @@
+<mat-dialog-content class="flex flex-col w-full px-1 m-0 items-center justify-center">
+        <div [ngClass]="['user-avatar mt-1 mb-3 mx-0', 'role-' + role ]"
+                [style.width]="'100px'"
+                [style.height]="'100px'"
+                [style.border-radius]="'100px'"
+                [style.background-image]="'url(' + photoURL + ')'"
+                [style.background-size]="'cover'"
+                [style.background-position]="'center'">
+        </div>
+        <div class="w-full text-center">
+                <h2 class="heading-4">{{ user.name }}</h2>
+                <ng-template ngFor let-key [ngForOf]="['name', 'email', 'phoneNumber']">
+                        <p *ngIf="!!user[key]" class="mb-1"><small class="text-darken-04">{{ key }}:</small> {{user[key]}}</p>
+                </ng-template>
+        </div>
+        <mat-expansion-panel class="w-full my-4 mat-elevation-z0 border border-1 border-darken-02">
+                <mat-expansion-panel-header class="pl-2">
+                        <small [ngClass]="['mt-1 ml-1 p-1 tag rounded text-black text-opacity-75', 'bg-' + roleColor[user.access.role] ]">{{ user.access.role }}</small> 
+                        <span class="w-full flex items-center justify-between  my-auto">
+                                <span class="my-auto ml-2 mr-auto">Access</span>
+                        </span>
+                </mat-expansion-panel-header>
+                <div class="w-full my-2">
+                        <ng-container *ngTemplateOutlet="accessCheck; context: { key: 'full-access' }"></ng-container>
+                        <div class="access-check-list border-t-0 border-r-0 border-b-0 p-2 border border-1 border-darken-02">
+                                <ng-template ngFor let-accessKey [ngForOf]="canAccessKeys">
+                                        <div class="access-check-item">
+                                                <ng-container *ngTemplateOutlet="accessCheck; context: { key: accessKey }"></ng-container>
+                                        </div>
+                                </ng-template>
+                        </div>
+                </div>
+        </mat-expansion-panel>
+        
+</mat-dialog-content>
+
+<ng-template #accessCheck let-key="key">
+        <mat-checkbox (change)="setCanAccess({key: key, val: $event.checked})"
+                [checked]="( key !== 'full-access' && canAccess.includes(key)) || (key === 'full-access' && role === 'admin')">
+                {{ key | formatString: 'fromHandle' }}
+        </mat-checkbox>
+</ng-template>
+
+
+<mat-dialog-actions class="flex flex-nowrap items-center mb-0"
+        *ngIf="changed">
+        <button mat-stroked-button 
+                *ngFor="let action of ['cancel', 'save']"
+                style="min-width: 36px !important"
+                (click)="action === 'cancel' ? cancel() : save()"
+                [ngClass]="['text-dark-hvr text-center px-0', 
+                        action === 'cancel' ? 'bg-light-red-hvr text-light-red w-3/12' 
+                        : 'bg-green-hvr text-green w-9/12' ]">
+                <i [ngClass]="['gicon', action === 'cancel' ? 'gicon-close' : 'gicon-checkmark']"></i>
+                <span *ngIf="action === 'save'" class="text-dark ml-2">{{ action }}</span>
+      </button>
+</mat-dialog-actions>

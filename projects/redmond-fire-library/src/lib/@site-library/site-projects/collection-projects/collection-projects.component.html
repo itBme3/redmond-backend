@@ -1,0 +1,31 @@
+<ng-container *ngIf="collectionDoc && !!pageTitle">
+
+        <app-page-header class="page-heading mb-0">
+                <h1 class="header-title">{{pageTitle}}</h1>
+                <h4 class="header-text my-auto pl-0">{{collectionDoc.description}}</h4>
+        </app-page-header>
+
+        <app-collection-filter 
+                *ngIf="!!filterOptions && !!filterOptions.sectors && !!!hideFilter"
+                [options]="filterOptions.sectors"
+                [selectedValue]="activeFilter"
+                placeholder="All Projects"
+                (selectionChanged)="changeFilter($event)"></app-collection-filter>
+
+
+        <ng-template [ngIf]="!!docs && !!docs.length">
+                <div [ngClass]="[
+                        'projects-grid grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 md:8 lg:gap-10 w-full',
+                        ]">
+                        <ng-template ngFor let-doc [ngForOf]="docs">
+                                <app-project-card [doc]="doc"
+                                        [collectionDoc]="collectionDoc"
+                                        [aspectRatio]="'5:4'"></app-project-card>
+                        </ng-template>
+                </div>
+        </ng-template>
+        <app-loading-element 
+                *ngIf="canLoadMore"
+                (onVisible)="loadMore()"
+                title="" class="max-w-xs mx-auto" loaderColor="red"></app-loading-element>
+</ng-container>

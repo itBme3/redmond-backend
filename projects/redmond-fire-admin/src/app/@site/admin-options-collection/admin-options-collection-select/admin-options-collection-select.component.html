@@ -1,0 +1,5 @@
+<app-custom-input 
+        class="w-full"
+        *ngIf="options && options?.length && !!data"
+        [data]="data"
+        (updated)="updated.emit($event)"></app-custom-input>

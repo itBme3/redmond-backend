@@ -1,0 +1,8 @@
+{
+  "sourceRoots": [
+    "./projects/redmond-fire-admin/src"
+  ],
+  "angularCli": {
+    "appName": "playground"
+  }
+}

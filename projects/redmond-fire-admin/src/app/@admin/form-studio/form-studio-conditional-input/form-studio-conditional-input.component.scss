@@ -1,0 +1,11 @@
+.condition-item {
+        padding: 1.3em;
+        border-radius: .4em;
+        border: 1px solid rgba(0,0,0,.2);
+        transform: scale(.9);
+        &:not(&:hover) {
+                .remove {
+                        display: none;
+                }
+        }
+}

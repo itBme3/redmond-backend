@@ -1,0 +1,42 @@
+<ng-content select="[before-carousel]"></ng-content>
+
+                
+<app-carousel *ngIf="!!block?.slides?.length"
+        #carouselComponent
+        [data]="{ aspectRatio: block.aspectRatio, arrows: !!block?.arrows, dots: !!block?.dots }"
+        [swiperOptions]="{autoplay: !!block.autoplay ? block.autoplay : null}"
+        (swiperObj)="setSwiper($event)"
+        [ngClass]="[isHero ? 'carousel-hero' : '']">
+
+        <ng-template swiperSlide
+                     ngFor
+                     let-slide
+                     [ngForOf]="isBrowser ? block.slides : [block.slides[0]]">
+                <app-block-card slide
+                        #cardBlock
+                        [ngClass]="[ 'w-full',
+                                !!block?.classes?.content ? block.classes.content : '']"
+                        [block]="slide"
+                        [aspectRatio]="block.aspectRatio"
+                        [revealOnHover]="true"
+                        [cardStyle]="'overlay'">
+                        <span *ngIf="!!slide?.title?.length" class="block-title w-100 block relative">
+                                {{ slide.title }}
+                        </span>
+
+                        <span *ngIf="!!slide?.text?.length" class="block-text w-100 block relative">
+                                {{ slide.text }}
+                        </span>
+
+                        <span *ngIf="!!slide?.linkText?.length" class="block-link-text w-100 block relative">
+                                {{ slide.linkText }}
+                        </span>
+                        
+                </app-block-card>
+
+        </ng-template>
+
+
+</app-carousel>
+
+

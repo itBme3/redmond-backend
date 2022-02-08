@@ -1,0 +1,76 @@
+<ng-template [ngIf]="!!!sortable" [ngIfElse]="sortableTemplate">
+        <div *ngFor="let item of list; let i = index; trackBy: trackByFn"
+                [ngClass]="['input-list-item flex content-start items-center flex-nowrap w-full mb-1 relative', classes.item ]">
+                <ng-container *ngTemplateOutlet="listItem; context: { val: !!item[valueField]?.length ? item[valueField] : !!item?.length ? item : null, i: i }"></ng-container>
+        </div>
+</ng-template>
+
+<ng-template #sortableTemplate>
+
+        <div [ngClass]="['w-full list-items drag-list relative', classes.list]"
+                *ngIf="!!list?.length"
+                cdkDropList
+                #contentList="cdkDropList"
+                cdkDropListOrientation="vertical"
+                [cdkDropListData]="list"
+                (cdkDropListDropped)="drop($event)"
+                [@animatedList]="list">
+                <div *ngFor="let item of list; let i = index; trackBy: trackByFn"
+                        [ngClass]="['input-list-item flex content-start items-center flex-nowrap w-full mb-1 relative', classes.item ]"
+                        cdkDrag>
+                        <ng-container *ngTemplateOutlet="listItem; context: { 
+                                val: !!item[valueField]?.length ? item[valueField] : 
+                                        !!item?.length ? item : 
+                                        valueField === 'blockName' ? '( ' + (item.blockType | formatString: 'fromCamel' | formatString: 'capitalize') + ' )' : 
+                                        null, 
+                                i: i 
+                        }"></ng-container>
+                </div>
+        </div>
+</ng-template>
+
+<button mat-button
+        *ngIf="canCreate"
+        (click)="addItem()"
+        matTooltip="add item">
+        <mat-icon>add</mat-icon>
+</button>
+
+<ng-template #listItem let-val="val" let-itemIndex="i">
+                
+        <mat-icon *ngIf="!!sortable"
+                cdkDragHandle
+                class="cursor-move text-gray-300 hover:text-gray-600 mr-3">
+                drag_handle
+        </mat-icon>
+        <input matInput placeholder="..."
+                [value]="!!val?.length ? val :  ''"
+                class="ml-0 w-full"
+                (keyup.tab)="updateSubject.next({ itemIndex: itemIndex, value: $event.target.value })"
+                (keyup.return)="updateSubject.next({ itemIndex: itemIndex, value: $event.target.value })"
+                (change)="updateSubject.next({ itemIndex: itemIndex, value: $event.target.value })"
+                />
+        
+        <div [ngClass]="[
+                'edit-buttons flex flex-nowrap ml-auto mr-0 items-center bg-transparent'
+        ]">
+                <button mat-icon-button
+                        *ngIf="removing !== itemIndex; else confirmDelete"
+                        matTooltip="remove item"
+                        tooltipPosition="after"
+                        (click)="removing = itemIndex"
+                        class="transform scale-75 shadow-none hover:bg-red max-auto hover:text-opacity-75 bg-white text-opacity-50 text-black">
+                        <mat-icon>delete</mat-icon>
+                </button>
+                <ng-template #confirmDelete>
+                        <div class="flex flex-nowrap items-center content-start py-1">
+                                <button mat-button
+                                        class="bg-red hover:bg-red-600 text-black text-opacity-75 my-auto"
+                                        (click)="removeItem(itemIndex)">confirm</button>
+                                <mat-icon (click)="removing = null" 
+                                        class="cursor-pointer transform scale-75 mx-1 my-auto text-gray-500 hover:text-gray-800">close</mat-icon>
+                        </div>
+                </ng-template>
+        </div>
+
+</ng-template>

@@ -1,0 +1,10 @@
+:host {
+        @apply rounded block;
+}
+
+.button-group {
+        @apply flex w-40 flex-col space-y-1;
+        button {
+                @apply uppercase bg-gray-50 hover:bg-gray-100 active:bg-gray-200;
+        }
+}

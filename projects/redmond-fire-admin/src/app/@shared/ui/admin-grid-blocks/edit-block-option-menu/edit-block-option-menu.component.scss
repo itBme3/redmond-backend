@@ -1,0 +1,11 @@
+:host {
+        @apply absolute block right-0 left-auto top-0 z-20;
+}
+::ng-deep {
+        .mat-menu-content:not(:empty) {
+                @apply p-1;
+                button {
+                        @apply my-1 hover:bg-gray-100 w-full active:bg-gray-200 rounded mx-auto h-auto;
+                }
+        }
+}

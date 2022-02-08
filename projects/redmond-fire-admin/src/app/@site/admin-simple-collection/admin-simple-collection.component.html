@@ -1,0 +1,213 @@
+<app-shell>
+        <ng-template #loading><app-loading-element title=""></app-loading-element></ng-template>
+
+        <ng-template [ngIf]="!!doc" [ngIfElse]="loading">
+                <div class="mx-auto max-w-lg">
+                        <ng-container *ngTemplateOutlet="dropListTemplate; context: { keys: collectionKeys[collection], items: doc[listKey] }"></ng-container>
+                </div>
+        </ng-template>
+
+        <ng-template #dropListTemplate
+                let-keys="keys"
+                let-items="items"
+                let-parentIndex="parentIndex"
+                let-parentKey="parentKey">
+                <div class="drag-list position-relative w-full mt-2"
+                        *ngIf="!!items?.length"
+                        cdkDropList
+                        cdkDropListOrientation="vertical"
+                        [cdkDropListData]="items"
+                        (cdkDropListDropped)="drop($event, { keys: keys, parentIndex: parentIndex, parentKey: parentKey } )"
+                        [@animatedList]="items">
+                        <ng-template [ngIf]="parentIndex > -1 && !!parentKey" [ngIfElse]="accordionDropList">
+                                <div *ngFor="let item of items; let i=index"
+                                        cdkDropListGroup
+                                        cdkDrag
+                                        [cdkDragData]="item">
+                                        <ng-container *ngTemplateOutlet="collectionItemInput; 
+                                                context: { 
+                                                        keys: keys,
+                                                        itemIndex: i,
+                                                        parentIndex: parentIndex,
+                                                        parentKey: parentKey
+                                                }">
+                                        </ng-container>
+                                </div>
+                        </ng-template>
+                        
+                        <ng-template #accordionDropList>
+                                <mat-accordion>
+                                        <ng-template ngFor let-item [ngForOf]="items" let-i="index">
+                                                <mat-expansion-panel class="mat-elevation-z0" cdkDrag class="input-item"
+                                                        [expanded]="expanded === i"
+                                                        (afterExpand)="expanded = i">
+                                                        <mat-expansion-panel-header  class="mat-elevation-z0">
+                                                                <div class="w-full my-auto flex items-center">
+                                                                        <mat-icon cdkDragHandle class="cursor-move my-auto mr-2">drag_handle</mat-icon>
+                                                                        <h2 class="text-lg">{{item[collectionKeys[collection][0]]}}</h2>
+                                                                </div>
+                                                        </mat-expansion-panel-header>
+                                                        <ng-container *ngTemplateOutlet="collectionItemInput; 
+                                                                context: { 
+                                                                        keys: collectionKeys[collection],
+                                                                        itemIndex: i
+                                                                }">
+                                                        </ng-container>
+                                                </mat-expansion-panel>
+                                        </ng-template>
+                                </mat-accordion>
+                        </ng-template>
+                        
+                        <button mat-button 
+                                (click)="addItem({
+                                        parentIndex: parentIndex,
+                                        parentKey: parentKey
+                                })"
+                                matTooltip="add item"
+                                class="w-full"
+                                [matTooltipClass]="['bg-gray-900 text-gray-100']"
+                                matPosition="above"><mat-icon>add</mat-icon></button>
+                </div>
+        </ng-template>
+
+        <ng-template #collectionItemInput
+                let-itemIndex="itemIndex"
+                let-parentIndex="parentIndex"
+                let-parentKey="parentKey"
+                let-keys="keys">
+                <div [ngClass]="['w-full h-auto my-auto inputs-wrapper', !!parentKey ? 'relative p-3 rounded shadow-sm bg-white mb-2 flex flex-nowrap items-center' : '']">
+                        <mat-icon cdkDragHandle
+                                *ngIf="!!parentKey" class="cursor-move my-auto mr-2">drag_handle</mat-icon>
+                        
+                        
+                        <ng-container *ngTemplateOutlet="itemInputs; context: {
+                                keys: keys,
+                                parentIndex: parentIndex,
+                                parentKey: parentKey,
+                                itemIndex: itemIndex,
+                                item: parentIndex > -1 && !!doc[listKey][parentIndex] && !!doc[listKey][parentIndex][parentKey] ? doc[listKey][parentIndex][parentKey][itemIndex] : !!doc[listKey][itemIndex] ? doc[listKey][itemIndex] : null
+                        }">
+                        </ng-container>
+
+                        <div class="remove-item ml-auto mr-0 cursor-pointer flex flex-nowrap mt-2 absolute top-3 right-2 z-100">
+                                <div *ngIf="removing === (itemIndex + '' + parentIndex > -1 ? parentIndex : '')" class="flex items-center">
+                                        <button class="rounded px-2 pt-1 pb-2 text-black text-opacity-50 bg-red"
+                                                (click)="removeItem(itemIndex, { parentKey: parentKey, parentIndex: parentIndex })">confirm </button>
+                                </div>
+                                <button (click)="removing = removing === (itemIndex + '' + parentIndex > -1 ? parentIndex : '') ? null : (itemIndex + '' + parentIndex > -1 ? parentIndex : '')">
+                                        <mat-icon>{{ removing === (itemIndex + '' + parentIndex > -1 ? parentIndex : '') ? 'close' : 'delete' }}</mat-icon>
+                                </button>
+                        </div>
+                        
+                </div>
+        </ng-template>
+        
+        <ng-template #itemInputs
+                let-keys="keys"
+                let-item="item"
+                let-parentIndex="parentIndex"
+                let-itemIndex="itemIndex"
+                let-parentKey="parentKey">
+                <div class="inputs relative my-auto w-full flex flex-col border-0">
+                        <ng-template ngFor let-key [ngForOf]="keys">
+                                
+                                <app-custom-input 
+                                        *ngIf="!key.includes(':'); else childDropListTemplate"
+                                        class="mb-2 w-full"
+                                        [data]="{
+                                                inputType: ['link'].includes(key) ? key : 
+                                                        ['content'].includes(key) ? 'wysiwyg' :
+                                                        'text',
+                                                value: item[key],
+                                                inputClasses: 'bg-transparent focus-within:bg-gray-100 border-gray-100 bg-white bg-opacity-50 py-2 px-3',
+                                                labelClasses: 'ml-2',
+                                                label: key === 'content' ? null : key
+                                        }"
+                                        (updated)="updateValue($event, { 
+                                                itemIndex: itemIndex,
+                                                parentIndex: parentIndex,
+                                                parentKey: parentKey,
+                                                key: key 
+                                        })">
+                                </app-custom-input>
+
+                                <ng-template #childDropListTemplate>
+                                        <div class="py-3 px-4 bg-gray-100 w-full">
+                                                <ng-container *ngTemplateOutlet="dropListTemplate; context: { 
+                                                        keys: key.split(':')[1].split(','),
+                                                        parentKey: key.split(':')[0],
+                                                        items: doc[listKey][itemIndex][key.split(':')[0]],
+                                                        parentIndex: itemIndex
+                                                }"></ng-container>
+                                        </div>
+                                </ng-template>
+                                
+                        </ng-template>
+                </div>
+        </ng-template>
+        
+
+        <!-- <ng-template [ngIf]="!!doc" [ngIfElse]="loading">
+                <div [ngClass]="['mx-auto', collection === 'hiring' ? 'max-w-xl' : 'max-w-sm']">
+                        <h1 [ngClass]="[
+                                'text-left my-auto mr-3 mb-2 flex-grow text-xl md:text-3xl sm:text-2xl font-semibold',
+                                !!adminColors[collection] ? 'text-' + adminColors[collection] : 'text-gray-500'
+                                ]"
+                                #collectionTitleElem>
+                                {{ collection | formatString: 'capitalize'}}
+                        </h1>
+                        <div class="drag-list position-relative w-full mt-2"
+                                *ngIf="!!doc[listKey]?.length"
+                                cdkDropList
+                                #contentList="cdkDropList"
+                                cdkDropListOrientation="vertical"
+                                [cdkDropListData]="doc[listKey]"
+                                (cdkDropListDropped)="drop($event)"
+                                [@animatedList]="doc[listKey]">
+                                 <mat-accordion>
+                                        <ng-template ngFor let-item [ngForOf]="doc[listKey]" let-i="index">
+                                                <mat-expansion-panel class="mat-elevation-z0" cdkDrag class="input-item"
+                                                        [expanded]="expanded === i"
+                                                        (afterExpand)="expanded = i">
+                                                        <mat-expansion-panel-header  class="mat-elevation-z0">
+                                                                <div class="w-full my-auto flex items-center">
+                                                                        <mat-icon cdkDragHandle class="cursor-move my-auto mr-2">drag_handle</mat-icon>
+                                                                        {{item[keys[collection][0]]}}
+                                                                </div>
+                                                        </mat-expansion-panel-header>
+                                                        <div class="remove-item ml-auto mr-0 cursor-pointer flex flex-nowrap mt-2 absolute top-3 right-2">
+                                                                <div *ngIf="removing === i" class="flex items-center">
+                                                                        <button class="rounded px-2 pt-1 pb-2 text-black text-opacity-50 bg-red"
+                                                                                (click)="removeItem(i)">confirm </button>
+                                                                </div>
+                                                                <button (click)="removing = removing === i ? null : i">
+                                                                        <mat-icon>{{ removing === i ? 'close' : 'delete' }}</mat-icon>
+                                                                </button>
+                                                        </div>
+                                                        <div class="inputs relative my-auto w-full flex flex-col">
+                                                                <app-custom-input  *ngFor="let key of keys[collection]"
+                                                                        class="mb-2 w-full"
+                                                                        [data]="{
+                                                                                inputType: ['link'].includes(key) ? key : 
+                                                                                        ['content'].includes(key) ? 'wysiwyg' :
+                                                                                        'text',
+                                                                                value: item[key],
+                                                                                inputClasses: 'bg-transparent focus-within:bg-gray-100',
+                                                                                labelClasses: 'ml-2',
+                                                                                label: key === 'content' ? null : key
+                                                                        }"
+                                                                        (updated)="doc[listKey][i][key] = $event; updateDoc()">
+                                                                </app-custom-input>
+                                                        </div>
+                                                </mat-expansion-panel>
+                                        </ng-template>
+                                </mat-accordion>
+                                <button mat-button (click)="addItem()"
+                                        matTooltip="add item"
+                                        class="w-full"
+                                        [matTooltipClass]="['bg-gray-900 text-gray-100']"
+                                        matPosition="above"><mat-icon>add</mat-icon></button>
+                        </div>
+                </div>
+        </ng-template> -->
+</app-shell>

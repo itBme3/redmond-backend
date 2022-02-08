@@ -1,0 +1,69 @@
+::ng-deep {
+        admin-site-entity-form {
+                ckeditor {
+                        @apply pl-2;
+                }
+        }
+}
+:host {
+        @apply w-full block prose max-w-full;
+        ::ng-deep {
+                .ck-content {
+                        @apply p-0 border-0;
+                }
+                .ck-editor__top {
+                        @apply transition-all ease-quick-in;
+                        .ck-toolbar {
+                                @apply border-transparent rounded;
+                        }
+                }
+        }
+        
+        &.editor-focused {
+
+                @apply border-0;
+                ::ng-deep {
+                        ckeditor {
+                                @apply p-0
+                        }
+                        .ck-content {
+                                @apply p-0
+                        }
+                        .ck-editor__editable {
+                                @apply p-2;
+                                &.ck-focused {
+                                        border-color: transparent !important;
+                                        outline: none !important;
+                                        box-shadow: none !important;
+                                        &:not(.ck-read-only) {
+                                                @apply shadow-lg bg-white;
+                                        }
+                                }
+                        }
+                }
+        }
+
+        &:not(.editor-focused) {
+                ::ng-deep {
+                        .ck-editor__top {
+                                @apply h-[0px] overflow-hidden;
+                        }
+                }
+        }
+        ::ng-deep {
+                .ck-read-only {
+                        .ck-editor__top {
+                                @apply h-[0px] overflow-hidden;
+                                display: none !important;
+                        }
+                }
+        }
+        &.editor-blurred {
+                ::ng-deep {
+                        .ck-editor__editable {
+                                @apply p-0;
+                        }
+                }
+        }
+        
+}

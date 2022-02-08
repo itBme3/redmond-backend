@@ -1,0 +1,13 @@
+:host {
+        @apply block w-full mx-auto;
+        .single-post-container {
+                @apply mx-auto w-full;
+        }
+        ::ng-deep {
+                .single-team-container, .single-post-container {
+                        .custom-input-option-image {
+                                max-width: 420px !important;
+                        }
+                }
+        }
+}

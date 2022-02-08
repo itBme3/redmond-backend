@@ -1,0 +1,12 @@
+<div class="button-group w-full flex flex-col items-center">
+        <button mat-button 
+                class="w-full capitalize tracking-widest text-base max-auto"
+                #collectionTypeButton
+                *ngFor="let collectionType of collectionTypes"
+                [mat-dialog-close]="collectionType">
+                <span class="flex flex-nowrap items-center content-stretch w-full my-auto">
+                        <i [ngClass]="['gicon my-auto mr-2 gicon-' + collectionType]"></i>
+                        <small class="my-auto">{{ collectionType }}</small>
+                </span>
+        </button>
+</div>

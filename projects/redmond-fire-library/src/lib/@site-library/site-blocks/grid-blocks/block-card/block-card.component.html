@@ -1,0 +1,58 @@
+
+
+
+<app-card *ngIf="!!!hidden && !!block"
+        #appCard
+        [aspectRatio]="!!block?.image ? aspectRatio : null" 
+        [linkPath]="block.link"
+        [revealOnHover]="revealOnHover"
+        [cardStyle]="block.isTestimonial ? 'testimonial' : !!block.image ? 'overlay' : 'text'"
+        (click)="cardClicked()"
+        [ngClass]="['w-full bg-cover bg-center relative', 
+                !!block?.link?.length ? 'cursor-pointer' : '',
+                 block.isTestimonial ? 'testimonial' : !!block.image ? 'overlay' : 'text' + '-block', 
+                !!block?.classes?.content ? block.classes.content : '']">
+        
+        <div card-image
+                *ngIf="!!block.image"
+                class="bg-cover bg-center h-full w-full">
+                <img imageLoader 
+                        #theImage
+                        class="min-w-full min-h-full m-auto flex-shrink-0"
+                        [aspectRatio]="aspectRatio"
+                        [thumbs]="!!block?.image?.thumbs ? block.image.thumbs : null"
+                        [image]="block.image"
+                        [attr.src]="!!block?.image?.thumbs && !!block?.image?.thumbs['256'] ? block.image.thumbs['256'] : 
+                                !!block?.images?.length && !!block?.images[0]?.thumbs && !!block?.images[0]?.thumbs['256'] ? block.images[0].thumbs['256'] : 
+                                !!block?.image?.src ? block.image.src : block.image" />
+        </div>
+        <h1 card-title
+                *ngIf="block.title"
+                [ngClass]="[
+                        'prose mb-0 leading-snug', 
+                        !!block?.classes?.title ? block.classes.title : '',
+                        !!block.image && !!!block.isTestimonial ? 'text-white' : 'text-grey-dark'
+                ]">
+                <ng-content select=".block-title"></ng-content>
+        </h1>
+        <small card-after *ngIf="!!!block.image && !!block?.link?.length"
+                class="w-full border-t border-rcc-red mt-4 py-4 text-rcc-red text-base flex align-items-center justify-content-between leading-snug">
+                        {{ block.linkText }} <i class="gicon gicon-angle-right ml-auto my-auto"></i>
+        </small>
+        <div card-reveal *ngIf="(!!block.text?.length || !!block.linkText?.length)">
+                <h4 *ngIf="!!block.text?.length"
+                        [ngClass]="[
+                                'prose italic tracking-wider leading-snug', 
+                                !!block?.classes?.text ? block.classes.text : '',
+                                !!block.image && !!!block.isTestimonial ? 'text-white' : 'text-grey-dark'
+                        ]">
+                        <ng-content select=".block-text"></ng-content>
+                </h4>
+                
+                <small *ngIf="!!block.image && !!!block.isTestimonial && !!block.linkText?.length"
+                        [ngClass]="['prose text-sm mb-0 leading-snug', !!block.image ? 'text-white' : 'text-grey-dark']">
+                        {{ block.linkText }}
+                </small>
+        </div>
+        <ng-content select=".admin-editing"></ng-content>
+</app-card>

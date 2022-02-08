@@ -1,0 +1,78 @@
+<!-- SELECT CHECKBOX -->
+
+
+<div [ngClass]="[
+    'check_select px-2 h-auto my-0 flex rounded z-100 absolute left-0 top-2 sm:top-0 bottom-auto sm:right-auto sm:bottom-0',
+    !!doc?.fileType ? 'absolute left-1 top-1 flex items-start text-gray-50 right-auto' : 'right-0',
+    !!!isSelected ? 'bg-transparent' : '',
+    !!doc?.type && !!isSelected ? 'text-purple-900 sm:bg-purple-900 sm:text-gray-50' : '',
+    !!doc?.type && !!!isSelected ? 'sm:bg-gray-100' : '']"
+        (click)="selectItem.emit($event)">
+    <i [ngClass]="[!!doc?.type ? 'my-auto mx-0 sm:mx-auto' : 'mt-2 mb-auto mx-auto', !!!isSelected ? 'gicon-box' : 'gicon-checkbox'] "></i>
+</div>
+<div [ngClass]="['flex flex-col sm:flex-row w-full', !!doc?.type ? doc.type + 'sm:pl-3 sm:pt-0 pt-4' : !!doc.fileType ? 'upload-item' : '']">
+    <!-- IMAGE -->
+    <div [ngClass]="[
+        'media overflow-hidden flex items-center bg-center bg-cover content-center rounded border border-gray-100 transform transition-all ease-quick-in',
+         !!doc.type ? 'ml-0 my-2 sm:my-auto w-full sm:w-6/12 md:w-4/12 sm:max-w-[160px] ' : 'w-full m-0'
+        ]"
+         *ngIf="(!!doc.src && (doc?.fileType?.includes('image') || doc?.fileType?.includes('pdf'))) || !!doc.image || !!doc?.images?.length || (!!doc.filetype && doc.filetype.includes('image')) || (!!doc?.mediaType && doc.mediaType === 'image')"
+         (dblclick)="copyImageUrl()">
+         <ng-template [ngIf]="!!doc?.fileType?.includes && doc.fileType.includes('pdf')" [ngIfElse]="theImage">
+             <iframe [attr.src]="doc.src | safeUrl:'resourceUrl'" class="w-full h-full"></iframe>
+             <div class="absolute inset-0" (dblclick)="copyImageUrl()"></div>
+         </ng-template>
+         <ng-template #theImage>
+            <img #itemImage
+                imageLoader
+                class="w-full opacity-0"
+                [isBackground]="true"
+                [aspectRatio]="'16:9'"
+                [image]="!!doc.image ? doc.image : !!doc?.images?.length ? doc.images[0] : doc"
+                [attr.src]="
+                    !!doc?.image ? 
+                        !!doc?.image?.thumbs && doc?.image?.thumbs['256'] ? doc?.image?.thumbs['256'] :
+                        !!doc?.image?.src ? 
+                        doc.image.src :
+                        doc.image :
+                    doc?.images?.length && (!!doc?.images[0]?.src || !!doc?.images[0]) ? 
+                        !!doc?.images[0]?.thumbs && doc?.images[0]?.thumbs['256'] ? doc?.images[0]?.thumbs['256'] :
+                        !!doc?.images[0]?.src ? 
+                        doc?.images[0]?.src :
+                        doc?.images[0] :
+                    !!doc?.src ? 
+                        doc.src : 
+                    null"
+                [thumbs]="!!doc?.image?.thumbs ? doc?.image?.thumbs : !!doc?.thumbs ? doc.thumbs : !!doc?.images?.length && !!doc?.images[0]?.thumbs ? doc.images[0].thumbs : null" />
+        </ng-template>
+    </div>
+
+    <!-- CONTENT -->
+    <div *ngIf="!!!doc.fileType"
+        (click)="!!!selectedItems?.length ? router.navigate([doc.docId], {relativeTo: route}) : selectItem.emit(doc)"
+         class="flex flex-col ml-2 mr-0 my-1 sm:my-auto items-start justify-start"
+         style="width: calc(100% - 60px); min-height: 80px">
+        <div [ngClass]="['cursor-pointer flex flex-col items-start justify-center my-auto']">
+            <h2 *ngIf="!!doc.title || !!doc.name"
+                class="cursor-pointer mr-2 mb-2 text-lg"> {{ !!doc.title ? doc.title : doc.name }}</h2>
+            <code *ngIf="doc.handle"
+                  class="mb-2 text-grey-light text-[9px]">{{ doc.handle }}</code>
+            <code *ngIf="doc.filename"
+                  class="mb-2 text-[9px]">{{ doc.filename }}</code>
+        </div>
+    </div>
+
+
+    <div *ngIf="isSelected"
+         class="deselect absolute cursor-pointer"
+         style="left: 0; right: 0; bottom: 0; top: 0"
+         (click)="selectItem.emit($event)"></div>
+
+
+    <!-- STATUS -->
+    <app-entity-status class="ml-auto mt-auto mb-0 sm:my-auto sm:mt-auto mr-0 sm:px-4"
+                       *ngIf="!!!doc.fileType && !!!doc.mediaType"
+                       [data]="{ doc: doc, context: 'indicator' }"
+                       (updated)="doc.status = $event">
+    </app-entity-status>
+</div>

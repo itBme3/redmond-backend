@@ -1,0 +1,82 @@
+<div class="collection-title mb-6" *ngIf="!!block?.title">
+        <a *ngIf="!!block?.link"
+                class="flex items-center content-start"
+                [routerLink]="[block.link === '/' ? '/' : block.link ]">
+                <h2 class="block-collection-title"
+                        *ngIf="!!block?.title">{{ block.title }}</h2>
+                <i class="gicon gicon-angle-right my-auto leading-none ml-4"></i>
+        </a>
+        <h2 *ngIf="!!!block?.link"
+                class="block-collection-title">{{ block.title }}</h2>
+</div>
+
+
+
+<div *ngIf="!!docs?.length"
+        [ngClass]="['grid', !!block?.classes?.content ? block?.classes?.content : '', !!block?.classes?.columns ? block?.classes?.columns : '',  !!block?.classes?.spacing ? block?.classes?.spacing : '']">
+        <ng-template ngFor let-doc [ngForOf]="docs" let-i="index">
+
+                <app-team-card *ngIf="doc.type === 'team'"
+                        [doc]="doc"></app-team-card>
+
+                <app-project-card *ngIf="doc.type === 'project'"
+                        [doc]="doc"
+                        [aspectRatio]="!!block.aspectRatio ? block.aspectRatio : '5:4'"></app-project-card>
+
+                <app-post-card *ngIf="doc.type === 'post'"
+                        [doc]="doc"
+                        [aspectRatio]="!!block.aspectRatio ? block.aspectRatio : '5:4'"></app-post-card>
+
+                <ng-template [ngIf]="!!!doc?.type || !['team', 'project', 'post'].includes(doc.type)">
+                        <ng-container *ngTemplateOutlet="collectionItem; context: { doc: doc, i: i }"></ng-container>
+                </ng-template>
+                
+        </ng-template>
+</div>
+
+
+<ng-template #collectionItem let-doc="doc" let-i="i">
+        
+        <app-card  cardStyle="overlay"
+                [aspectRatio]="'5:4'" 
+                class="w-full bg-cover bg-center relative">
+                <h5 card-before *ngIf="!!doc.category"
+                        class="absolute top-2 left-4 z-50 uppercase tracking-wider text-white font-bold">
+                        {{ doc.category }}
+                </h5>
+                <div card-image class="h-full flex items-center image-wrapper bg-cover bg-center">
+                        <img imageLoader="theImage"
+                                [aspectRatio]="'5:4'"
+                                [thumbs]="!!doc.image && !!doc.image.thumbs ? doc.image.thumbs : !!doc.images && !!doc.images[0]?.src ? doc.images[0].src : null"
+                                [attr.src]="!!doc?.image?.thumbs && !!doc?.image?.thumbs['256'] ? doc.image.thumbs['256'] : 
+                                !!doc?.images?.length && !!doc?.images[0]?.thumbs && !!doc?.images[0]?.thumbs['256'] ? doc.images[0].thumbs['256'] :
+                                !!doc?.image?.src ? doc.image.src : !!doc.images && !!doc.images[0]?.src ? doc.images[0].src : null"
+                                [isBackground]="true"
+                                class="w-full h-auto object-cover object-center text-white flex-shrink-1 min-w-full min-h-full"
+                                />
+                </div>
+                
+                <!-- <div card-after [ngClass]="[
+                                'edit-buttons rounded px-2 absolute item-buttons right-1 bottom-1 flex flex-nowrap ml-auto mr-0 items-center bg-transparent'
+                        ]">
+                                <button mat-icon-button
+                                        *ngIf="removing !== i; else confirmDelete"
+                                        matTooltip="remove item"
+                                        tooltipPosition="after"
+                                        (click)="removing = i"
+                                        class="transform scale-75 shadow-none hover:bg-red max-auto hover:text-opacity-75 bg-white rounded text-opacity-50 text-black">
+                                        <i class="gicon gicon-trash"></i>
+                                </button>
+                                <ng-template #confirmDelete>
+                                        <div class="flex flex-nowrap items-center content-start py-1">
+                                                <button mat-button
+                                                        class="bg-red hover:bg-red-600 text-black text-opacity-75 my-auto"
+                                                        (click)="removeItem(i)">confirm</button>
+                                                <i (click)="removing = null" 
+                                                        class="gicon gicon-close cursor-pointer transform scale-75 mx-1 my-auto text-gray-500 hover:text-gray-800"></i>
+                                        </div>
+                                </ng-template>
+                </div> -->
+                <!-- <small card-after class="red-on-hover font-bold">see more</small> -->
+        </app-card>
+</ng-template>

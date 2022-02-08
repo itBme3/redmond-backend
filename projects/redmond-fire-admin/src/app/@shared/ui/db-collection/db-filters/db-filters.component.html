@@ -1,0 +1,48 @@
+
+<div class="search-filters-container flex max-w-[340px] w-full mx-0 flex-col justify-start items-start">
+        <!-- SORT / STATUS / SECTOR / CATEGORY -->
+        <ng-template ngFor let-optionType [ngForOf]="singleSelectKeys">
+                <div *ngIf="data?.filterOptionTypes?.includes(optionType) && !!singleSelectOptions[optionType]"
+                        class="{{optionType}} hover:shadow-lg p-0 w-full block mb-1 border border-darken-01 border-1 relative mat-elevation-z0 bg-transparent bg-white-hvr border-white-hvr"
+                        [attr.data-selected-value]="!!data.activeFilter && !!data.activeFilter[optionType] ? data.activeFilter[optionType] : null"
+                        [attr.data-has-selected-value]="!!data.activeFilter && !!data.activeFilter[optionType]"
+                        style="border-radius: .4em !important">
+                        <mat-label class="pl-2 text-darken-04"  style="font-size: 12px">{{ optionType }}:</mat-label>
+                        <mat-select (selectionChange)="updateQueryParam(optionType, $event.value)"
+                                #selectElem
+                                class="px-2 pb-2"
+                                [placeholder]="optionType === 'sort' ? 'updated (newest)' : 'any'"
+                                [name]="optionType"
+                                [value]="!!data.activeFilter && !!data.activeFilter[optionType] ? data.activeFilter[optionType] : null"
+                                panelClass="p-1 bg-white">
+                                <mat-option *ngFor="let singleSelectOption of singleSelectOptions[optionType]"
+                                        [value]="singleSelectOption"
+                                        [attr.data-is-selected]="!!data.activeFilter && data.activeFilter[optionType] === singleSelectOption"
+                                        [ngClass]="[ 'mb-1']"
+                                        style="border-radius: .3em;">
+                                        <ng-container *ngTemplateOutlet="singleSelectOptionIcon; context: { option: singleSelectOption }"></ng-container>
+                                </mat-option>
+                                <mat-option [value]="null">
+                                        <i>any</i>
+                                </mat-option>
+                        </mat-select>
+                
+                        <button mat-button
+                                *ngIf="optionType !== 'sort' && !!data.activeFilter && !!data.activeFilter[optionType]"
+                                class="pl-1 pr-0 w-auto absolute bg-light-red text-gray-50bg-red"
+                                style="min-width: auto; right: 0; left: auto; top: 50%; transform: translateY(-50%) scale(.7);"
+                                (click)="clearParam(optionType)">
+                                <small class="text-uppercase relative" style="right: -.2em; top: .1em">clear</small> <mat-icon class="scale-07" >close</mat-icon>
+                        </button>
+                </div>
+                
+        </ng-template>
+
+        <!-- TEMPLATE: SELECT OPTION ICON -->
+        <ng-template #singleSelectOptionIcon
+                let-singleSelectOption="option">
+                <i *ngIf="['published','draft','deleted'].includes(singleSelectOption)"
+                        style="font-size: 8px"
+                        [ngClass]="['gicon-circle m-auto pr-1', singleSelectOption === 'published' ? 'text-green' : singleSelectOption === 'draft' ? 'text-yellow' : singleSelectOption === 'deleted' ? 'text-red' : 'text-darken-03']"></i> <span>{{singleSelectOption}}</span>
+        </ng-template>
+</div>

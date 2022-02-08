@@ -1,0 +1,200 @@
+ <ng-template [ngIf]="!!blocks[0] && blocks[0]?.blockType === 'carousel'">
+         <div class="relative w-full grid-block">
+                <ng-container *ngTemplateOutlet="blockOptionMenu; context: { i: 0, block: doc.blocks[0] }"></ng-container>
+                <ng-container *ngTemplateOutlet="carouselTemplate; context: { block: blocks[0], blockIndex: 0, slideIndex: 0 }"></ng-container>
+        </div>
+</ng-template>
+
+<ng-template #addBlockButton let-blockIndex="blockIndex">
+        <button mat-button
+                *ngIf="doc.type === 'page'"
+                class="rounded mx-auto max-width-[200px] border border-black border-opacity-5 text-black text-opacity-70 py-2"
+                matTooltip="New Block"
+                [matTooltipPosition]="blockIndex === 0 ? 'below' : 'above'"
+                [matTooltipClass]="['bg-gray-800 tracking-wider font-normal text-gray-100']"
+                (click)="newBlock($event.srcElement, blockIndex === 0 && !!doc?.blocks[0] && doc.blocks[0].blockType === 'carousel' ? 1 : blockIndex)">
+                <mat-icon class="my-auto mr-1">add</mat-icon> 
+        </button>
+</ng-template>
+
+<app-page-header 
+        [style.width]="gridBlocks.offsetWidth + 'px'"
+        class="page-heading mx-auto"
+        *ngIf="!!doc.pageHeading">
+        <h1 class="header-title" *ngIf="!!doc?.title">{{doc.title}}</h1>
+        <h4 class="header-text" *ngIf="!!doc?.description">{{doc.description}}</h4>
+</app-page-header>
+
+<ng-container *ngTemplateOutlet="addBlockButton; context: { blockIndex: 0 }"></ng-container>
+
+<div #gridBlocks
+        [ngClass]="[
+        'grid-blocks w-full mx-auto relative',
+        !!doc?.classes?.blocks ? doc.classes.blocks : '',
+        !doc.classes?.blocks?.includes('max-w-') ? 'max-w-xl' : ''
+]">
+
+        <app-edit-block-option-menu
+                class="blocks-options-menu left-0 right-auto max-w-[50px]"
+                [doc]="doc"
+                [optionMenuOpened]="blocksMenuOpened">
+        </app-edit-block-option-menu>
+
+        <div *ngFor="let block of blocks; let i = index; trackBy: trackByFn"
+                [ngClass]="['grid-block flex my-auto mx-0 relative border-0 border-gray-100 rounded hover:border transform scale-100 shadow-none hover:shadow-lg transition-all ease-quick-in', block.blockType + '-grid-block', !!block?.classes?.block ? block.classes.block : '']" 
+                (isHovering)="$event"
+                (click)="editingBlock !== i  && !!carouselBlock?.swiper ? setActiveSwiper(carouselBlock.swiper) : '';
+                        editingBlock !== i ? editingKey = null : i">
+
+                <ng-template [ngIf]="block.blockType === 'card'">
+                        <ng-container *ngTemplateOutlet="cardBlockTemplate; context: { block: block, blockIndex: i } "></ng-container>
+                </ng-template>
+
+                <ng-template [ngIf]="block.blockType === 'carousel' && i > 0">
+                        <ng-container *ngTemplateOutlet="carouselTemplate; context: { block: block, blockIndex: i, slideIndex: 0 } "></ng-container>
+                </ng-template>
+
+                <app-admin-block-collection
+                        *ngIf="block.blockType === 'collection'"
+                        [block]="block" [doc]="doc" [blockIndex]="i"></app-admin-block-collection>
+
+                <ng-template [ngIf]="block.blockType === 'wysiwyg' ">
+                        <app-custom-input [data]="{value: block.content, inputType: 'wysiwyg', inputClasses: 'p-0 bg-transparent' }"
+                                (updated)="updateValue($event, 'content', i)"></app-custom-input>
+                </ng-template>
+                
+                <ng-container *ngTemplateOutlet="blockOptionMenu; context: { i: i, block: block }"></ng-container>
+
+        </div>
+</div>
+<ng-template [ngIf]="!!doc?.blocks?.length">
+        <ng-container *ngTemplateOutlet="addBlockButton; context: { blockIndex: doc.blocks.length }"></ng-container>
+</ng-template>
+
+
+
+<ng-template #blockOptionMenu let-i="i", let-block="block">
+        <app-edit-block-option-menu
+                class="admin-editing block"
+                [doc]="doc"
+                [optionMenuOpened]="i === editingBlock"
+                [blockIndex]="i"
+                [blockType]="doc.blocks[i].blockType"
+                [swiper]="block.blockType === 'carousel' && !!swiper ? swiper : null"
+                (editKey)="editingKey = $event; 
+                        ['title', 'text', 'linkText'].includes($event) && 
+                                !!!doc.blocks[i][$event] ||  !!!doc.blocks[i][$event].length ? 
+                                doc.blocks[i][$event] = '...' : 
+                                ''"
+                (click)="editingBlock = i; editingKey = null;">
+        </app-edit-block-option-menu>
+</ng-template>
+
+                
+<ng-template #carouselTemplate
+        let-block="block"
+        let-slideIndex="slideIndex"
+        let-blockIndex="blockIndex">
+        <app-edit-block-option-menu
+                class="admin-editing block"
+                [doc]="doc"
+                [optionMenuOpened]="blockIndex === editingBlock"
+                [blockIndex]="blockIndex"
+                [blockType]="doc.blocks[blockIndex].blockType"
+                [swiper]="block.blockType === 'carousel' && !!swiper ? swiper : null"
+                (editKey)="editingKey = $event; 
+                        ['title', 'text', 'linkText'].includes($event) && 
+                                !!!doc.blocks[blockIndex][$event] ||  !!!doc.blocks[blockIndex][$event].length ? 
+                                doc.blocks[blockIndex][$event] = '...' : 
+                                ''"
+                (click)="editingBlock = blockIndex; editingKey = null;">
+        </app-edit-block-option-menu>
+        <div *ngIf="!!!block?.slides?.length; else carouselBlock">
+                <button mat-button 
+                        class="w-full min-h-[200px]"
+                        (click)="newCarouselSlide($event.srcElement, slideIndex, blockIndex)">
+                        NEW SLIDE <mat-icon class="transform scale-70">add</mat-icon>
+                </button>
+        </div>
+        <ng-template  #carouselBlock>
+                <app-block-carousel
+                        (swiperObj)="swiper = $event"
+                        [slideIndex]="slideIndex"
+                        [block]="block"
+                        [isHero]="isHero"
+                        [ngClass]="[ 'w-full relative block',
+                                editingBlock === i ? 'editing-block' : '',
+                                !!block?.classes?.content ? block.classes.content : '']">
+                                {{ block | json }}
+                </app-block-carousel>
+        </ng-template>
+</ng-template>
+
+<ng-template #cardBlockTemplate let-block="block" let-i="blockIndex">
+        <app-block-card #cardBlock
+                [ngClass]="[ 'w-full',
+                        editingBlock === i ? 'editing-block' : '',
+                        !!block?.classes?.content ? block.classes.content : '']"
+                [block]="block"
+                [revealOnHover]="editingBlock !== i"
+                [cardStyle]="block.isTestimonial ? 'testimonial' : !!block.image ? 'overlay' : 'text'">
+
+                        
+                <span class="block-title w-100 block relative"
+                        (dblclick)="editingBlock = i; editingKey = 'title'" >
+                        <ng-container *ngTemplateOutlet="blockContentText; context: { key: 'title' } "></ng-container>
+                </span>
+
+                <span class="block-text w-100 block relative"
+                        (dblclick)="editingBlock = i; editingKey = 'text'" >
+                        <ng-container *ngTemplateOutlet="blockContentText; context: { key: 'text' } "></ng-container>
+                </span>
+
+                <span class="block-link-text w-100 block relative"
+                        (dblclick)="editingBlock = i; editingKey = 'linkText'" >
+                        <ng-container *ngTemplateOutlet="blockContentText; context: { key: 'linkText' } "></ng-container>
+                </span>
+                
+                <ng-template #blockContentText let-key="key">
+                        <ng-template [ngIf]="!!doc.blocks[i][key] && !!doc.blocks[i][key].length && (editingBlock !== i || editingKey !== key)" [ngIfElse]="editOption">
+                                {{ block[key] }}
+                        </ng-template>
+                        <ng-template #editOption>
+                                <ng-container *ngTemplateOutlet="textFieldInput; context: { key: key, textarea: ['title', 'text', 'linkText'].includes(key) }"></ng-container>
+                                <ng-template #textFieldInput 
+                                        let-textarea="textarea"
+                                        let-key="key">
+                                        <div class="flex rounded-lg items-center content-stretch">
+                                                <input *ngIf="!!!textarea; else textareaInput"
+                                                        #txtInput
+                                                        matInput
+                                                        [ngClass]="['text-field bg-transparent px-2 w-full']"
+                                                        [placeholder]="key + '...'"
+                                                        [value]="!!block[key] && !!block[key]?.length ? block[key] : ''" 
+                                                        (keyup)="updateValue($event.target.value, key, editingBlock , true)"
+                                                        (keyup.tab)="updateValue($event.target.value, key, editingBlock, true, true )"
+                                                        (keyup.return)="updateValue($event.target.value, key, editingBlock, true, true )"
+                                                        (change)="updateValue($event.target.value, key, editingBlock, true, true )" />
+
+                                                <ng-template #textareaInput>
+                                                        <textarea matInput
+                                                                [ngClass]="['text-field bg-transparent px-2 w-full']"
+                                                                cdkTextareaAutosize
+                                                                #txtInput="cdkTextareaAutosize"
+                                                                [matAutosize]="true"
+                                                                [matAutosizeMinRows]="1"
+                                                                [matAutosizeMaxRows]="5"
+                                                                [placeholder]="key + '...'"
+                                                                [value]="!!block[key] && !!block[key]?.length ? block[key] : ''" 
+                                                                (keyup)="updateValue($event.target.value, key, editingBlock , true)"
+                                                                (keydown.tab)="updateValue($event.target.value, key, editingBlock, true, true )"
+                                                                (keydown.return)="updateValue($event.target.value, key, editingBlock, true, true )"
+                                                                (change)="updateValue($event.target.value, key, editingBlock, true )">
+                                                        </textarea>
+                                                </ng-template>
+                                        </div>
+                                </ng-template>
+                        </ng-template>
+                </ng-template>
+        </app-block-card>
+</ng-template>

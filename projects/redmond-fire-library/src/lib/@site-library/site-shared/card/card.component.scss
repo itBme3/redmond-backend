@@ -1,0 +1,94 @@
+:host {
+        @apply block relative overflow-hidden;
+        ::ng-deep {
+                &:hover{
+                        .red-on-hover {
+                                @apply text-rcc-red;
+                        }
+                }
+                .is-loading {
+                        .image {
+                                @apply filter blur-xl brightness-150;
+                        }
+                }
+                 
+                .image {
+                        @apply w-full transition flex items-center content-center;
+
+                        img {
+                                @apply min-w-full min-h-full flex-shrink-0 m-auto transition object-cover object-center;
+                        }
+                        &:hover {
+                                img {
+                                        @apply bg-opacity-10;
+                                }
+                        }
+                }
+                .card-content {
+                        @apply z-20 text-grey-dark;
+                }
+
+                .gg-card {
+                        max-height: 90vh !important;
+                        .image-overlay {
+                                background: rgb(0,0,0);
+                                background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.3) 80%,  rgb(0 0 0) 100%);
+                                @apply transition duration-500 top-0;
+                        }
+
+                        [card-image] {
+                                @apply bg-center bg-cover overflow-hidden ; // #{!important} 
+                        }
+                        &.overlay {
+                                .card-content {
+                                        @apply text-white p-8;
+                                        > [card-title] {
+                                                @apply text-white;
+                                        }
+                                }
+                                .image {
+                                        @apply h-full;
+                                }
+                                .image-overlay {
+                                        @apply opacity-60  bottom-0;
+                                }
+                                img {
+                                        @apply h-full;
+                                }
+
+                                &:hover {
+                                        .image-overlay {
+                                                @apply opacity-70;
+                                        }
+                                }
+                        }
+                        &.text {
+                                @apply w-full;
+                                [card-title] {
+                                        @apply text-grey-dark;
+                                }
+                                [card-after] {
+                                        @apply w-full border-t border-rcc-red mt-4 py-4 text-rcc-red text-base flex items-center content-between;
+                                }
+                                
+                        }
+                        &.standard {
+                                @apply pb-2;
+                                .image {
+                                        @apply h-5/6;
+                                        img {
+                                                @apply z-10;
+                                        }
+                                        .image-overlay {
+                                                @apply opacity-30 z-20;
+                                        }
+                                }
+                                &:hover {
+                                        .image-overlay {
+                                                @apply opacity-50;
+                                        }
+                                }
+                        }
+                }
+        }
+}

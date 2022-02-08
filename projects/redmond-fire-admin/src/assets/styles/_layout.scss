@@ -1,0 +1,8 @@
+.fullwidth {
+        width: 100vw;
+	margin-left: calc(-50vw + 50%);
+	position: relative;
+}
+.image-wrapper, .bg-image {
+	@apply bg-cover bg-center bg-no-repeat;
+}

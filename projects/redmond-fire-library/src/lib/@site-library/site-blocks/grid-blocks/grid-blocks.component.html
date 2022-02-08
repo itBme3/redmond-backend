@@ -1,0 +1,85 @@
+<app-block-carousel
+        *ngIf="!!doc?.blocks?.length && doc.blocks[0].blockType === 'carousel'"
+        (swiperObj)="swiper = $event"
+        [block]="doc.blocks[0]"
+        [isHero]="true"
+        [ngClass]="[ 'w-full relative block', !!doc.blocks[0]?.classes?.content ? doc.blocks[0].classes.content : '']">
+</app-block-carousel>
+
+<div [ngClass]="[
+        'grid-blocks w-full mx-auto relative grid',
+        !!doc?.classes?.blocks ? doc.classes.blocks : '',
+        !doc.classes?.blocks?.includes('max-w-') ? 'max-w-xl' : ''
+]">
+        <app-page-header *ngIf="!!doc.pageHeading"
+                class="page-heading col-span-12">
+                <h1 class="header-title" *ngIf="!!doc?.title">{{doc.title}}</h1>
+                <h4 class="header-text" *ngIf="!!doc?.description">{{doc.description}}</h4>
+        </app-page-header>
+
+        <div *ngFor="let block of doc.blocks; let i = index; trackBy: trackByFn"
+                [ngClass]="['grid-block flex my-auto mx-0 relative', block.blockType + '-grid-block', !!block?.classes?.block ? block.classes.block : '']">
+
+                <ng-template [ngIf]="block.blockType === 'carousel' && i !== 0">
+                        <app-block-carousel
+                                (swiperObj)="swiper = $event"
+                                [block]="block"
+                                [isHero]="false"
+                                [ngClass]="[ 'w-full relative block', !!block?.classes?.content ? block.classes.content : '']">
+                        </app-block-carousel>
+                </ng-template>
+
+                <ng-template [ngIf]="block.blockType === 'collection'">
+                        <app-block-collection
+                                [block]="block"
+                                [ngClass]="[ 'w-full relative block']">
+                        </app-block-collection>
+                </ng-template>
+                
+                <ng-template [ngIf]="block.blockType === 'wysiwyg'">
+                        <app-wysiwyg-editor [data]="block.content" [readOnly]="true"></app-wysiwyg-editor>
+                </ng-template>
+
+                <ng-template [ngIf]="block.blockType === 'card'">
+                        <app-block-card #cardBlock
+                                [ngClass]="[ 'w-full',]"
+                                [block]="block"
+                                [revealOnHover]="!!block?.text?.length"
+                                [cardStyle]="block.isTestimonial ? 'testimonial' : !!block.image ? 'overlay' : 'text'">
+
+                                        
+                                <span *ngIf="!!block?.title?.length" class="block-title w-100 block relative">
+                                        {{ block.title }}
+                                </span>
+
+                                <span *ngIf="!!block?.text?.length" class="block-text w-100 block relative">
+                                        {{ block.text }}
+                                </span>
+
+                                <span *ngIf="!!block?.linkText?.length" class="block-link-text w-100 block relative">
+                                        {{ block.linkText }}
+                                </span>
+                        </app-block-card>
+                        
+                </ng-template>
+
+
+        </div>
+
+</div>
+
+
+
+
+
+
+
+                
+<ng-template #carouselBlockTemplate let-block="block">
+        <app-block-carousel
+                (swiperObj)="swiper = $event"
+                [block]="block"
+                [isHero]="false"
+                [ngClass]="[ 'w-full relative block', !!block?.classes?.content ? block.classes.content : '']">
+        </app-block-carousel>
+</ng-template>

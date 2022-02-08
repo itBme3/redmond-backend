@@ -1,0 +1,87 @@
+:host {
+        @apply block w-full relative max-h-[calc(100vh-100px)];
+        .loading-overlay {
+                @apply absolute inset-0 z-100;
+        }
+        .navigation-dots {
+                .navigation-dot {
+                        @apply bg-white w-4 h-4 inline-block hover:shadow-md hover:opacity-100 opacity-50;
+                        &.active {
+                                @apply opacity-100;
+                        }
+                }
+        }
+        ::ng-deep {
+                .gg-card .card-content {
+                        @apply pl-6 pb-5 md:pl-12 md:pb-8;
+                }
+                .swiper-pagination.swiper-pagination-bullets {
+                        text-align: right !important;
+                        pointer-events: initial !important;
+                        @apply pr-5 pb-3 md:pr-12 md:pb-6 z-100;
+                        .swiper-pagination-bullet {
+                                pointer-events: initial !important;
+                                @apply bg-white opacity-50 hover:opacity-100 my-auto; // #{!important}
+                                &.swiper-pagination-bullet-active {
+                                        @apply bg-white shadow-md transform scale-[1.2] opacity-100; // #{!important}
+                                }
+                        }
+                }
+
+                [data-dots="false"] .swiper-pagination.swiper-pagination-bullets {
+                        display: none;
+                }
+                [data-arrows="false"] {
+                        .swiper-button-prev,
+                        .swiper-button-next {
+                                display: none;
+                        }
+                }
+
+                .swiper-button-next,
+                .swiper-button-prev {
+                        @apply mt-0;
+                }
+
+                .swiper-button-prev,
+                .swiper-container-rtl .swiper-button-next {
+                        @apply left-0;
+                }
+
+                .swiper-button-prev,
+                .swiper-button-next,
+                .swiper-button-prev {
+                        @apply right-0;
+                }
+
+                .swiper-button-next,
+                .swiper-button-prev {
+                        @apply h-full top-0 w-20 transform scale-75 sm:scale-80 md:scale-100;
+                        &:after {
+                                @apply text-white;
+                                text-shadow: 0 5px 5px rgba(0, 0, 0, 0.2), 0 8px 10px rgba(0, 0, 0, 0.14),
+                                        0 3px 14px rgba(0, 0, 0, 0.12);
+                        }
+                        &:hover {
+                                &:after {
+                                        @apply text-rcc-red;
+                                }
+                        }
+                        &[disabled="true"] {
+                                @apply hover:opacity-0;
+                        }
+                }
+                .swiper {
+                        img {
+                                max-height: calc(100vh - 100px) !important;
+                        }
+                }
+
+                .swiper-button-prev {
+                        @apply left-0;
+                }
+                .swiper-button-next {
+                        @apply right-0;
+                }
+        }
+}

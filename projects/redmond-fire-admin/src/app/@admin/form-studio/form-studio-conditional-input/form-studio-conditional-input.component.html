@@ -1,0 +1,77 @@
+
+<div class="flex flex-col w-full items-start justify-start">
+        
+
+        <ng-template [ngIf]="!!conditions && !!conditions.join">
+                <ng-container *ngTemplateOutlet="conditionsArr; context: { conditionArr: conditions }"></ng-container>
+        </ng-template>
+
+        <ng-template #conditionsArr let-conditionArr="conditionArr" let-parentIndx="parentIndx">
+
+
+                <div *ngFor="let condition of conditionArr; let i = index"
+                        class="condition-item text-gray-50relative overflow-x-scroll w-full flex items-center justify-between flex-nowrap bg-darken-002 w-full"
+                        style="border-radius: .4em">
+
+                        <mat-select *ngIf="!!currentFields && currentFields.length > 0"
+                                (selectionChange)="parentIndx > 0 ? conditions[parentIndx].or[i].key = $event.value : conditions[i].key = $event.value;
+                                updated.emit(conditions)"
+                                class="w-3/12"
+                                [value]="condition.key"
+                                [style.width]="'11ch'"
+                                placeholder="Select a Field">
+                                <mat-option *ngFor="let field of currentFields"
+                                        [value]="field.key">
+                                        {{field.label}}
+                                </mat-option>
+                        </mat-select>
+
+                        <mat-select (selectionChange)="parentIndx > 0 ? conditions[parentIndx].or[i].operator = $event.value
+                                        : conditions[i].operator = $event.value; 
+                                updated.emit(conditions)
+                                "
+                                class="w-3/12"
+                                [value]="!!condition && !!condition.operator ? condition.operator : '=='"
+                                [style.width]="'11ch'"
+                                placeholder="Select a Field">
+                                <mat-option *ngFor="let conditionOperator of conditionOperators"
+                                        [value]="conditionOperator">
+                                        {{conditionOperator}}
+                                </mat-option>
+                        </mat-select>
+
+                        <input matInput 
+                                class="p-3 w-6/12"
+                                style="border-radius: .6em;"
+                                (keyup)="parentIndx > -1 ? conditions[parentIndx].or[i].value = $event.target.value : conditions[i].value = $event.target.value; updated.emit(conditions)"
+                                [value]="parentIndx > -1 ? conditions[parentIndx].or[i].value : conditions[i].value" />
+
+                        <ng-template [ngIf]="!!condition.or && condition.or.length > 0">
+                                <ng-container *ngTemplateOutlet="conditionArr; context: { conditionArr: condition.or, parentIndex: i }"></ng-container>
+                        </ng-template>
+
+                        <div class="w-full">
+                                <ng-container *ngIf="parentIndex > -1">
+                                        <button mat-button class="px-2 bg-black bg-opacity-10 text-gray-50"
+                                                style="min-width: 50px"
+                                                (click)="addCondition({ parentIndex: parentIndex })">
+                                                or
+                                        </button>
+                                </ng-container>
+                        </div>
+                        <button mat-mini-fab
+                                (click)="parentIndex > -1 ?  conditions[parentIndex].or.splice(i, 1) : conditions.splice(i, 1); updated.emit(conditions)"
+                                color="warn"
+                                class="remove absolute"
+                                style="right: 0; top: 50%; transform: scale(.7) translateY(-75%)">
+                                <mat-icon class="darken-07 transform scale-07">remove</mat-icon>
+                        </button>
+                </div>
+
+        </ng-template>
+
+        <button mat-mini-fab class="bg-black bg-opacity-10 text-dark mat-elevation-z0 bg-black bg-opacity-5 ml-3 transform scale-06"
+                (click)="addCondition({ })">
+                <mat-icon>add</mat-icon>
+        </button>
+</div>

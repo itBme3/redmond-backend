@@ -1,0 +1,51 @@
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Animate an item that has been dropped. */
+.cdk-drag-animating {
+  transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes loaderStatic {
+        0% {
+                bottom: 0%;
+        }
+        30% {
+                bottom: 90%;
+        }
+        80% {
+                bottom: 20%;
+        }
+        100% {
+                bottom: 90%;
+        }
+}
+
+
+.loader-static {
+        @apply w-full bg-gray-100 relative block overflow-hidden;
+
+        &:before, &:after {
+                // content: "";
+                @apply bg-white filter transition;
+                animation-name: loaderStatic;
+                animation-fill-mode: both;
+                 animation-iteration-count: infinite;
+                 animation-direction: alternate;
+                 position: absolute;
+                 left: 0;
+                 right: 0;
+        }
+
+
+        &:after {
+                @apply opacity-30 ease-in h-16 blur-lg;
+                animation-duration: 1.3s;
+        }
+
+        &:before {
+                @apply opacity-50 filter blur-md h-8 ease-in-out;
+                animation-duration: 3s;
+        }
+}

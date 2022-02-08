@@ -1,0 +1,60 @@
+
+<div class="branding text-rcc-red order-last sm:order-first mt-10 md:mt-auto md:mb-0 sm:w-4/12 w-full">
+        <h1 class="prose text-lg font-bold text-rcc-red mb-6">Building on<br><span class="text-grey-dark">Relationships</span></h1>
+        <i class="gicon gicon-logo-icon text-5xl my-10"></i>
+</div>
+
+<div class="links flex flex-col sm:grid grid-cols-1 sm:grid-cols-2 sm:mr-0 sm:ml-auto mr-0 gap-5 flex-grow sm:w-8/12 w-full">
+        <ng-template ngFor let-footerLink [ngForOf]="footerLinks" let-isLast="last">
+                <ng-template [ngIf]="footerLink.links.length === 1 && !!footerLink.links && !!footerLink.links[0].link"
+                        [ngIfElse]="linkContent">
+                        <a *ngIf="footerLink.links[0].link.includes('.'); else internalLink" 
+                                [attr.href]="footerLink.links[0].link"
+                                [attr.target]="footerLink.links[0].newTab ? '_blank' : null">
+                                <ng-container *ngTemplateOutlet="linkContent"></ng-container>
+                        </a>
+                        <ng-template #internalLink>
+                                <a class="text-rcc-red" [routerLink]="[footerLink.links[0].link]">
+                                        <ng-container *ngTemplateOutlet="linkContent"></ng-container>
+                                </a>
+                        </ng-template>
+                </ng-template>
+                <ng-template #linkContent>
+                        <div class="footer-link prose">
+                                <h3 class="prose leading-normal text-base lg:text-lg text-rcc-red font-semibold tracking-wider border-b border-grey-lighter">{{ footerLink.title }}</h3>
+                                <ng-template ngFor let-item [ngForOf]="footerLink.links">
+                                        <p>
+                                                <ng-template [ngIf]="!!!item.link">{{ item.text }}</ng-template>
+
+                                                <ng-template [ngIf]="!!item.link">
+                                                        <a *ngIf="item.link.includes('.'); else internalChildLink" 
+                                                                [attr.href]="item.link"
+                                                                [attr.target]="item.newTab ? '_blank' : null">
+                                                                {{ item.text }}
+                                                        </a>
+                                                        <ng-template #internalChildLink>
+                                                                <a class="text-rcc-red" [routerLink]="[item.link]">
+                                                                        {{ item.text }}
+                                                                </a>
+                                                        </ng-template>
+                                                </ng-template>
+                                        </p>
+                                </ng-template>
+                                <div class="social-links" *ngIf="isLast">
+                                        <a href="https://www.instagram.com/redmondconstruction" class="mr-2"
+                                                matTooltip="Instagram"
+                                                matTooltipPosition="above"
+                                                target="_blank"
+                                                [matTooltipClass]="['bg-gray-900', 'bg-opacity-95']"><i class="gicon gicon-instagram"></i></a>
+                                        <a href="https://www.linkedin.com/company/redmond-construction-corp"
+                                                matTooltip="LinkedIn"
+                                                matTooltipPosition="above"
+                                                target="_blank"
+                                                [matTooltipClass]="['bg-gray-900', 'bg-opacity-95']"><i class="gicon gicon-linkedin"></i></a>
+                                </div>
+                        </div>
+                </ng-template>
+        </ng-template>
+        
+
+</div>

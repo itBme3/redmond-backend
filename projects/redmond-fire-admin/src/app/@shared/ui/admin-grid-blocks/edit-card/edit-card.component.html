@@ -1,0 +1,102 @@
+<div class="input-fields flex flex-col relative">
+        <ng-template ngFor let-key [ngForOf]="optionKeys">
+                <ng-template [ngIf]="!inactiveKeys.includes(key) || key === 'image'">
+                        <small [ngClass]="['text-gray-500 mb-1']"
+                                *ngIf="!['image', 'images'].includes(key)">{{ !!block.isTestimonial && ['title', 'text'].includes(key) ? key === 'title' ? 'by' : 'testimonial' : key  | formatString: 'fromCamel' | formatString: 'capitalize'}}</small>
+                        <div class="input-field rounded w-full flex flex-col items-start content-stretch mb-3">
+                                
+                                <app-custom-input *ngIf="key === 'image' && !!!block.isTestimonial"
+                                        class="flex flex-nowrap w-full"
+                                        [data]="{
+                                                value: !!block?.image ? block.image : null,
+                                                inputType: 'image',
+                                                inputClasses: !!!block?.image ?  'max-w-12 py-2 h-6' : 'h-auto p-0'
+                                        }"
+                                        (updated)="updateValue({key: 'image', val: $event})">
+                                </app-custom-input>
+
+                                <ng-template [ngIf]="textInputKeys.includes(key)">
+                                        <ng-container *ngTemplateOutlet="cardText; context: { key: key } "></ng-container>
+                                </ng-template>
+
+                                <app-custom-input *ngIf="key === 'link'"
+                                        [data]="{ inputType: 'link', value: !!block?.link ? block.link : null }"
+                                        (updated)="updateValue({key: 'link', val: $event})"></app-custom-input>
+                        </div>
+
+                        <button *ngIf="key === 'image'"
+                                matTooltip="insert content"
+                                matTooltipPosition="above"
+                                [matTooltipClass]="['bg-gray-800', 'text-gray-100']"
+                                class="mr-0 ml-auto flex items-center"
+                                (click)="selectContent($event)">
+                                <i class="gicon gicon-select ml-2"></i>
+                        </button>
+                </ng-template>
+        </ng-template>
+        <div class="add-options flex flex-wrap w-full">
+                <ng-template ngFor let-key [ngForOf]="inactiveKeys">
+                        <button mat-button 
+                                *ngIf="key !== 'image'"
+                                (click)="addOption(key)"
+                                class="w-auto !min-w-4 pl-0 pr-2"><mat-icon class="text-base text-gray-500 inline-flex ml-2 items-center content-center">add</mat-icon> <small class="text-blue-400">{{ key }}</small>
+                        </button>
+                </ng-template>
+        </div>
+        
+</div>
+<ng-content select="[after-content]"></ng-content>
+
+<ng-template #cardText let-key="key">
+        <ng-container *ngTemplateOutlet="textFieldInput; context: { key: key, textarea: textInputKeys.includes(key) }"></ng-container>       
+        <app-custom-input 
+                *ngIf="key !== 'linkText' && !updatingClassValues"
+                class="text-sm my-auto flex-nowrap transform scale-100 space-x-2 text-center w-full mt-1"
+                [data]="{ 
+                        optionKey: 'textSize',
+                        doc: block,
+                        hideInput: true,
+                        classNames: !!block?.classes[key] ? block.classes[key] : '',
+                        defaultValue: key === 'title' ? 
+                                        block.isTestimonial ? 'text-sm md:text-base lg:text-base font-serif' :
+                                        !!!block.image ? 'text-3xl md:text-4xl lg:text-5xl' :
+                                        !!block.image ? 'text-2xl md:text-3xl lg:text-4xl' :
+                                        'text-xl md:text-2xl lg:text-3xl' : 
+                                key === 'text' ? 'text-base md:text-base' :
+                                'text-sm md:text-base' ,
+                        inputClasses: 'py-1 pl-2 my-auto'
+                }"
+                [responsive]="responsive"
+                (updateResponsive)="responsive = $event"
+                (updated)="updateClassValue($event, 'textSize', key, i)">
+        </app-custom-input>
+        <ng-template #textFieldInput 
+                let-textarea="textarea"
+                let-key="key">
+                <div class="flex w-full rounded items-center content-stretch bg-gray-100 hover:bg-gray-200 focus-within:bg-gray-200">
+                        <input *ngIf="!!!textarea; else textareaInput"
+                                #txtInput
+                                matInput
+                                [ngClass]="['text-field bg-transparent px-2 w-full']"
+                                [placeholder]="key + '...'"
+                                [value]="!!block[key] && !!block[key]?.length ? block[key] : ''" 
+                                (keyup.tab)="updateValue({val: $event.target.value, key: key, debounce: true})"
+                                (keyup.return)="updateValue({val: $event.target.value, key: key, debounce: true})"
+                                (change)="updateValue({val: $event.target.value, key: key, debounce: true})" />
+
+                        <ng-template #textareaInput>
+                                <textarea matInput
+                                        [ngClass]="['text-field bg-transparent px-2 w-full']"
+                                        cdkTextareaAutosize
+                                        #txtInput="cdkTextareaAutosize"
+                                        [matAutosize]="true"
+                                        [matAutosizeMinRows]="1"
+                                        [matAutosizeMaxRows]="5"
+                                        [placeholder]="key + '...'"
+                                        [value]="!!block[key] && !!block[key]?.length ? block[key] : ''" 
+                                        (change)="updateValue({val: $event.target.value, key: key, debounce: true})">
+                                </textarea>
+                        </ng-template>
+                </div>
+        </ng-template>
+</ng-template>

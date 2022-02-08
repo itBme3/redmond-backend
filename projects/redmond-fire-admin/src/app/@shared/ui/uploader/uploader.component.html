@@ -1,0 +1,43 @@
+<div class="dropzone"
+     dropzone
+     (hovered)="toggleHover($event)"
+     (dropped)="onDrop($event)"
+     [class.hovering]="isHovering">
+
+        <div class="flex flex-row items-center justify-center">
+                <div *ngIf="!!!uploadingFromUrl" class="relative block overflow-hidden">
+                        <button mat-button
+                                class="bg-white relative shadow-md hover:bg-gray-100 text-black text-opacity-70 z-10"><mat-icon>upload</mat-icon> Files
+                        </button>
+                        <input type="file"
+                               class="w-full absolute opacity-0 cursor-pointer inset-0 z-10"
+                               (change)="onDrop($event.target.files)"
+                               multiple>
+                </div>
+        </div>
+</div>
+
+
+<ng-template [ngIf]="files.length > 0">
+        <h3>Uploads</h3>
+        <div *ngFor="let file of files">
+                <app-uploader-task 
+                        [file]="file" 
+                        [docData]="docData"
+                        [storagePath]="storagePath"
+                        [databasePath]="databasePath"
+                        (completedTask)="completed_Task($event)"
+                ></app-uploader-task>
+        </div>
+</ng-template>
+<div *ngIf="!!uploaded?.length">
+        <div *ngFor="let doc of uploaded">
+                <div [ngClass]="['preview', 'file-type-' + doc.fileType]">
+                        <img *ngIf="doc?.fileType?.includes('image')"
+                                imageLoader
+                                [attr.src]="doc.src"
+                                [thumbs]="null"
+                                />
+                </div>
+        </div>
+</div>

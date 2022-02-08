@@ -1,0 +1,17 @@
+:host {
+        @apply w-screen overflow-x-hidden min-h-screen block px-0;
+}
+::ng-deep {
+        mat-expansion-panel-body {
+                @apply px-0;
+        }
+        mat-expansion-panel-header {
+                @apply transition ease-quick-in py-1;
+        }
+        mat-sidenav {
+                @apply p-0;
+        }
+        .mat-expansion-panel-body {
+                @apply px-0;
+        }
+}

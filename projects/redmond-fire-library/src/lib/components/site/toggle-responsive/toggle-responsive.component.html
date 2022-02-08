@@ -1,0 +1,17 @@
+<div class="mx-auto flex flex-nowrap items-center content-center relative">
+        <!-- <mat-icon *ngIf="!!responsive"
+                class="text-red absolute cursor-pointer"
+                style="top: 50%; transform: scale(.6) translate(-25%, -75%); left: 0" 
+                (click)="toggleResponsive(null)">close</mat-icon> -->
+        <mat-button-toggle-group
+                class="mx-0 transform scale-75 self-center"
+                [value]="responsive">
+                <mat-button-toggle 
+                        *ngFor="let size of ['DEFAULT', 'sm', 'md', 'lg']"
+                        [value]="size"
+                        [checked]="responsive === size"
+                        (change)="toggleResponsive($event.value)">
+                        <i [ngClass]="['gicon', size === 'DEFAULT' ? 'gicon-mobile' : size === 'sm' ? 'gicon-tablet' : size === 'md' ? 'gicon-laptop' : 'gicon-desktop' ]"></i>
+                </mat-button-toggle>
+        </mat-button-toggle-group>
+</div>

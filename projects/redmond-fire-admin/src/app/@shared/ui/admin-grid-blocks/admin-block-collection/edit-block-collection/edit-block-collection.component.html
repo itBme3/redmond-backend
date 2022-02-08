@@ -1,0 +1,52 @@
+<app-custom-input
+        [data]="{
+                inputType: 'textarea',
+                optionKey: 'title',
+                value: !!block.title ? block.title : null
+        }"
+        (updated)="doc.blocks[blockIndex].title = $event; block.title = $event; updateDoc()">
+</app-custom-input>
+<app-custom-input
+        [data]="{
+                inputType: 'link',
+                optionKey: 'link',
+                value: !!block.link ? block.link : null
+        }"
+        (updated)="doc.blocks[blockIndex].link = $event; block.link = $event; updateDoc()">
+</app-custom-input>
+
+<div [ngClass]="['w-full list-items drag-list relative']"
+        *ngIf="!!block.items?.length"
+        cdkDropList
+        #contentList="cdkDropList"
+        cdkDropListOrientation="vertical"
+        [cdkDropListData]="block.items"
+        (cdkDropListDropped)="drop($event)"
+        [@animatedList]="block.items">
+        <div *ngFor="let item of block.items; let i = index; trackBy: trackByFn"
+                [ngClass]="['input-list-item rounded border border-gray-200 p-2 space-x-3 hover:border-gray-600 flex content-start items-center flex-nowrap w-full mb-1 relative' ]"
+                cdkDrag>
+                <mat-icon cdkDragHandle class="cursor-move text-gray-300 hover:text-gray-600">drag_handle</mat-icon>
+                <div class="image-wrapper w-12 bg-center bg-cover" 
+                        *ngIf="!!item?.image?.src || (!!item?.images?.length && !!item.images[0]?.src)">
+                        <img imageLoader
+                                [isBackground]="true"
+                                [aspectRatio]="'9:16'"
+                                [thumbs]="!!item?.image?.thumbs ? item.image.thumbs : !!item?.images && !!item?.images[0] && !!item?.images[0]?.thumbs ? item.images[0].thumbs : null"
+                                [attr.src]="!!item?.image?.src ? item.image.src : !!item?.images[0]?.src && item.images[0].src ? item.images[0].src : null" />
+                </div>
+                <small class="transform scale-75">{{ !!item?.title?.length ? item.title : !!item?.name?.length ? item.name : null }}</small>
+                <div class="delete-buttons flex items-center mr-0 ml-auto absolute right-1 left-auto">
+                        <button (click)="removeItem(i)" *ngIf="i === confirmRemove" class="flex rounded-md transform scale-75 items-center content-center p-2 text-center text-black text-opacity-60 bg-rcc-red">CONFIRM</button>
+                        <button mat-mini-fab
+                                class="bg-gray-100 hover:text-rcc-red text-gray-500 mat-elevation-z0"
+                                (click)="confirmRemove = confirmRemove === i ? null : i">
+                                <mat-icon>{{ confirmRemove === i ? 'close' : 'delete' }}</mat-icon>
+                        </button>
+                </div>
+        </div>
+</div>
+
+<button mat-button (click)="addItems($event)">
+        <mat-icon>add</mat-icon>
+</button>

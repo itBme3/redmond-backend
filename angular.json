@@ -1,0 +1,323 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "redmond-fire-admin": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:module": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "projects/redmond-fire-admin",
+      "sourceRoot": "projects/redmond-fire-admin/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "extraWebpackConfig": "projects/redmond-fire-admin/webpack.config.js",
+            "outputPath": "dist/redmond-fire-admin",
+            "index": "projects/redmond-fire-admin/src/index.html",
+            "main": "projects/redmond-fire-admin/src/main.ts",
+            "polyfills": "projects/redmond-fire-admin/src/polyfills.ts",
+            "tsConfig": "projects/redmond-fire-admin/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/redmond-fire-admin/src/favicon.ico",
+              "projects/redmond-fire-admin/src/assets"
+            ],
+            "styles": [
+              "projects/redmond-fire-admin/src/styles.scss",
+              "node_modules/swiper/components/pagination/pagination.scss",
+              "node_modules/swiper/swiper.scss",
+              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/redmond-fire-admin/src/assets/styles/custom.scss"
+            ],
+            "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/redmond-fire-admin/src/environments/environment.ts",
+                  "with": "projects/redmond-fire-admin/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/redmond-fire-admin/src/environments/environment.ts",
+                  "with": "projects/redmond-fire-admin/src/environments/environment.staging.ts"
+                }
+              ]
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/redmond-fire-admin/src/environments/environment.ts",
+                  "with": "projects/redmond-fire-admin/src/environments/environment.dev.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "extraWebpackConfig": "projects/redmond-fire-admin/webpack.config.js",
+            "browserTarget": "redmond-fire-admin:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "redmond-fire-admin:build:production"
+            },
+            "staging": {
+              "browserTarget": "redmond-fire-admin:build:staging"
+            },
+            "dev": {
+              "browserTarget": "redmond-fire-admin:build:dev"
+            },
+            "es5": {
+              "browserTarget": "redmond-fire-admin:build:es5"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "redmond-fire-admin:build"
+          }
+        },
+        "test": {
+          "builder": "ngx-build-plus:karma",
+          "options": {
+            "extraWebpackConfig": "webpack.config.js",
+            "main": "projects/redmond-fire-admin/src/test.ts",
+            "polyfills": "projects/redmond-fire-admin/src/polyfills.ts",
+            "tsConfig": "projects/redmond-fire-admin/tsconfig.spec.json",
+            "karmaConfig": "projects/redmond-fire-admin/karma.conf.js",
+            "assets": [
+              "projects/redmond-fire-admin/src/favicon.ico",
+              "projects/redmond-fire-admin/src/assets"
+            ],
+            "styles": [
+              "projects/redmond-fire-admin/src/styles.scss",
+              "node_modules/swiper/components/pagination/pagination.scss",
+              "node_modules/swiper/swiper.scss",
+              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+            ],
+            "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/redmond-fire-admin/tsconfig.app.json",
+              "projects/redmond-fire-admin/tsconfig.spec.json",
+              "projects/redmond-fire-admin/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/redmond-fire-admin/e2e/protractor.conf.js",
+            "devServerTarget": "redmond-fire-admin:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "redmond-fire-admin:serve:production"
+            }
+          }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
+        }
+      }
+    },
+    "playground": {
+      "root": "projects/redmond-fire-admin",
+      "sourceRoot": "projects/redmond-fire-admin/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/playground",
+            "index": "projects/redmond-fire-admin/src/index.html",
+            "main": "projects/redmond-fire-admin/src/main.playground.ts",
+            "polyfills": "projects/redmond-fire-admin/src/polyfills.ts",
+            "tsConfig": "projects/redmond-fire-admin/tsconfig.playground.json",
+            "aot": false,
+            "assets": [
+              "projects/redmond-fire-admin/src/favicon.ico",
+              "projects/redmond-fire-admin/src/assets"
+            ],
+            "styles": [
+              "projects/redmond-fire-admin/src/styles.scss",
+              "node_modules/swiper/components/pagination/pagination.scss",
+              "node_modules/swiper/swiper.scss",
+              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/redmond-fire-admin/src/assets/styles/custom.scss"
+            ],
+            "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/redmond-fire-admin/src/environments/environment.ts",
+                  "with": "projects/redmond-fire-admin/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "es5": {
+              "tsConfig": "./tsconfig.es5.json"
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "playground:build",
+            "port": 4201
+          }
+        }
+      }
+    },
+    "redmond-fire-library": {
+      "projectType": "library",
+      "root": "projects/redmond-fire-library",
+      "sourceRoot": "projects/redmond-fire-library/src",
+      "prefix": "app",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:module": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/redmond-fire-library/tsconfig.lib.json",
+            "project": "projects/redmond-fire-library/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/redmond-fire-library/tsconfig.lib.prod.json"
+              },
+              "es5": {
+                "tsConfig": "./tsconfig.es5.json"
+              }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/redmond-fire-library/src/test.ts",
+            "tsConfig": "projects/redmond-fire-library/tsconfig.spec.json",
+            "karmaConfig": "projects/redmond-fire-library/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/redmond-fire-library/tsconfig.lib.json",
+              "projects/redmond-fire-library/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "redmond-fire-admin"
+}

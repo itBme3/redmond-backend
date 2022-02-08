@@ -1,0 +1,25 @@
+<div class="search_field border border-1 border-darken-01 hover:shadow-md focus-within:shadow-md rounded ml-2 py-0 pl-0 pr-2 flex items-center justify-start w-full" 
+        color="secondary"
+        appearance="outline">
+        <input matInput 
+                #searchInput
+                style="font-size: 16px"
+                color="secondary"
+                placeholder="search..."
+                class="my-0 ml-0 mr-2 pr-1 pl-2 py-3 w-full bg-transparent"
+                [value]="data.search"
+                (keyup)="data.search = $event.target.value; emitSearch()"
+                (change)="data.search = $event.target.value; emitSearch()">
+        <button mat-button
+                *ngIf="!!!data.noFilters"
+                [ngClass]="[ 'ml-auto mr-1 my-px px-0 py-0 h-[36px] min-w-[36px] w-auto relative flex items-center justify-center bg-transparent' ]"
+                (click)="emitToggleFiltersNav(!!!data.showFilters)">
+                <i class="gicon-filter relative -top-[2px]"></i>
+        </button>
+        <mat-icon (click)="
+                  !!data?.search?.length  ? data.search = '' : searchInput.select();
+                  emitSearch()
+                "
+                style="top: .1em"
+                class="text-light-red relative cursor-pointer my-auto mr-0 ml-1">{{ !!data?.search?.length ? 'close' : 'search'  }}</mat-icon>
+</div>

@@ -1,0 +1,8 @@
+mat-card {
+        min-height: 35px;
+}
+::ng-deep {
+        .mat-progress-bar-buffer {
+                background-color: transparent;
+        }
+}

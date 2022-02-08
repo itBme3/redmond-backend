@@ -1,0 +1,11 @@
+.edit-buttons {
+        display: none;
+        opacity: 0 !important;
+}
+[card-after] {
+        &:hover {
+                .edit-buttons {
+                        display: block;
+                }
+        }
+}

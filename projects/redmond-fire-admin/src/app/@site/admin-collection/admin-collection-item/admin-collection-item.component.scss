@@ -1,0 +1,24 @@
+:host {
+        @apply flex flex-nowrap items-stretch h-full w-full relative max-w-full p-1;
+        border-radius: .3em;
+
+        &.selected {
+                @apply bg-cyan-400;
+                i, code {
+                        @apply bg-gray-700;
+                }
+        }
+        .media {
+                @apply w-full;
+                img {
+                        @apply h-full w-auto;
+                        max-width: 180px;
+                        max-height: 300px;
+                }
+        }
+        ::ng-deep {
+                .ng-scroll-content {
+                        @apply flex items-center content-start h-full;
+                }
+        }
+}

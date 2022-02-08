@@ -1,0 +1,19 @@
+:host {
+        @apply w-full flex content-center;
+        .edit-collection-button  {
+                mat-icon {
+                        @apply transform text-black text-opacity-30 transition-all ease-ramp-in opacity-0 scale-50 top-1 relative;
+                }
+                &:hover {
+                        mat-icon {
+                                @apply opacity-100 scale-75;
+                        }
+                }
+        }
+        ::ng-deep {
+                mat-select-arrow {
+                        margin-top: -10px;
+                        margin-right: 10px;
+                }
+        }
+}

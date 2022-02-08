@@ -1,0 +1,87 @@
+
+         <app-block-collection *ngIf="!!!block?.query && !!block?.items?.length"
+                        [block]="block" [doc]="doc" [docs]="block.items"></app-block-collection>
+
+                        
+        <div *ngIf="!!block?.query"
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <ng-template #loading><app-loading-element title=""></app-loading-element></ng-template>
+                <ng-template [ngIf]="!!docs.length" [ngIfElse]="loading">
+                        <ng-template ngFor let-doc [ngForOf]="docs" let-i="index"; trackBy="trackByFn">
+                                <ng-container *ngTemplateOutlet="collectionItem; context: { doc: doc, i: i }"></ng-container>
+                        </ng-template>
+                </ng-template>
+        </div>
+        <div *ngIf="!!creatingQuery">
+                <ng-template [ngIf]="!!!block.collection">
+                        <div class="button-group w-full flex flex-col items-center">
+                                <button mat-button 
+                                        class="w-full capitalize tracking-widest text-base max-auto"
+                                        #collectionTypeButton
+                                        *ngFor="let collectionType of collectionTypes"
+                                        [mat-dialog-close]="collectionType">
+                                        <span class="flex flex-nowrap items-center content-stretch w-full my-auto">
+                                                <i [ngClass]="['gicon my-auto mr-2 gicon-' + collectionType]"></i>
+                                                <small class="my-auto">{{ collectionType }}</small>
+                                        </span>
+                                </button>
+                        </div>
+                </ng-template>
+                <ng-template [ngIf]="!!block.collection">
+                        <input matInput placeholder="limit" 
+                                [value]="6" type="number" min="0" max="30" step="1"
+                                (updated)="!!!block.query ? block.query = { limit: $event.target.value } : '' ; updateBlock()"
+                        />
+                </ng-template>
+        </div>
+        <div *ngIf="!!!block?.items?.length && !!!block.query"
+                class="flex flex-col content-start items-center">
+                <button mat-button (click)="selectEntities()">select items</button>
+                <!-- <button mat-button (click)="selectEntities()">create query</button> -->
+        </div>
+
+
+<ng-template #collectionItem let-doc="doc" let-i="i">
+        <app-card  cardStyle="overlay"
+                [aspectRatio]="'5:4'" 
+                class="w-full bg-cover bg-center relative">
+                <h5 card-before *ngIf="!!doc.category"
+                        class="absolute top-2 left-4 z-50 uppercase tracking-wider text-white font-bold">
+                        {{ doc.category }}
+                </h5>
+                <div card-image class="h-full flex items-center image-wrapper">
+                        <img imageLoader="theImage"
+                                [aspectRatio]="'5:4'"
+                                [thumbs]="!!doc.image && !!doc.image.thumbs ? doc.image.thumbs : !!doc.images && !!doc.images[0]?.src ? doc.images[0].src : null"
+                                [attr.src]="!!doc?.image?.thumbs && !!doc?.image?.thumbs['256'] ? doc.image.thumbs['256'] : 
+                                        !!doc?.images?.length && !!doc?.images[0]?.thumbs && !!doc?.images[0]?.thumbs['256'] ? doc.images[0].thumbs['256'] :
+                                        !!doc?.image?.src ? doc.image.src : !!doc.images && !!doc.images[0]?.src ? doc.images[0].src : null"
+                                [isBackground]="true"
+                                class="w-full h-auto object-cover object-center text-white flex-shrink-1 min-w-full min-h-full"
+                                />
+                </div>
+                
+                <div card-after [ngClass]="[
+                                'edit-buttons rounded px-2 absolute item-buttons right-1 bottom-1 flex flex-nowrap ml-auto mr-0 items-center bg-transparent'
+                        ]">
+                                <button mat-icon-button
+                                        *ngIf="removing !== i; else confirmDelete"
+                                        matTooltip="remove item"
+                                        tooltipPosition="after"
+                                        (click)="removing = i"
+                                        class="transform scale-75 shadow-none hover:bg-red max-auto hover:text-opacity-75 bg-white rounded text-opacity-50 text-black">
+                                        <i class="gicon gicon-trash"></i>
+                                </button>
+                                <ng-template #confirmDelete>
+                                        <div class="flex flex-nowrap items-center content-start py-1">
+                                                <button mat-button
+                                                        class="bg-red hover:bg-red-600 text-black text-opacity-75 my-auto"
+                                                        (click)="removeItem(i)">confirm</button>
+                                                <i (click)="removing = null" 
+                                                        class="gicon gicon-close cursor-pointer transform scale-75 mx-1 my-auto text-gray-500 hover:text-gray-800"></i>
+                                        </div>
+                                </ng-template>
+                </div>
+                <!-- <small card-after class="red-on-hover font-bold">see more</small> -->
+        </app-card>
+</ng-template>

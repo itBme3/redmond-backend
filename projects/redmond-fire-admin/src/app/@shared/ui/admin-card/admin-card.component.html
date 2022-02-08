@@ -1,0 +1,40 @@
+<div *ngIf="!!data"
+        [ngClass]="[ 'gg-card',
+                data.cardClasses, 
+                'card-style-' + data.cardStyle,
+                !!data.dark ? 'dark' : ''
+        ]"
+        (click)="!!data.clickable ? cardClicked.emit($event) : ''">
+        
+        <div *ngIf="!!data.beforeContent" [innerHTML]="data.beforeContent | safeHtml"></div>
+
+        <div [ngClass]="['gg-card-content']">
+
+                <!-- <image  *ngIf="!!data.image"
+                        [ngClass]="[data.imageClasses]"
+                        [data]="{doc: data.image, isBackground: data.imageAsBackground}"
+                        [style.max-width]="data.imageMaxWidth"
+                        [style.min-width]="data.imageMinWidth"
+                        [style.max-height]="data.imageMaxHeight"
+                        [style.min-height]="data.imageMinHeight"
+                ></image> -->
+                <ng-content select="[card-image]"></ng-content>
+                <ng-content select="[card-title]"></ng-content>
+                <div *ngIf="!!title || !!data.subtitle || !!data.text"
+                        class="main-text">
+                        
+                        <div *ngIf="!!title" [innerHtml]="title | safeHtml"></div>
+                        <div *ngIf="!!subtitle" [innerHtml]="subtitle | safeHtml"></div>
+
+                        <p *ngIf="data.text" [innerHtml]="data.text | safeHtml"></p>
+
+                        <code *ngIf="!!data.metaText"
+                                class="meta-text">{{ data.metaText }}</code>
+
+                </div>
+
+                <div *ngIf="!!data.afterContent" [innerHTML]="data.afterContent | safeHtml"></div>
+
+        </div>
+        <ng-content></ng-content>
+</div>

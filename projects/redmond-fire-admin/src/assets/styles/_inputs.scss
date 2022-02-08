@@ -1,0 +1,50 @@
+input, textarea {
+        outline: none !important;
+        @apply ring-0 focus:ring-0 outline-none focus:outline-none hover:ring-0;
+        &:focus {
+                outline: none !important;
+        }
+}
+
+.mat-input-element, input, textarea {
+        @apply caret-red-900;
+}
+
+mat-form-field {
+        @apply rounded focus-within:bg-white focus-within:shadow-md py-2 px-3;
+        &.mat-focused {
+                .mat-form-field-wrapper {
+                        padding-top: .75em !important;
+                }
+        }
+        &.ng-dirty.mat-form-field-invalid {
+                .mat-form-field-subscript-wrapper {
+                        @apply border-t py-2 border-rcc-red;
+                }
+                .mat-form-field-underline {
+                        @apply opacity-0;
+                }
+        }
+        .mat-form-field-subscript-wrapper {
+                @apply relative top-auto;
+        }
+        input {
+                @apply placeholder-gray-400;
+        }
+}
+
+.mat-select-arrow {
+        font-family: 'icomoon' !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        border-color: transparent !important;
+        &:before {
+                content: "\e900";
+        }
+}

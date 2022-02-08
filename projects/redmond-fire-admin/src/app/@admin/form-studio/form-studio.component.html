@@ -1,0 +1,95 @@
+<div class="w-full flex flex-nowrap"
+     style="height: 100vh; overflow-y: scroll;">
+        <div class="form-builder relative">
+                <mat-button-toggle-group #sectionToggle="matButtonToggleGroup"
+                                         (change)="editingSection = $event.value"
+                                         class="w-full transform scale-097 mt-3 mb-2 mat-elevation-z8"
+                                         style="border-radius: .6em">
+                        <mat-button-toggle *ngFor="let section of ['form', 'success', 'submission']"
+                                           [value]="section"
+                                           [checked]="editingSection === section"
+                                           [ngClass]="['w-6/12', editingSection === section ? 'bg-gray-50 text-darken-07' : 'bg-gray-900 text-gray-50']">
+                                {{ section }}
+                        </mat-button-toggle>
+                </mat-button-toggle-group>
+
+                <ng-container *ngIf="!!formDoc">
+
+                        <ng-template [ngIf]="editingSection === 'form'">
+                                <ng-container *ngIf="formDoc.formType !== 'stepper'; else formStepper">
+                                        <app-form-studio-field *ngFor="let field of formDoc.fields"
+                                                [fieldObj]="field"
+                                                [editing]="editingField === field.key"
+                                                (editingChange)="editingField === field.key ? editingField = null : editingField = field.key"></app-form-studio-field>
+                                </ng-container>
+                                <ng-template #formStepper>
+                                        <ng-template ngFor let-step [ngForOf]="!!formDoc.stepper && !!formDoc.stepper.steps ? formDoc.stepper.steps : []" let-i="index">
+                                                <app-form-studio-field *ngFor="let field of step.fields"
+                                                        [fieldObj]="field"
+                                                        [editing]="editingField === field.key"
+                                                        (editingChange)="editingField === field.key ? editingField = null : editingField = field.key"></app-form-studio-field>
+                                        </ng-template>
+                                </ng-template>
+                                <button mat-button
+                                        (click)="startAddingFields()"
+                                        class="border-1 ml-2 mt-3 border border-lighten-005 border-transparent-hvr bg-dark-hvr text-lighten-05">
+                                        <mat-icon>add</mat-icon> <small class="text-uppercase ml-2">fields</small>
+                                </button>
+
+
+                        </ng-template>
+                        <ng-template [ngIf]="editingSection === 'success'">
+                                Success 🙌
+                        </ng-template>
+                        <ng-template [ngIf]="editingSection === 'admin'">
+                                Submission 🤙
+                        </ng-template>
+
+                </ng-container>
+
+
+                <div *ngIf="addingField"
+                        class="block overflow-scroll absolute mat-elevation-z17 bg-gray-50 p-2"
+                        style="left: 2em; right: 2em; bottom: 2em; top: 2em; border-radius: .6em;">
+                        <div class="flex flex-nowrap items-center justify-center">
+                                <input [value]="search" #searchFieldsInput 
+                                        class="w-full py-3 m-1"
+                                        style="border-radius: .6em;"
+                                        (keyup)="search = $event.target.value"
+                                        (update)="search = $event.target.value">
+                                <mat-icon
+                                        (click)="search = ''"
+                                        class="cursor-pointer">
+                                        {{ search === '' ? 'search' : 'close' }}
+                                </mat-icon>
+                        </div>
+                        <div class="w-full flex items-start justify-center flex-wrap p-1"
+                                style="max-width: 100%">
+                                <ng-template ngFor let-key [ngForOf]="fieldOptions | objectKeys">
+                                
+                                        <div *ngIf="!!!search || search === '' || fieldOptions[key].label.toLowerCase() === search.toLowerCase() || fieldOptions[key].label.toLowerCase().includes(search.toLowerCase())"
+                                                mat-button
+                                                class="cursor-pointer mat-elevation-z0 mat-elevation-z13-hvr scale-1-hvr transform scale-098 text-center m-1 bg-white-hvr bg-black bg-opacity-03 text-dark flex flex-col items-center justify-center"
+                                                style="min-width: 70px; max-width: 120px; height: 120px; width: 33.333%; border-radius: .6em;"
+                                                (click)="addField(key)">
+                                                <app-icon [icon]="fieldOptions[key].icon.split(',')[1]" 
+                                                        class="mt-auto mb-2"
+                                                        [iconType]="fieldOptions[key].icon.split(',')[0]"></app-icon>
+                                                <small class="mb-auto w-full">{{ fieldOptions[key].label }}</small>
+                                        </div>
+                                </ng-template>
+                        </div>
+                </div>
+
+        </div>
+
+        <div class="form-display w-6/12 h-full">
+                <pre><code class="text-gray-50">{{ formDoc | json }}</code></pre>
+        </div>
+
+</div>
+
+<!-- <app-select-icon
+        class="block w-full overflow-scroll"
+        style="height: 100vh; left: 0; right: 0; bottom: 0; top: 0;">
+</app-select-icon> -->

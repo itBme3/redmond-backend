@@ -1,0 +1,44 @@
+
+<ng-template [ngIf]="!!pages?.length">
+        <mat-toolbar-row *ngFor="let page of pages"
+                class="pt-1 h-auto px-0 w-full flex overflow-hidden flex-col mx-0 border-drken-01 border-tansparent-hvr transition-all ease-quick-in duration-500"
+                style="overflow-x: hidden;">
+                <button mat-button 
+                        [routerLink]="[page.path]"
+                        [queryParams]="!!page.queryParams ? page.queryParams : {}"
+                        routerLinkActive="active bg-{{ page.color }} text-{{ page.color }}-900"
+                        [ngClass]="['rounded transition-all ease-quick-in duration-500 pr-1 w-full text-gray-50 m-0 py-1 pl-3', 'hover:bg-' + page.color, 'hover:text-' + page.color + '-900']">
+                        <i *ngIf="!!page.icon"
+                                [ngClass]="[
+                                        'mr-2',
+                                        'text-' + page.color,
+                                        'gicon-' + page.icon,
+                                ]"
+                        ></i>
+                        <span class="text-gray-100">{{ page.title }}</span>
+                </button>
+                <div *ngIf="page.children && page.children.length > 0"
+                        style="margin-top: .13em; overflow-x: hidden;"
+                        class="nested_nav w-full mx-0">
+                        <mat-toolbar-row *ngFor="let child of page.children"
+                                        class="p-0 h-auto w-full overflow-hidden">
+                                <button mat-button
+                                        class="nested_nav_button transition-all ease-quick-in duration-500 rounded pr-1 w-full py-2 pl-3 bg-darken-01 m-0 bg-darken-03-hvr"
+                                        style="padding-left: .25em; background-color: rga(0,0,0,.1); color: rgba(255,255,255,.95)"
+                                        [routerLink]="[ child.path ]"
+                                        [queryParams]="!!child.queryParams ? child.queryParams : {}"
+                                        routerLinkActive="active bg-{{ child.color }}"
+                                        [ngClass]="['rounded pr-1 w-full text-gray-50m-0 py-2 pl-3', 'bg-' + child.color]">
+                                        <i *ngIf="!!child.icon"
+                                                [ngClass]="[
+                                                        'rounded',
+                                                        'gicon-' + child.icon, 'text-' + child.color,
+                                                        'bg-' + child.color]"></i>
+                                        <span >{{ child.title }}</span>
+                                </button>
+                        </mat-toolbar-row>
+                </div>
+        </mat-toolbar-row>
+
+        <app-current-user class="mt-auto mb-0"></app-current-user>
+</ng-template>

@@ -1,0 +1,48 @@
+<ng-template [ngIf]="!!doc">
+
+        <div class="project-details flex flex-col sm:flex-row sm:flex-nowrap align-start sm:align-center content-start w-full py-6 pb-3">
+                <h1 class="section-title capitalize prose my-auto mr-4 text-left text-xl lg:text-2xl py-0">
+                        {{doc.title}}
+                </h1>
+                <ul class="flex px-0 mx-0 sm:mr-auto sm:ml-4 my-auto py-1 text-sm text-grey-lighter flex-row justify-self-center flex-nowrap sm:align-items-center sm:space-x-4 w-4/12">
+                        <li class="sector flex items-center prose text-grey-dark text-base text-light" *ngIf="!!sectorMap && !!sectorMap[doc.sector]">
+                                <i class="gicon gicon-sector text-rcc-red transform scale-75 mr-1 relative"></i> <i class="text-sm whitespace-nowrap lowercase font-medium">{{ sectorMap[doc.sector] }}</i>
+                        </li>
+                        <li class="location flex items-center prose text-grey-dark text-base text-light">
+                                <i class="gicon gicon-location text-rcc-red transform scale-75 mr-1 relative"></i>  <small class="text-sm whitespace-nowrap">{{ doc.location.city }}{{ !!doc.location && !!doc.location.state ? ', ' +  doc.location.state : '' }}</small>
+                        </li>
+                </ul>
+        </div>
+
+        <ng-template [ngIf]="(verticalDevice$ | async)">
+                <div *ngFor="let image of doc.images"
+                        class="h-auto bg-center min-w-full max-w-full mb-2 overflow-hidden">
+                        <img imageLoader 
+                                [image]="!!image ? image : null"
+                                [thumbs]="!!image?.thumbs ? image.thumbs : null"
+                                [attr.src]="!!image?.thumbs && !!image?.thumbs['256'] ? image.thumbs['256'] : 
+                                        !!image.src ? image.src : image" 
+                                class="min-w-full max-w-full block h-auto" />
+                </div>
+        </ng-template>
+
+        <app-carousel #carouselComponent
+                [data]="{aspectRatio: '16:9', dots: false, arrows: true }"
+                [swiperOptions]="{ autoHeight: true, pagination: false}"
+                (swiperObj)="setSwiper($event)"
+                *ngIf="!(verticalDevice$ | async)">
+                
+                <ng-template swiperSlide ngFor let-image [ngForOf]="doc.images">
+                        <div slide class="bg-cover h-full bg-center overflow-hidden"
+                                [style.width]="carouselComponent.elemRef.nativeElement.offsetWidth + 'px'">
+                                        <img imageLoader 
+                                                [isBackground]="true"
+                                                [image]="!!image ? image : null"
+                                                [thumbs]="!!image?.thumbs ? image.thumbs : null"
+                                                [attr.src]="!!image.src ? image.src : image" class="w-full h-auto invisible" />
+                        </div>
+                </ng-template>
+
+        </app-carousel>
+
+</ng-template>

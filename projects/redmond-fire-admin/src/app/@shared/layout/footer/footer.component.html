@@ -1,0 +1,22 @@
+
+<div class="branding text-rcc-red order-last sm:order-first md:mt-10 sm:w-6/12 w-full">
+        <h1 class="prose text-lg font-bold text-rcc-red mb-10">Building on<br><span class="text-dark-grey">Relationships</span></h1>
+        <i class="gicon gicon-logo-icon text-5xl my-10"></i>
+</div>
+
+<div class="links flex flex-col sm:grid grid-cols-1 sm:grid-cols-2 sm:mr-0 sm:ml-auto mr-0 gap-5 sm:w-6/12 w-full">
+        <ng-template ngFor let-footerLink [ngForOf]="footerLinks">
+                <ng-template [ngIf]="!!footerLink.link" [ngIfElse]="linkContent">
+                        <a class="text-rcc-red" [routerLink]="[link]">
+                                <ng-template #linkContent></ng-template>
+                        </a>
+                </ng-template>
+        <ng-template #linkContent>
+                <div class="footer-link prose">
+                        <h3>{{ footerLink.title }}</h3>
+                        <p class="border-t border-grey-dark">{{ footerLink.text }}</p>
+                </div>
+        </ng-template>
+        </ng-template>
+        
+</div>

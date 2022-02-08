@@ -1,0 +1,14 @@
+.dropzone {
+        @apply p-2;
+        > div {
+                @apply w-full rounded content-center border-opacity-10 border-black border-2 border-dashed flex flex-col items-center bg-white m-auto transform scale-100;
+                min-height: 250px;
+                
+        }
+        &.hovering {
+                @apply p-1;
+                > div {
+                        @apply bg-white border-opacity-100 border-blue shadow-lg;
+                }
+        }
+}

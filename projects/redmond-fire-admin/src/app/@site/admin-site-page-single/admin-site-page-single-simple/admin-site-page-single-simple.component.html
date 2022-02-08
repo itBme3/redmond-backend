@@ -1,0 +1,39 @@
+<div [ngClass]="['w-full flex single-' + doc.type + '-container',
+        doc.type === 'team' ? 'max-w-[420px] mx-auto flex-col items-center content-start' : 'flex-wrap sm:flex-nowrap'
+]">
+        
+        <app-admin-site-entity-form
+                *ngIf="doc.type === 'post' || doc.type === 'team'"
+                [ngClass]="['w-full', doc.type === 'team' ? 'max-w-full' : 'order-1 sm:order-last sm:ml-3 md:ml-4']"
+                [doc]="doc"
+                [shouldSave]="true"
+                [keys]="doc.type === 'post' ? ['image','content'] : ['image', 'bio']"
+                (updatedDoc)="doc = $event"></app-admin-site-entity-form>
+        
+
+        <div [ngClass]="['entity-form-wrapper w-full block p-3 rounded my-4 sm:w-6/12 order-1']">
+
+                <app-admin-site-entity-form
+                        class="w-full block pb-2"
+                        [doc]="doc"
+                        [classes]="{ 
+                                input: 'bg-gray-100 hover:bg-gray-50 focus-within:bg-gray-50 focus-within:shadow-lg hover:shadow-lg hover:bg-opacity-100'
+                        }"
+                        [keys]="keys[doc.type]"
+                        [shouldSave]="true"
+                        (updatedDoc)="doc = $event"></app-admin-site-entity-form>
+                
+                <app-admin-site-entity-form
+                        class="w-full block order-1"
+                        [doc]="doc"
+                        [classes]="{ 
+                                input: 'bg-gray-100 hover:bg-gray-50 focus-within:bg-gray-50 focus-within:shadow-lg hover:shadow-lg hover:bg-opacity-100'
+                        }"
+                        [keys]="['redirects']"
+                        [shouldSave]="true"
+                        [expandable]="true"
+                        [expanded]="redirectsExpanded"
+                        (expansionChanged)="redirectsExpanded = $event"
+                        (updatedDoc)="doc = $event"></app-admin-site-entity-form>
+        </div>
+</div>

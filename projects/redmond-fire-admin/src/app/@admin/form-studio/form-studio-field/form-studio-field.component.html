@@ -1,0 +1,83 @@
+<!-- <pre><code>{{ fieldObj | json }}</code></pre> -->
+
+
+<mat-card *ngIf="!!fieldForm && !loadingForm"
+        [ngClass]="['relative m-2', editing ? 'bg-white  mat-elevation-z8' : ' mat-elevation-z0 bg-black bg-opacity-40 bg-dark-hvr text-lighten-07']"
+        style="border-radius: .4em"
+        #cardFormField>
+        <div [ngClass]="['flex items-center justify-start', editing ? 'mb-4' : 'mb-1']">
+                <small class="tag transform scale-07 relative" style="right: 0; top: .13em; left: -.5em">{{ fieldObj.fieldType }}</small>
+                <h3 class="heading-4 w-full p-2 cursor-pointer m-auto"
+                        style="font-weight: 600;letter-spacing: .06ch;"
+                        (click)="editing = !editing; editingChange.emit(editing); scrollTo($event.target)">
+                        {{ fieldObj.label }}
+                </h3>
+        </div>
+        <form [formGroup]="fieldForm" *ngIf="!!builderFields && !!editing"
+                [@animatedList]="builderFields">
+                        
+                <ng-template ngFor let-builderField [ngForOf]="builderFields">
+                        
+                        <mat-card *ngIf="!removableFields.includes(builderField.key) || (fieldObj.initialValue !== null && fieldObj.initialValue !== undefined)"
+                                [ngClass]="[
+                                        'form-field text-left mb-2 p-0 w-full mat-elevation-z0 bg-black bg-opacity-03 bg-black bg-opacity-5-hvr px-2 flex items-center flex-nowrap',
+                                        builderField.key === 'conditional' && !!fieldObj.conditional && fieldObj.conditional.length > 0 ? 'flex-col' : ''
+                                ]"
+                                color="accent"
+                                style="border-radius: .4em;">
+
+                                <label *ngIf="!!builderField.label && !['checkbox', 'slider'].includes(builderField.fieldType)"
+                                        [ngClass]="['mr-2 text-darken-06', builderField.fieldType === 'conditional' ? 'my-2' : 'my-auto']"
+                                        style="font-size: 11px; line-height: 1.3; width: 40px">
+                                        {{ builderField.label }}
+                                </label>
+
+                                <input matInput #textInput
+                                        *ngIf="textInputFields.includes(builderField.fieldType)"
+                                        class="py-3 px-2 w-full bg-transparent"
+                                        [formControlName]="builderField.key" />
+                                        
+                                <input matInput #numberInput
+                                        class="py-3 px-2 w-full bg-transparent"
+                                        *ngIf="['number'].includes(builderField.fieldType)"
+                                        type="number" [formControlName]="builderField.key" />
+
+                                <textarea matInput #textareaInput
+                                        cdkAutosizeMinRows="3"
+                                        class="py-3 px-2 w-full bg-transparent"
+                                        *ngIf="builderField.fieldType === 'text-areas'"
+                                        [formControlName]="builderField.key">
+                                </textarea>
+                        
+                                <mat-checkbox *ngIf="builderField.fieldType === 'checkbox'"
+                                        #checkboxInput
+                                        [formControlName]="builderField.key"
+                                        [color]="builderField.label.toLowerCase() === 'required' ? 'warn' : 'accent' "
+                                        class="w-full py-2">{{ builderField.label }}</mat-checkbox>
+
+                                <mat-radio-group *ngIf="builderField.fieldType === 'radio'"
+                                        [formControlName]="builderField.key">
+                                        <mat-radio-button *ngFor="let option of !!!builderField.inputOptions ? [] : builderField.inputOptions"
+                                                [value]="option.value"
+                                                [ngClass]="['my-1', !!builderField.options && !!builderField.options.stack ? 'w-full' : 'mr-2']">
+                                                {{option.label}}
+                                        </mat-radio-button>
+                                </mat-radio-group>
+
+                                <ng-template [ngIf]="builderField.key === 'conditional'">
+                                        <app-form-studio-conditional-input
+                                                class="w-full flex aling-items-center justify-around"
+                                                [conditions]="!!fieldObj.conditional"
+                                                (updated)="fieldObj.conditional = $event; updated.emit(fieldObj)">
+                                        </app-form-studio-conditional-input>        
+                                </ng-template>
+
+                        </mat-card>
+
+
+                </ng-template>
+
+        </form>
+</mat-card>
+
+

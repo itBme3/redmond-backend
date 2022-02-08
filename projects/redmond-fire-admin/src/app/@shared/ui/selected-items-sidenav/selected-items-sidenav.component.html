@@ -1,0 +1,90 @@
+<mat-sidenav-container *ngIf="!!data"
+        [hasBackdrop]="isHandset$ | async"
+        [attr.data-is-handset]="isHandset$ | async"
+        [attr.data-sidenav-opened]="showSelected"
+        [ngClass]="[!!data && !!data?.containerClasses ? data.containerClasses : '']"
+        [ngStyle]="!!data && !!data?.containerStyles ? data.containerStyles : ''"
+        [style.height]="'100%'">
+        <i class="gicon-images transform scale-05 inline-block my-auto"
+                (click)="selectedItemsNav.toggle()"></i>
+        <mat-sidenav #selectedItemsNav 
+                [opened]="(isHandset$ | async) || data?.selected?.length === 0 ? false : true"
+                [mode]="(isHandset$ | async) ? 'over' : 'side'"
+                [fixedInViewport]="false"
+                [position]="'end'"
+                (closedStart)="showSelected = false"
+                (openedStart)="showSelected = true"
+                [ngClass]="[!!data && !!data.sidenavClasses ? data.sidenavClasses : 'bg-gray-50']"
+                [ngStyle]="!!data && !!data.sidenavStyles ? data.sidenavStyles : ''"
+                [style.max-width]="'190px'"
+                [style.height]="'100%'">
+                <mat-toolbar style="height: 50px; padding: 10px;"
+                        *ngIf="!!!data.hideToolbar"
+                        [ngClass]="['flex rounded items-center overflow-hidden']">
+                        <ng-content select="[sidenav-toolbar-start]"></ng-content>
+                        <!-- <button mat-button 
+                                *ngIf="!!data.selected && data.selected.length > 0"
+                                class="ml-auto mr-2 my-1 h-full px-0 flex items-center justify-center"
+                                (click)="selectedItemsNav.toggle()"
+                                style="min-width: 40px; width: 40px;">
+                                <i class="gicon-forward transform scale-05 inline-block my-auto"
+                                        *ngIf="!!showSelected"></i>
+                                <app-icon icon="content" iconType="gIcon" class="my-auto"></app-icon>
+                        </button> -->
+                        <button mat-stroked-button
+                                *ngIf="!!!data.hideCancel"
+                                class="text-red bg-red-hvr border-red-hvr text-white-hvr ml-auto mr-1 px-1"
+                                style="min-width: 40px"
+                                (click)="canceled.emit(null)">
+                                <mat-icon>close</mat-icon>
+                        </button>
+                        <button mat-stroked-button
+                                *ngIf="!!!data.hideSubmit"
+                                class="text-dark-green bg-green-hvr border-green-hvr text-white-hvr mx-0"
+                                [mat-close-dialog]="data.selected"
+                                (click)="saved.emit(data.selected)">
+                                save
+                        </button>
+                        <ng-content select="[sidenav-toolbar-end]"></ng-content>
+                </mat-toolbar>
+                <div [ngClass]="'items'"
+                        *ngIf="!!data && !!data.selected && !!data.selected.length && data.selected.length > 0">
+                        <ng-template ngFor let-item [ngForOf]="data.selected" let-i="index">
+                                <app-card cardStyle="overlay"
+                                        [aspectRatio]="'5:4'" 
+                                        class="w-full scale-90">
+                                        <div card-image class="h-full flex items-center image-wrapper bg-cover bg-center"
+                                                *ngIf="!!item?.image || !!item?.images">
+                                                <img imageLoader
+                                                        [aspectRatio]="'5:4'"
+                                                        [asBackground]="true"
+                                                        [thumbs]="!!item.image && !!item?.image?.thumbs ? item?.image?.thumbs : !!item?.images && !!item?.images[0] && !!item?.images[0]?.thumbs ? item.images[0].thumbs : null"
+                                                        class="w-full h-auto object-cover object-center text-white flex-shrink-1 min-w-full min-h-full"
+                                                        [src]="!!item?.image ? !!item?.image?.src ? item.image.src : item.image : !!item?.images[0] ? !!item?.images[0]?.src ? item.images[0].src : item.images[0] : null" />
+                                        </div>
+                                        <h2 card-title class="prose text-white text-2xl text:lg-3xl mb-2 tracking-wider leading-snug w-10/12 drop-shadow-lg">
+                                                {{ item.title }}
+                                        </h2>
+                                        <div card-after class="remove-item" 
+                                                [ngSwitch]="removing === i">
+                                                <button *ngSwitchCase="false"
+                                                        (click)="removing = i">
+                                                        <mat-icon>remove</mat-icon>
+                                                </button>
+                                                <div *ngSwitchCase="true">
+                                                        <button mat-icon-button
+                                                                class="w-auto text-black text-opacity-50 bg-red"
+                                                                (click)="removeItem(i)">confirm </button>
+                                                        <mat-icon (click)="removing = null">close</mat-icon>
+                                                </div>
+                                        </div>
+                                </app-card>
+                        </ng-template>
+                </div>
+        </mat-sidenav>
+        <mat-sidenav-content
+                [ngClass]="[!!data && !!data.contentClasses ? data.contentClasses : '']"
+                [ngStyle]="!!data && !!data.contentStyles ? data.contentStyles : {}">
+                <ng-content></ng-content>
+        </mat-sidenav-content>
+</mat-sidenav-container>

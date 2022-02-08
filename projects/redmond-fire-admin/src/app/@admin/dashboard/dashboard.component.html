@@ -1,0 +1,26 @@
+
+
+
+
+<app-shell class="bg-white">
+        
+        
+
+        <div class="max-w-[300px] mt-8 mx-auto flex flex-col content-start">
+                <button mat-button 
+                        *ngFor="let page of pages"
+                        [routerLink]="[page.path]"
+                        [queryParams]="!!page.queryParams ? page.queryParams : {}"
+                        routerLinkActive="active bg-{{ page.color }} text-{{ page.color }}-900"
+                        [ngClass]="['rounded text-xl mb-2 transition-all ease-quick-in duration-500 pr-1 w-full m-0 py-3 pl-3 text-gray-900 text-opacity-60', 'bg-' + page.color]">
+                        <i *ngIf="!!page.icon"
+                                [ngClass]="[
+                                        'ml-2 mr-6',
+                                        'gicon-' + page.icon,
+                                ]"
+                        ></i>
+                        <span class="text-gray-100 mr-auto">{{ page.title }}</span>
+                </button>      
+        </div>
+
+</app-shell>

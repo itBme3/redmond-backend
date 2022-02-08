@@ -1,0 +1,31 @@
+<app-edit-carousel 
+        *ngIf="optionKey === 'carousel'"
+        [block]="block"
+        [doc]="doc"
+        [blockIndex]="blockIndex"
+        (updated)="updating($event)"
+></app-edit-carousel>
+
+<app-edit-card 
+        *ngIf="optionKey === 'card'"
+        [block]="block"
+        (updated)="updateCallback($event)"
+></app-edit-card>
+
+<app-edit-block-collection 
+        *ngIf="optionKey === 'collection'"
+        [doc]="doc"
+        [blockIndex]="blockIndex"
+        [block]="block"
+        (updated)="updating($event)"
+></app-edit-block-collection>
+
+<app-custom-input
+        *ngIf="!blockTypes.includes(optionKey)"
+        #customInput
+        class="w-full flex flex-col"
+        [data]="{ optionKey: optionKey, inputType: inputType, doc: block, classesKey: classesKey }"
+        [responsive]="responsive"
+        (updateResponsive)="responsive = $event"
+        (updated)="updating($event, isResponsiveStyle ? responsive : null, optionKey, classesKey)">
+</app-custom-input>

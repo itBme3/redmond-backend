@@ -1,0 +1,36 @@
+<!-- <ng-container  *ngIf="!!doc"> -->
+
+<ng-container *ngTemplateOutlet="entityForm; 
+        context: { sectionName: 'Page Info', keys: sidebarKeys[doc.type] }">
+</ng-container>
+
+<ng-template [ngIf]="doc.type === 'page'">
+        <ng-container *ngTemplateOutlet="entityForm; 
+                context: { sectionName: 'Blocks', keys: ['blocks'] }">
+        </ng-container>
+</ng-template>
+
+<ng-container *ngTemplateOutlet="entityForm; 
+        context: { sectionName: 'Redirects', keys: ['redirects'] }">
+</ng-container>
+
+<ng-template #entityForm let-keys="keys" let-sectionName="sectionName" let-classes="classes">
+
+        <app-admin-site-entity-form 
+                [ngClass]="['w-full position-relative mb-2', sectionName.split(' ').join('-')]"
+                [keys]="keys"
+                [doc]="doc"
+                [expandable]="true"
+                [expanded]="editing === sectionName"
+                [expansionTitle]="sectionName"
+                [shouldSave]="true"
+                [classes]="{ item: 'rounded hover:bg-gray-50 border-white bg-opacity-100' }"
+                (click)="editing !== sectionName ? editing = null : ''"
+                (expansionChanged)="
+                        !!$event && editing !== sectionName ? editing === sectionName : '';
+                        !!$event && editing !== sectionName ? changeEditing(sectionName) : '';
+                       !!!$event && editing === sectionName ? editing = null : ''">
+        </app-admin-site-entity-form>
+
+
+</ng-template>

@@ -1,0 +1,91 @@
+ 
+ <ng-container *ngTemplateOutlet="addSlideButton; context: { slideIndex: 0 } "></ng-container>
+ 
+
+<div class="edit-carousel-options flex flex-wrap content-start">
+        <app-custom-input
+                *ngFor="let key of ['dots', 'arrows']; let i = index"
+                [data]="{ inputType: 'iconCheckbox', options: editOptions[key], value: !!block[key] }"
+                class="w-auto"
+                (updated)="block[key] = $event;  updateCarousel()"></app-custom-input>
+</div>
+
+ <div class="slides drag-list position-relative w-full my-4"
+        *ngIf="!!block?.slides?.length"
+        cdkDropList
+        #contentList="cdkDropList"
+        cdkDropListOrientation="vertical"
+        [cdkDropListData]="block.slides"
+        (cdkDropListDropped)="drop($event)"
+        (cdkDragStarted)="editingSlide = null"
+        [@animatedList]="block.slides">
+        <ng-template ngFor let-slide [ngForOf]="block.slides" let-i="index">
+                <div class="mb-1"
+                        cdkDrag>
+                        <ng-container *ngTemplateOutlet="carouselSlideContent; context: { slide: slide, slideIndex: i }"></ng-container>
+                </div>
+        </ng-template>
+</div>
+<ng-template [ngIf]="!!block?.slides?.length">
+        <ng-container *ngTemplateOutlet="addSlideButton; context: { slideIndex: block.slides.length + 1 } "></ng-container>
+</ng-template>
+
+<ng-template #addSlideButton let-i="slideIndex">
+        <button mat-button 
+                (click)="addSlide(i)"
+                matTooltip="new slide" 
+                matTooltipPosition="above"
+                class="w-full text-grey-light hover:text-grey-dark bg-gray-50"><mat-icon>add</mat-icon></button>
+</ng-template>
+
+<ng-template #carouselSlideContent let-slide="slide" let-i="slideIndex">
+         <div class="slide w-100 text-grey-dark flex content-start items-center flex-nowrap">
+                
+                <mat-icon cdkDragHandle
+                        class="cursor-move text-gray-300 hover:text-gray-600 mr-3"
+                        (click)="editingSlide !== i && !!swiper?.slideTo ? swiper.slideTo(i) : ''; editingSlide = editingSlide !== i ? i : null">
+                        drag_handle
+                </mat-icon>
+                <div class="flex items-center overflow-scroll my-auto w-full bg-gray-50 bg-opacity-60 cursor-pointer border rounded border-gray-200 hover:border-gray-400 pt-1 pb-3 px-3 relative"
+                        (click)="editingSlide !== i && !!swiper?.slideTo ? swiper.slideTo(i) : ''; editingSlide !== i ? editingSlide = i : '';">
+                        <ng-template [ngIf]="editingSlide !== i" [ngIfElse]="editSlide">
+                                <div class="image-wrapper my-auto w-24 overflow-hidden rounded"
+                                        *ngIf="!!slide?.image">
+                                        <img imageLoader 
+                                                [attr.src]="!!slide?.image?.src ? slide.image.src : slide.image "
+                                                [aspectRatio]="!!block.aspectRatio ? block.aspectRatio : '16:9'"
+                                                [isBackground]="true"
+                                                class="w-full h-auto max-w-full" />
+                                </div>
+                                <h2 class="my-auto ml-2 w-full">{{ !!slide?.title?.length ? slide.title : '...' }}</h2>
+                        </ng-template>
+                        <ng-template #editSlide>
+                                <app-edit-card #editCard
+                                        [block]="slide"
+                                        (updated)="block.slides[i] = $event; updateCarousel()">
+                                </app-edit-card>
+                        </ng-template>
+
+                        <div class="edit-buttons flex items-center content-end ml-2 my-auto absolute top-3 right-3">
+                                <button *ngIf="confirmRemoval !== i"
+                                        mat-mini-fab after-content
+                                        (click)="confirmedRemoval = i"
+                                        class="bg-gray-100 text-gray-500 hover:text-red mat-elevation-z0">
+                                        <mat-icon>delete</mat-icon>
+                                </button>
+                                <button *ngIf="confirmRemoval === i"
+                                        (click)="removeSlide(i)"
+                                        class="bg-red rounded my-auto text-black text-opacity-70">
+                                        <span class="my-auto">confirm</span>
+                                        <mat-icon class="transform scale-60 my-auto ml-1"
+                                                (click)="confirmRemoval = null">close</mat-icon>
+                                </button>
+                        </div>
+                        
+                </div>
+                
+
+                
+
+        </div>
+</ng-template>

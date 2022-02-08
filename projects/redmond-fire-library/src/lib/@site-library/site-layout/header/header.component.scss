@@ -1,0 +1,57 @@
+:host {
+        @apply mx-auto inset-x-0;
+
+        header {
+                .gicon-logo-type {
+                        @apply text-xl lg:text-2xl;
+                }
+                .gicon-logo-icon {
+                        @apply text-xl lg:text-2xl;
+                }
+                &.scrolled {
+                        .gicon-logo-type {
+                                @apply text-xl lg:text-2xl;
+                        }
+                }
+                &.overlay-nav {
+                        &:not(.scrolled) {
+                                @apply py-2 px-6 bg-transparent text-white;
+
+                                .gicon-logo-text {
+                                        @apply text-2xl sm:text-4xl ml-3 md:text-5xl lg:text-6xl mt-3 sm:mt-4 md:mt-5 lg:mt-6;
+                                }
+                                .gicon-logo-icon {
+                                        @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl mt-1 md:mt-2 lg:mt-3;
+                                }
+                        }
+                }
+        }
+        button {
+                @apply outline-none;
+                &.mat-menu-trigger {
+                        .mat-button-wrapper {
+                                @apply flex items-center
+                        }
+                }
+        }
+        .mat-menu-panel {
+                @apply bg-white rounded-sm outline-none mr-4;
+                box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 13px 19px 2px rgba(0, 0, 0, 0.14),
+                        0 5px 24px 4px rgba(0, 0, 0, 0.12);
+        }
+        .mat-menu-content:not(:empty) {
+                @apply p-1;
+                button {
+                        @apply rounded-sm  outline-none;
+                }
+        }
+}
+::ng-deep {
+        .home-page {
+                header {
+                }
+                .logo {
+                        line-height: 0;
+                }
+        }
+}

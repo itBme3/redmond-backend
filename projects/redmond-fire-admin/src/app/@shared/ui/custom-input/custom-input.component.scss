@@ -1,0 +1,136 @@
+:host {
+        @apply flex w-full relative flex-wrap transform;
+        textarea, select, input {
+                @apply py-2
+        }
+        input-field {
+                @apply focus-within:bg-white focus-within:shadow-lg hover:bg-white hover:shadow-lg;
+        }
+        .custom-input-option {
+                @apply flex items-start rounded overflow-hidden max-w-full border hover:border-gray-100 focus-within:border-gray-100 border-gray-50 focus-within:bg-gray-100 hover:bg-gray-50 bg-gray-100;
+                .mat-expanded {
+                        @apply bg-gray-50 border-gray-200;
+                }
+                > label {
+                        @apply transform text-blue whitespace-nowrap;
+                }
+                > * {
+                        margin: auto 0;
+                }
+        }
+        .custom-input-option-blocks {
+                background: transparent !important;
+                border: transparent !important;
+        }
+        label {
+                @apply transform text-blue m-auto text-xs leading-snug tracking-wide;
+                margin: auto;
+        }
+        .iconCheckbox {
+                margin: 0;
+                transform: scale(0.98);
+                i {
+                        transform: scale(1.1);
+                        display: inline-block;
+                }
+                label {
+                        @apply transform scale-95 whitespace-nowrap;
+                }
+        }
+        .slider-input {
+                @apply py-0;
+                label {
+                        @apply leading-none;
+                }
+                input {
+                        @apply text-xs rounded mr-1 shadow-xl text-center pl-2 pb-1 pt-px;
+                        transition: var(--default-transition);
+                        &:hover {
+                                @apply text-left pl-1 pr-0;
+                        }
+                }
+        }
+        .select-image {
+                &:not(:hover) {
+                        .remove-image {
+                                display: none;
+                        }
+                }
+        }
+        ::ng-deep {
+                .mat-radio-checked {
+                        @apply text-blue;
+                }
+        }
+}
+::ng-deep {
+
+        mat-select {
+                @apply py-2;
+        }
+        mat-select .mat-select-arrow,
+        .mat-expansion-indicator {
+                @apply inline-block w-4 h-auto m-auto;
+                font-family: "icomoon" !important;
+                speak: never;
+                font-style: normal;
+                font-weight: normal;
+                font-variant: normal;
+                text-transform: none;
+                line-height: 1;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                border-color: transparent !important;
+                &:before {
+                        content: "\e900" !important;
+                }
+                &:after {
+                        display: none !important;
+                }
+        }
+        mat-radio-group {
+                display: flex;
+                align-items: center;
+                justify: center;
+        }
+        mat-slider {
+                height: 24px !important;
+                .mat-slider-wrapper {
+                        top: 12px !important;
+                }
+        }
+        mat-radio-button {
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify: center;
+                .mat-radio-label {
+                        margin: auto;
+                }
+                padding: 0.13em 0.3em;
+                border-radius: 0.3em;
+                transform: scale(0.9);
+                .mat-radio-label-content {
+                        display: flex;
+                        align-items: center;
+                }
+                &:hover {
+                        background-color: rgba(0, 0, 0, 0.1);
+                }
+                &.hide-check {
+                        .mat-radio-container {
+                                display: none !important;
+                        }
+                        .mat-radio-label-content {
+                                padding: 0;
+                        }
+                        [class*="gicon"] {
+                                line-height: 1.5;
+                        }
+                }
+        }
+        input,
+        textarea {
+                outline: none !important;
+        }
+}

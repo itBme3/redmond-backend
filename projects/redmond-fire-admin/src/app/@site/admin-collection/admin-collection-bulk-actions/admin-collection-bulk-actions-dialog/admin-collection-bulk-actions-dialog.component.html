@@ -1,0 +1,122 @@
+<div mat-dialog-title class="w-full m-0 p-0 relative">
+  <h4 *ngIf="!!!confirmSaveMessage"
+    class="text-capitalize w-full text-center mt-2 mb-0" 
+    style="letter-spacing: .05ch;">
+    {{ action + ':' }}
+  </h4>
+</div>
+<div mat-dialog-content class="pt-2 pb-3">
+
+  <ng-template [ngIf]="!!confirmSaveMessage">
+    <h5 class="m-auto pt-0 pb-3 text-center" [innerHTML]="confirmSaveMessage.title.split('<!--split-->')[0]"></h5>
+    <mat-expansion-panel class="mat-elevation-z0 bg-gray-100"
+      *ngIf="!!confirmSaveMessage && !!confirmSaveMessage?.title?.split('<!--split-->')[1]">
+      <mat-expansion-panel-header class="bg-gray-50">
+        <div class="m-auto p-0 text-center text-lg" 
+          *ngIf="!!confirmSaveMessage.title"
+          [innerHTML]="confirmSaveMessage.title.split('<!--split-->')[1] | safeHtml"></div>
+      </mat-expansion-panel-header>
+      <div *ngIf="!!confirmSaveMessage.items"
+        [innerHTML]="confirmSaveMessage.items | safeHtml"
+        [ngClass]="confirmColor === 'darken' ? 'text-lighten-07' : 'text-' + 'light-' + confirmColor "></div>
+    </mat-expansion-panel>
+  </ng-template>
+
+  <ng-template [ngIf]="updatedCount > 0">
+    <h5>Updating: <strong class="text-green">{{ updatedCount }}</strong> / {{ selected.length }}</h5>
+  </ng-template> 
+
+  <ng-template [ngIf]="!!!confirmSaveMessage && !!!updating">
+
+    <!-- TAGS -->
+    <ng-template [ngIf]="action === 'add tags' || action === 'remove tags'">
+      <ng-container *ngTemplateOutlet="editTags"></ng-container>
+    </ng-template>
+
+    <!-- CATEGORY / SECTOR -->
+    <ng-template [ngIf]="['update sector', 'update category'].includes(action)">
+      <app-custom-input 
+        [data]="{ optionKey: action === 'update sector' ? 'project_sectors' : 'post_categories' , value: null }"
+        (updated)="value = $event; confirmSave()">
+      </app-custom-input>
+    </ng-template>
+
+    <!-- STATUS -->
+    <app-custom-input 
+      *ngIf="action === 'update status'"
+      [data]="{ inputType: 'statusButtons', value: 'draft', inputClasses: 'bg-transparent' }"
+      (updated)="value = $event; confirmSave()">
+    </app-custom-input>
+
+
+    <!-- TEMPLATE: TAGS -->
+    <ng-template #editTags>
+      <mat-card class="p-0 mat-elevation-z0 mb-2 bg-transparent border-1 border border-dark-01 w-full">
+              <app-autocomplete-search 
+                      [data]="{ 
+                              search: '', 
+                              path: 'tags',
+                              type: 'tags',
+                              field: 'tag',
+                              canCreate: true,
+                              selectMultiple: true,
+                              fieldClasses: 'border-transparent p-2 w-full'
+                      }"
+                      (selectionChanged)="value = $event">
+              </app-autocomplete-search>
+              <div [ngClass]="['px-2 pb-1 flex-wrap flex items-start justify-start']"
+                  style="max-width: 100%">
+                <button mat-stroked-button 
+                  *ngFor="let tag of value; let i = index"
+                  [ngClass]="['mr-1 mb-1 ml-0 mt-0 pr-1']"
+                  (click)="value.splice(i, 1)">
+                  {{ tag }}
+                  <mat-icon class="transform scale-07 text-light-red">close</mat-icon>
+                </button>
+              </div>
+      </mat-card>
+    </ng-template>
+
+    <!-- BUTTON LIST -->
+    <ng-template #buttonList let-optionValues="options">
+      <button mat-stroked-button
+        *ngFor="let option of optionValues"
+        (click)="this.value = option; confirmSave()"
+        [ngClass]="[
+          'w-full text-dark py-2 mb-2 bg-gray-50',
+          value === option ? 'active' : '',
+          ['published','draft','hidden', 'archived'].includes(option) ? 'text-left' : 'text-center',
+          option === 'published' ? 'bg-green-hvr border-green-hvr' : option === 'draft' ? 'bg-yellow-hvr border-yellow-hvr' : option === 'archived' ? 'bg-light-red-hvr border-light-red-hvr' : 'bg-black bg-opacity-5 bg-opacity-10-hvr'
+        ]">
+        <i *ngIf="action === 'update status'" [ngClass]="['gicon-circle my-auto ml-0 mr-3', option === 'published' ? 'text-green' : option === 'draft' ? 'text-yellow' : option === 'archived' ? 'text-light-red' : 'text-darken-03']"></i> {{ option }}
+      </button>
+    </ng-template>
+    
+
+  </ng-template>
+</div>
+
+  
+<div mat-dialog-actions 
+  [ngClass]="['mb-auto flex items-center justify-center',
+    !!confirmSaveMessage ? 'pb-0 flex-col' : 'pb-4 flex-nowrap']">
+  <button [attr.tabindex]="2"
+    (click)="executeAction()"
+    *ngIf="!!confirmSaveMessage"
+    mat-button 
+    [ngClass]="['w-full py-2 text-black text-opacity-50', confirmColor === 'darken' ? 'bg-black bg-opacity-5 hover:bg-opacity-10' : 'bg-' + confirmColor]">
+    <strong>CONFIRM</strong>
+  </button>
+  <button mat-stroked-button 
+    mat-dialog-close [attr.tabindex]="10"
+    [ngClass]="['w-6/12 p-0 mt-2 -mb-2 text-red bg-black bg-opacity-5 text-white-hvr border-0',
+            !!confirmSaveMessage ? 'transform scale-75 m-auto' : '' ]">
+    cancel
+  </button>
+  <button mat-stroked-button [attr.tabindex]="0"
+    *ngIf="!!!confirmSaveMessage && ['update status', 'delete'].includes(action)"
+    (click)="confirmSave()"
+    class="w-6/12 py-1 mt-2 text-darken-07-hvr text-green bg-green-hvr border-green-hvr">
+    save
+  </button>
+</div>

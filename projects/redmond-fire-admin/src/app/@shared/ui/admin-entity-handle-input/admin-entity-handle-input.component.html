@@ -1,0 +1,25 @@
+<ng-template #loading><app-loading-element title=""></app-loading-element></ng-template>
+<small *ngIf="!handleIsAvailable"
+        class="text-red text-xs mb-1">handle unavailable</small>
+<input *ngIf="!!!checkingAvailability; else loading"
+        #txtInput
+        matInput
+        [ngClass]="['text-field focus:border-0 border-0 p-2 w-full', handleIsAvailable ? 'bg-transparent' : 'text-black text-opacity-75 bg-red']"
+        placeholder="handle..."
+        [value]="value" 
+        (keyup)="value = funcs.handleize($event.target.value)"
+        (keyup.tab)="updatedSubject.next($event.target.value)"
+        (keyup.return)="updatedSubject.next($event.target.value)"
+        (change)="updatedSubject.next($event.target.value)" />
+
+<div *ngIf="!!oldLink?.length && !!!creating"
+        class="add-to-redirects flex items-center content-between">
+        <button (click)="addOldLinkToRedirects()"
+                class="rounded flex p-2 items-center hover:bg-green text-black text-opacity-60 transform scale-75 text-sm">
+                <span class="inline-flex items-center my-auto">add <strong>"{{ oldLink }}"</strong> to redirects <mat-icon class="my-auto ml-3">add</mat-icon></span>
+        </button>
+        <button (click)="oldLink = null"
+                class="ml-auto mr-0 rounded p-2 hover:bg-red text-black text-opacity-60">
+                <mat-icon>close</mat-icon>
+        </button>
+</div>

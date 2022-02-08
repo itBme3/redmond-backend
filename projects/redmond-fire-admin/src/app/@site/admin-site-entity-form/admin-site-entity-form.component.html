@@ -1,0 +1,82 @@
+<ng-template [ngIf]="!!doc">
+
+        <mat-expansion-panel *ngIf="!!expandable; else entityForm"
+                [ngClass]="[ 
+                        'mat-elevation-z0 mx-0', 
+                        !!classes?.expansionContainer?.length ? classes.expansionContainer : '',
+                        expanded ? 'shadow-lg bg-gray-50' : ''
+                ]"
+                [expanded]="expanded"
+                (afterCollapse)="expanded = false; expansionChanged.emit(false)"
+                (afterExpand)="expanded = true; expansionChanged.emit(true)">
+                <mat-expansion-panel-header
+                        [ngClass]="[ !!classes?.expansionHeader?.length ? classes.expansionHeader : '' ]">
+                        {{ (!!expansionTitle ? expansionTitle : keys[0]) | formatString: 'capitalize'}}
+                </mat-expansion-panel-header>
+                <div [ngClass]="[ 'expansion-content', !!classes?.expansionContent?.length ? classes.expansionContent : '' ]">
+                        <ng-container *ngTemplateOutlet="entityForm"></ng-container>
+                </div>
+        </mat-expansion-panel>
+
+
+        <ng-template #entityForm>
+
+                <ng-template ngFor let-key [ngForOf]="keys">
+                        <small *ngIf="(keys.length > 1 || !!!expandable) && key !== 'pageHeading'"
+                                class="text-xs text-grey-light">
+                                {{ key === 'linkedIn' ? 'LinkedIn' : key | formatString: 'fromCamel' | formatString: 'fromPathHandle' | formatString: 'capitalize' }}:
+                        </small>
+                        <ng-template [ngIf]="!!!['collectionFilters'].includes(key)"
+                                [ngIfElse]="collectionFilters">
+                                <app-custom-input *ngIf="key !== 'handle' || (key === 'handle' && !!!updatingHandle)"
+                                        class="mb-0 w-full"
+                                        [style.max-width]="key === 'i mage' && ['team'].includes(doc.type) + 'px'"
+                                        [data]="{
+                                                doc: ['handle', 'blocks'].includes(key) ? doc : null,
+                                                optionKey: key === 'sector' ? 'project_sectors' : 
+                                                        key === 'category' ? 'post_categories' :
+                                                        key, 
+                                                inputType: ['redirects', 'blocks'].includes(key) ?
+                                                        'editableList' : 
+                                                        ['image', 'images'].includes(key) ? 
+                                                        key :
+                                                        ['content','bio'].includes(key) ?
+                                                        'wysiwyg' :
+                                                        key === 'pageHeading' ? 
+                                                        'iconCheckbox' :
+                                                        null,
+                                                label: key === 'pageHeading' ? 'Show Heading' : null,
+                                                multiple: key === 'images',
+                                                options: ['handle'].includes(key) ? { creating: !!creating } : ['bio'].includes(key) ? {editorType: 'inline'} : 
+                                                        key === 'blocks' ? {canCreate : false} : null,
+                                                hideLabel: key === 'pageHeading',
+                                                value: ['state', 'city'].includes(key) && !!doc?.location && !!doc?.location[key] ? 
+                                                        doc.location[key] :
+                                                        key === 'pageHeading' ? 
+                                                        !!doc[key] :
+                                                        doc[key],
+                                                collection: collection,
+                                                labelClasses: ['title', 'redirects'].includes(key) ? 'mt-1' : '',
+                                                inputClasses: ['content','bio','redirects'].includes(key) ? 
+                                                                'bg-transparent py-0' : !!classes?.input?.length ?
+                                                                classes.input : key === 'title' ? 
+                                                                'text-2xl sm:text-4xl md:text-2xl lg:text-3xl' : '',
+                                                optionLabelClasses: key === 'pageHeading' ? 'text-xs text-grey-light' : ''
+                                        }"
+                                        (updated)="updateDoc(key, $event)"
+                                        (changed)="doc[key] = $event">
+                                </app-custom-input>
+                        </ng-template>
+                        <ng-template #collectionFilters>
+                                <app-admin-edit-collection-filters
+                                        [collectionDoc]="doc"
+                                        [collectionType]="doc.handle"
+                                        (updated)="doc.filters = $event.filters">
+                                </app-admin-edit-collection-filters>
+                        </ng-template>
+                        
+                </ng-template>
+
+
+        </ng-template>
+</ng-template>

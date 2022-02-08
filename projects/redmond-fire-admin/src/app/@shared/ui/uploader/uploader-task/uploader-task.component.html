@@ -1,0 +1,33 @@
+<div *ngIf="snapshot | async as snap">
+        <div *ngIf="downloadURL as url; else actions" >
+                <pdf-viewer *ngIf="!!pdfSrc; else anImage"
+                        [autoresize]="true"
+                        [render-text]="true"
+                        [src]='pdfSrc'
+                        style="display: block;"></pdf-viewer>
+                <ng-template #anImage>        
+                        <img [src]="url">
+                </ng-template>
+        </div>
+        <code>{{ file.name }}</code>
+        <ng-template #actions>
+                <div *ngIf="percentage | async as pct">
+                        <app-loading-element mode="determinate"
+                                        [bufferValue]="pct"></app-loading-element> {{ pct | number }}%
+                </div>
+                <div class="buttons">
+                        <button mat-stroked-button (click)="task.pause()"
+                                [disabled]="!isActive(snap)">
+                                <mat-icon>pause</mat-icon>
+                        </button>
+                        <button mat-stroked-button (click)="task.cancel()"
+                                [disabled]="!isActive(snap)">
+                                <mat-icon>cancel</mat-icon>
+                        </button>
+                        <button mat-stroked-button (click)="task.resume()"
+                                [disabled]="!(snap?.state === 'paused')">
+                                <mat-icon>play_circle_outline</mat-icon>
+                        </button>
+                </div>
+        </ng-template>
+</div>

@@ -1,0 +1,142 @@
+<app-loading-element *ngIf="loading"
+                     title="Sending..."></app-loading-element>
+
+
+<ng-template [ngIf]="!!!loading">
+        <div [ngSwitch]="!!submitMessage?.length"
+             class="form-wrapper">
+                <div *ngSwitchCase="true"
+                     [ngClass]="['submit-message rounded border border-gray-200 px-6 py-12 relative', successfulSubmit ? 'success' : 'error' ]">
+                        <button class="absolute top-1 right-1 left-auto bottom-auto transform scale-75 text-gray-500 hover:text-red"
+                                (click)="resetForm()">
+                                <mat-icon>refresh</mat-icon>
+                        </button>
+                        <div class="message-text w-full"
+                             [innerHTML]="submitMessage | safeHtml"></div>
+                </div>
+                <div *ngSwitchCase="false">
+                        <form *ngIf="!!formData && !!formData.orderedKeys"
+                              [formGroup]="form"
+                              (ngSubmit)="onSubmit()">
+                                <ng-template ngFor
+                                             let-inputKey
+                                             [ngForOf]="formData.orderedKeys">
+                                        <ng-template
+                                                     [ngIf]="formData[inputKey].inputType === 'name' && inputKey === 'firstName' ">
+                                                <ng-container *ngTemplateOutlet="complexName"></ng-container>
+                                        </ng-template>
+
+                                        <ng-template
+                                                     [ngIf]="['text', 'simpleName', 'email', 'textarea', 'tel'].includes(formData[inputKey].inputType) ">
+                                                <ng-container *ngTemplateOutlet="textInput; context: { 
+                                                        key: inputKey, 
+                                                        type: formData[inputKey].inputType, 
+                                                        label: formData[inputKey].label 
+                                }"></ng-container>
+                                        </ng-template>
+
+                                        <ng-template
+                                                     [ngIf]="formData[inputKey].inputType === 'select' && !!formData[inputKey] && !!formData[inputKey].options && !!formData[inputKey].options.length">
+                                                <ng-container *ngTemplateOutlet="selectInput; context: { 
+                                                        key: inputKey, 
+                                                        type: 'select', 
+                                                        label: formData[inputKey].label,
+                                                        options: formData[inputKey].options
+                                }"></ng-container>
+                                        </ng-template>
+                                </ng-template>
+
+
+
+                                <ng-template #textInput
+                                             let-key="key"
+                                             let-type="type"
+                                             let-label="label">
+                                        <mat-form-field [color]="!!this[key] && this[key].invalid && this[key].dirty ? 'warm' : 'accent'"
+                                                        class="w-full pb-2">
+                                                <mat-label [ngClass]="['pb-1']">{{ formData[key].label }}</mat-label>
+                                                <input *ngIf="type !== 'textarea'"
+                                                       matInput
+                                                       [formControlName]="key"
+                                                       [type]="key === 'simpleName' ? 'name' : type === 'tel' || key === 'phone' ? 'phoneNumber' : type"
+                                                       [attr.type]="type"
+                                                       autocomplete="off" />
+
+                                                <textarea *ngIf="type === 'textarea'"
+                                                        matInput
+                                                        cdkTextareaAutosize
+                                                        #autosize="cdkTextareaAutosize"
+                                                        cdkAutosizeMinRows="1"
+                                                        cdkAutosizeMaxRows="5"
+                                                        [formControlName]="key"
+                                                        [type]="type"
+                                                        [attr.type]="type"
+                                                        autocomplete="off"></textarea>
+
+                                                <mat-error *ngIf="!!this[key] && this[key].invalid && this[key].dirty">
+                                                        {{ key === 'email' ? 'You must enter a valid email address' : 
+                                                !!formData[key].errorMessage ? formData[key].errorMessage : 
+                                                formData[key].label + ' is required' }}
+                                                </mat-error>
+                                        </mat-form-field>
+
+                                </ng-template>
+
+                                <ng-template #complexName>
+
+                                        <div class="w-full flex flex-wrap sm:flex-nowrap">
+                                                <ng-template [ngIf]="!!formData.hasOwnProperty('firstName')">
+                                                        <ng-container *ngTemplateOutlet="textInput; 
+                                                        context: { 
+                                                                key: 'firstName', 
+                                                                type: 'text', label: formData.firstName.label 
+                                                        }"></ng-container>
+                                                </ng-template>
+                                                <ng-template [ngIf]="!!formData.hasOwnProperty('lastName')">
+                                                        <ng-container *ngTemplateOutlet="textInput; 
+                                                        context: { 
+                                                                key: 'lastName', 
+                                                                type: 'text', label: formData.lastName.label 
+                                                        }"></ng-container>
+                                                </ng-template>
+                                        </div>
+
+                                </ng-template>
+
+
+                                <ng-template #selectInput
+                                             let-key="key"
+                                             let-type="type"
+                                             let-label="label"
+                                             let-options="options">
+                                        <mat-form-field [color]="!!this[key] && !!this[key].valid ? 'accent' : 'warm' "
+                                                        class="w-full">
+                                                <mat-select [placeholder]="label"
+                                                            [formControlName]="key"
+                                                            [name]="key">
+                                                        <mat-option *ngFor="let option of options"
+                                                                    [value]="option.value">
+                                                                {{option.label}}
+                                                        </mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="!!this[key] && this[key].invalid && this[key].dirty">
+                                                        {{ key === 'email' ? 'You must enter a valid email address' : 
+                                                !!formData[key].errorMessage ? formData[key].errorMessage : 
+                                                formData[key].label + ' is required' }}
+                                                </mat-error>
+                                        </mat-form-field>
+                                </ng-template>
+                                <button mat-button
+                                        type="submit"
+                                        [ngClass]="['mt-2 px-2 min-w-10 tracking-wide text-uppercase py-1 flex-grow font-bold text-gray-800 text-opacity-70 min-w-[120px]', form.invalid ? 'bg-gray-100' : 'bg-green']"
+                                        [disabled]="form.invalid || loading">
+                                        SEND
+                                </button>
+                        </form>
+                </div>
+        </div>
+
+
+
+
+</ng-template>

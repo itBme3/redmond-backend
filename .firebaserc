@@ -1,0 +1,29 @@
+{
+  "targets": {
+    "redmond-fire": {
+      "hosting": {
+        "live": [
+          "redmond-fire"
+        ],
+        "admin": [
+          "redmond-fire-admin"
+        ]
+      }
+    },
+    "redmond-fire-dev": {
+      "hosting": {
+        "dev": [
+          "redmond-fire-dev"
+        ],
+        "admin-dev": [
+          "redmond-fire-admin-dev"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "admin": "redmond-fire",
+    "admin-dev": "redmond-fire-dev",
+    "default": "redmond-fire"
+  }
+}

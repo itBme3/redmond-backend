@@ -1,0 +1,27 @@
+
+<div class="overflow-hidden z-100 h-full bg-gray-800"
+        [@isOpened]="opened ? 'visible' : 'hidden' ">
+        <div class="flex items-center">
+                <small class="my-auto text-gray-400">Reorder Projects:</small>
+                <button mat-dialog-close class="ml-auto mt-1 mr-0 text-red-300"><mat-icon>close</mat-icon></button>
+        </div>
+        <ng-scrollbar
+                thumbClass="bg-gray-200 opacity-30 w-1 hover:bg-red-400"
+                barClass="bg-transparent shadow-none ring-none border-none ml-2"
+                [visibility]="'hover'"
+                class="single-entity-container w-full h-[calc(100vh-100px)]">
+                <div class="drag-list"
+                        cdkDropList
+                        #contentList="cdkDropList"
+                        cdkDropListOrientation="vertical"
+                        [cdkDropListData]="docs"
+                        (cdkDropListDropped)="drop($event)">
+                        <div *ngFor="let doc of docs; let i = index; trackBy: trackByFn"
+                                class="ordering-collection-item flex w-full h-10 items-center bg-gray-700 text-gray-100 font-regular py-3 pr-3 pl-1 rounded max-w-[400px] mx-auto mb-1"
+                                cdkDrag>
+                                <mat-icon cdkDragHandle class="cursor-move transform mr-2 text-gray-300 relative top-px">drag_handle</mat-icon>
+                                <h6 class="whitespace-nowrap overflow-ellipsis overflow-hidden">{{ doc.title }}</h6>
+                        </div>
+                </div>
+        </ng-scrollbar>
+</div>

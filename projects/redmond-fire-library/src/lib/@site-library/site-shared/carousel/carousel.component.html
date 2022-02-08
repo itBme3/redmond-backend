@@ -1,0 +1,17 @@
+
+
+<swiper *ngIf="!!config"  
+        #swiper
+        [attr.data-arrows]="!!data?.arrows"
+        [attr.data-dots]="!!data?.dots"
+        class="carousel-container w-full max-h-[calc(100vh-80px)] relative"
+        (slideChange)="onSwipe($event)"
+        [config]="config">
+        
+        <ng-content></ng-content>
+
+</swiper>
+
+<div *ngIf="state === 'loading'" class="loading-overlay loader-static"></div>
+
+<ng-content select="[swiper-thumbs]"></ng-content>

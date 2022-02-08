@@ -1,0 +1,13 @@
+.input-list-item {
+        .edit-buttons {
+                @apply opacity-100 scale-100 ease-quick-in transform transition-all;
+        }
+        &:not(:hover) {
+                .edit-buttons {
+                        @apply opacity-0 scale-50;
+                }
+        }
+}
+input, textarea {
+        outline: none !important;
+}

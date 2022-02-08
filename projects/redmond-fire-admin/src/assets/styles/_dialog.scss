@@ -1,0 +1,148 @@
+
+mat-dialog-content {
+        max-height: 100vh !important;
+}
+.view-project-dialog-backdrop {
+        @apply opacity-90 bg-gradient-to-b from-gray-50 to-gray-300;
+}
+.view-project-dialog {
+        @apply block w-full bg-white;
+        // mat-dialog-content {
+        //         max-height: 100vh;
+        // }
+        .mat-dialog-container {
+                @apply p-0;
+        }
+        box-shadow: 0 10px 13px -6px rgba(255,255,255,.5),
+                        0 20px 31px 3px rgba(255,255,255,.5),
+                        0 8px 38px 7px rgba(255,255,255,.5);
+}
+
+snack-bar-container {
+        background-color: #f9f9f9;
+        color: rgba(0,0,0,.7);
+}
+snack-bar-container {
+        
+        
+        button {
+                background-color: rgba(0,0,0,.03);
+                &:hover {
+                        background-color: rgba(0,0,0,.06);
+                }
+        }
+        &.btn-blue {
+                button {
+                        @apply bg-blue text-black text-opacity-75 hover:text-opacity-100 hover:bg-blue-600;
+                }
+        }
+        &.btn-purple {
+                button {
+                        @apply bg-purple text-black text-opacity-75 hover:text-opacity-100 hover:bg-purple-600;
+                }
+        }
+        &.btn-red {
+                button {
+                        @apply bg-red text-black text-opacity-75 hover:text-opacity-100 hover:bg-red-600;
+                }
+        }
+        &.btn-orange {
+                button {
+                        @apply bg-orange text-black text-opacity-75 hover:text-opacity-100 hover:bg-orange-600;
+                }
+        }
+        &.btn-yellow {
+                button {
+                        @apply bg-yellow text-black text-opacity-75 hover:text-opacity-100 hover:bg-yellow-600;
+                }
+        }
+        &.btn-green {
+                button {
+                        @apply bg-green text-black text-opacity-75 hover:text-opacity-100 hover:bg-green-600;
+                }
+        }
+        &.btn-cyan {
+                button {
+                        @apply bg-cyan text-black text-opacity-75 hover:text-opacity-100 hover:bg-cyan-600;
+                }
+        }
+}
+
+mat-dialog-container {
+	border-radius: .25em !important;
+	overflow: hidden;
+}
+.select-entity-dialog {
+	mat-dialog-container {
+                @apply overflow-hidden p-2;
+		
+	}
+	mat-sidenav-container {
+		@apply overflow-visible h-full;
+	}
+	db-search-item {
+		h2 {
+			font-size: 16px !important;
+		}
+		
+	}
+	mat-sidenav {
+		border-radius: 1em !important;
+		app-card {
+			* {
+				font-size: 10px;
+			}
+			h2 {
+				font-size: 10px !important;
+			}
+		}
+	}
+	app-db-search-bar {
+		margin-top: .5em;
+	}
+}
+
+
+
+.only-button {
+        .mat-dialog-container {
+                @apply p-0 bg-transparent;
+        }
+}
+
+.add-block-dialog, .select-entity-type-dialog {
+        .mat-dialog-container {
+                @apply p-2;
+        }
+}
+.edit-block-card-dialog {
+        .mat-dialog-container {
+                @apply px-2 pb-2 pt-1;
+        }
+}
+.edit-options-dialog {
+        .mat-dialog-container {
+                @apply p-3;
+        }
+}
+.admin-site-entity-form-dialog {
+        .mat-dialog-container {
+                @apply py-1 px-3 rounded-xl overflow-hidden;
+        }
+}
+
+.select-media-dialog {
+        .mat-dialog-container {
+                @apply p-2 rounded-xl;
+        }
+}
+
+.reordering-projects-dialog {
+        .mat-dialog-container {
+                @apply py-0 px-2 bg-gray-800;
+        }
+}
+
+mat-dialog-container {
+        @apply overflow-hidden;
+}

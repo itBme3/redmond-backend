@@ -1,0 +1,75 @@
+
+
+.profile_pic {
+        overflow: hidden;
+        border-radius: 26px;
+        width: 26px;
+        height: 26px;
+        border: 3px;
+        box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),
+                        0 4px 5px 0 rgba(0,0,0,.14),
+                        0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+button {
+        text-align: left;
+        i {
+                @apply my-auto mb-0 mr-2;
+                font-size: 1.2em;
+                + * {
+                        font-size: 12px !important;
+                        font-weight: 400;
+                }
+        }
+        &.active {
+                &:not(.nested_nav_button) * {
+                        color: rgba(0, 0, 0, 0.7) !important;
+                }
+                .nested_nav_button * {
+                        background-color: rgba(0, 0, 0, 0.5);
+                        :not(i) {
+                                color: #f2f2f2 !important;
+                        }
+                }
+        }
+        + .nested_nav {
+                overflow: scroll;
+                transition: 0.13s height ease;
+                padding: 0;
+                border-radius: .2em;
+                background-color: rgba(0, 0, 0, 0.1);
+                button {
+                        margin-bottom: .05em;
+                }
+        }
+        &:not(.active) {
+                &:hover {
+                        background-color: rgba(0, 0, 0, 0.1) !important;
+                }
+                + .nested_nav {
+                        display: none !important;
+                }
+        }
+}
+
+
+
+::ng-deep {
+        app-admin-navigation  {
+                .mat-form-field-wrapper {
+                        margin-bottom: 0.33em !important;
+                        padding: 0 1em 0.75em !important;
+                }
+                .mat-form-field-underline {
+                        display: none !important;
+                }
+        }
+        .collapsed {
+                button {
+                        text-align: center !important;
+                        i {
+                                margin: auto 0 !important;
+                        }
+                }
+        }
+}

@@ -1,0 +1,364 @@
+
+<ng-container *ngIf="!!data">
+
+        <div [ngClass]="['custom-input-option w-full overflow-hidden', 
+                'custom-input-option-' + data.inputType,
+                data.optionKey ? 'custom-input-option-' + data.optionKey : '',
+                !!!data.inputClasses || !data.inputClasses?.includes('bg-') ? 
+                'bg-gray-700 bg-opacity-5 hover:bg-opacity-10' : 
+                !!data?.inputClasses ? data.inputClasses : '',
+                data.inputType === 'wysiwyg' ? 'overflow-visible' : '']">
+                <ng-template [ngIf]="data.inputType === 'icons'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="optionButtons"></ng-container>
+                </ng-template>
+
+                <ng-container *ngIf="data.inputType === 'select' && data.optionKey !== 'status'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="selectInput"></ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="optionCollectionSelects.includes(data.optionKey)">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <app-admin-options-collection-select 
+                                class="w-full block"
+                                [optionCollection]="data.optionKey"
+                                [customInputParams]="data"
+                                [value]="!!data?.value ? data.value : null"
+                                (updated)="updated.emit($event)"></app-admin-options-collection-select>
+                </ng-container>
+
+                <ng-container *ngIf="['image', 'images'].includes(data.optionKey) || ['image', 'images'].includes(data.inputType)">
+                        <ng-container *ngTemplateOutlet="selectImages"></ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="data.inputType === 'iconCheckbox'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="iconCheckbox"></ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="data.inputType === 'slider'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="sliderInput"></ng-container>
+                </ng-container>
+
+                <ng-template [ngIf]="data.inputType === 'status' || data.optionKey === 'status'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="docStatus"></ng-container>
+                </ng-template>
+
+                <ng-template [ngIf]="data.inputType === 'statusButtons'">
+                        <ng-container *ngTemplateOutlet="docStatusButtons"></ng-container>
+                </ng-template>
+
+                <ng-template [ngIf]="data.inputType === 'editableList'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <app-admin-editable-list
+                                class="my-2 block w-full"
+                                [doc]="!!data?.doc ? data.doc : null"
+                                [list]="data.value"
+                                [classes]="{ item: 'bg-white hover:border-white hover:shadow-lg hover:bg-white focus-within:shadow-lg focus-within:bg-white' }"
+                                [valueField]="!!data?.options?.valueField ? data.options.valueField : data.optionKey === 'blocks' ? 'blockName' : null"
+                                [sortable]="data.optionKey === 'redirects' || (!!data?.options?.valueField && data.options.valueField === false) ? false : true"
+                                [canCreate]="data?.options?.canCreate === false || data.optionKey === 'blocks' ? false : true"
+                                (updated)="updated.emit($event)"
+                                (createItem)="!!data?.options?.createItem ? data.options.createItem() : null"></app-admin-editable-list>
+                </ng-template>
+
+                <ng-template [ngIf]="data.inputType === 'text'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="textInput"></ng-container>
+                </ng-template>
+
+                <ng-template [ngIf]="data.inputType === 'number'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="numberInput"></ng-container>
+                </ng-template>
+
+                <ng-template [ngIf]="data.optionKey === 'handle'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <app-admin-entity-handle-input  
+                                [value]="data.value"     
+                                [collection]="data.collection"
+                                [creating]="!!data?.options?.creating"
+                                [doc]="!!data?.doc ? data.doc : null"
+                                class="w-full"
+                                (updated)="updated.emit($event)"></app-admin-entity-handle-input>
+                </ng-template>
+
+                <ng-template [ngIf]="data.inputType === 'textarea'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="textareaInput"></ng-container>
+                </ng-template>
+                
+                <ng-template [ngIf]="data.inputType === 'wysiwyg'">
+                        <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                        <ng-container *ngTemplateOutlet="wysiwygInput"></ng-container>
+                </ng-template>
+                
+                <ng-container *ngIf="data.inputType === 'link'">
+                        <app-admin-input-link
+                                [link]="!!data?.value ? data.value : null"
+                                (updated)="data.value = $event; updated.emit($event)"></app-admin-input-link>
+                </ng-container>
+
+                <ng-container *ngIf="data.inputType === 'color'">
+                        <ng-container *ngTemplateOutlet="colorInput"></ng-container>
+                </ng-container>
+        </div>
+
+        <app-custom-input *ngIf="responsiveOptions.includes(data.optionKey)"
+                 [data]="{ optionKey: 'responsive', value: responsive, inputClasses: 'bg-transparent p-0 scale-90' }"
+                class="block w-full p-0 m-auto"
+                (updated)="toggleResponsive($event)">
+        </app-custom-input>
+        
+        <ng-template #colorInput>
+                <app-admin-color-picker [data]="{ value: val, callback: colorCallback }"></app-admin-color-picker>
+        </ng-template>
+
+        <ng-template #optionButtons>
+                <mat-radio-group
+                        [attr.aria-labelledby]="ariaLabel"
+                        class="example-radio-group"
+                        [value]="val"
+                        (change)="setVal($event.value)"
+                        *ngIf="!!options?.length">
+                        <mat-radio-button 
+                                *ngFor="let option of options"
+                                [attr.class]="['an-option', option.inputType, 
+                                        !!option.icon ? 'hide-check' : 'show-check',
+                                        !!option.classNames ? option.classNames : '',
+                                        val === option.value ? activeOptionClasses.join(' ') :  optionClasses.join(' ')
+                                ].join(' ')"
+                                [value]="option.value"
+                                
+                                >
+                                <i *ngIf="!!option.icon" [ngClass]="['m-auto text-center', 'gicon gicon-' + option.icon, !!optionsIconClasses ? optionsIconClasses : '']"></i>
+                                <small *ngIf="!!option && (!!!option.icon || !!data.showOptionsLabels)"
+                                        [ngClass]="[!!optionsLabelClasses ? optionsLabelClasses : '']">{{ option.label }}</small>
+                        </mat-radio-button>
+                </mat-radio-group>
+        </ng-template>
+
+        <ng-template #iconCheckbox>
+                <button *ngIf="!!data?.options"
+                        [disableRipple]="true"
+                        [style.padding]="!!data.hideLabel ? '0' : '.5em 1em'"
+                        [style.min-width]="'40px'"
+                        [ngClass]="[
+                                'an-option icon-checkbox w-full flex items-center content-start', data.inputType,
+                                !!data?.options[!!!val ? 0 : 1]?.icon ? 'hide-check' : '',
+                                !!data?.options[!!!val ? 0 : 1]?.classNames ? data.options[!!!val ? 0 : 1].classNames : 'p-2',
+                                val === !!data.value ? 
+                                        !!activeOptionClasses ? 
+                                                activeOptionClasses.join(' ') :
+                                                !!optionClasses ? 
+                                                optionClasses.join(' ') :
+                                                ''
+                                        : ''
+                        ]"
+                        (click)="setVal(!!!val)">
+                        <i [ngClass]="['gicon', 'gicon-' + checkboxIcon, !!!data.hideLabel ? 'my-auto mr-2' : 'm-0']"></i>
+                        <small [ngClass]="[!!data?.optionsLabelClasses ? data.optionsLabelClasses : 'text-xs ml-3']">
+                                {{ data.options[!!!val ? 0 : 1 ].label }}
+                        </small>
+                </button>
+        </ng-template>
+
+        <ng-template #selectImages>
+                <ng-container *ngTemplateOutlet="inputLabel"></ng-container>
+                <div (click)="!!!val ? selectImage($event) : ''"
+                        [ngClass]="['select-image flex w-full h-full items-center justify-center relative rounded cursor-pointer transform mat-elevation-z4-hvr']"
+                        style="transition: all .2s ease;">
+                        <i *ngIf="!!!val"
+                                class="gicon gicon-add m-auto my-8"></i>
+                        <ng-template [ngIf]="!!val && ((!!!data?.multiple && !!val.src) || (!!data.multiple && !!val[imageIndex > -1 ? imageIndex : 0]?.src))">
+                                <img imageLoader aspectRatio="4:3"
+                                        class="cursor-pointer"
+                                        (click)="selectImage($event)"
+                                        [ngClass]="['min-h-full min-w-full block rounded overflow-hidden transform flex-shrink-0']"
+                                        [attr.src]="!!!data.multiple ? !!val.src ? val.src : val : 
+                                                !!data.value[imageIndex > -1 ? imageIndex : 0]?.src ? data.value[imageIndex > -1 ? imageIndex : 0].src : data.value[imageIndex > -1 ? imageIndex : 0]" 
+                                        [thumbs]="!!!data.multiple && !!val?.thumbs ? val.thumbs : !!data.value[imageIndex > -1 ? imageIndex : 0]?.thumbs ? data.value[imageIndex > -1 ? imageIndex : 0].thumbs : null" />
+                                <mat-icon (click)="removeImage($event, imageIndex)"
+                                        class="absolute remove-image text-white z-10 top-0 right-0 transform scale-75"
+                                        style="text-shadow: 0 1px 20px rgba(0,0,0,.4)">
+                                        close
+                                </mat-icon>
+                                <!-- <mat-icon *ngIf="!!val[imageIndex - 1]"
+                                        (click)="imageIndex > 0 ? imageIndex = imageIndex - 1 : ''">
+                                        angle_left
+                                </mat-icon>
+                                <mat-icon *ngIf="!!val[imageIndex + 1]"
+                                        (click)="val.length > i + 1 ? imageIndex = imageIndex + 1 : ''">
+                                        angle_right
+                                </mat-icon> -->
+                        </ng-template>
+                </div>
+        </ng-template>
+
+        <ng-template #sliderInput>
+                <div *ngIf="!!data"
+                        class="slider-input flex flex-nowrap w-full overflow-scroll justify-start items-center">
+                        <input [value]="!!val ? val : 0"
+                                type="number"
+                                [ngClass]="['text-gray-600 box-shadow-lg', !!!data.hideInput ? 'hidden' : '']"
+                                [style.width]="
+                                        !!!val || val < 10 ? '5ch' 
+                                        : val < 100 ? '6ch' 
+                                        : val < 1000 ? '7ch' 
+                                        : val < 10000 ? '8ch' 
+                                        :  val < 100000 ? '9ch' 
+                                        : '5ch'"
+                                (keyup)="setVal($event.value)"
+                                (change)="setVal($event.target.value); updated.emit($event.target.value)" />
+                        {{ val | json }}
+                        <mat-slider
+                                class="w-full"
+                                color="primary"
+                                [min]="!!options.min ? options.min : 0"
+                                [max]="!!options.max ? options.max : 10"
+                                [step]="!!options.step ? options.step : 1"
+                                [value]="!!val ? val : 0"
+                                (change)="setVal($event.value); updated.emit($event.value)">
+                        </mat-slider>
+                </div>
+        </ng-template>
+
+        <ng-template #docStatus>
+                <i style="font-size: 10px; left: 13px; margin: 0 !important; top:  50%; transform: translate(-50%); line-height: 0;"
+                        [ngClass]="['gicon gicon-circle m-auto pr-1 absolute', 
+                                !!statusColors[val] ? 'text-' + statusColors[val] : '']"></i>
+                <mat-select (selectionChange)="setVal($event.value); updated.emit($event.value)"
+                        #selectElem
+                        class="py-2 pl-6 pr-2"
+                        [placeholder]="'draft'"
+                        name="Entity Status"
+                        [value]="val"
+                        panelClass="p-1 bg-white">
+                         
+                        <ng-template ngFor let-option [ngForOf]="customOptions.status.options">
+                                <mat-option 
+                                        [value]="option.value"
+                                        [attr.data-is-selected]="val === option.value"
+                                        [ngClass]="[ 'mb-1']"
+                                        style="border-radius: .3em;">
+                                        <i style="font-size: 8px"
+                                                [ngClass]="['gicon gicon-circle my-auto mr-2 ml-0', 'text-' + option.color ]"></i> <span>{{option.value}}</span>
+                                </mat-option>
+                        </ng-template>
+                </mat-select>
+        </ng-template>
+
+        <ng-template #docStatusButtons>
+                <div class="flex flex-col items-stretch justify-start w-full">
+                        <button mat-stroked-button
+                                *ngFor="let statusObj of customOptions.status.options"
+                                (click)="setVal(statusObj.value)"
+                                [ngClass]="[
+                                        'w-full text-dark py-2 mb-1 bg-transparent text-left',
+                                        val === statusObj.value ? 'active' : '',
+                                        statusObj.color.includes('darken') ? 'bg-black bg-opacity-10-hvr' : 'bg-' + statusObj.color +'-hvr',
+                                        'border-'+ statusObj.color +'-hvr'
+                                ]">
+                                <i [ngClass]="['gicon-circle my-auto ml-0 mr-3', 
+                                        statusObj.color.includes('darken') ? 'text-darken-03' : 'text-' + statusObj.color]">
+                                </i> {{ statusObj.value}}
+                        </button>
+                </div>
+        </ng-template>
+
+        <ng-template #selectInput>
+                <mat-select (selectionChange)="setVal($event.value); updated.emit($event.value)"
+                        #selectElem
+                        class="py-2 pl-3 pr-4"
+                        [placeholder]="!!data.defaultValue ? data.defaultValue : 'select...' "
+                        [name]="'Select input for ' + data.label"
+                        [value]="val"
+                        panelClass="p-1 bg-white">
+                         
+                        <mat-option *ngFor="let option of !!data?.options?.length ? data.options : 
+                                !!customOptions[data.optionKey]?.options?.length ? customOptions[data.optionKey]?.options?.length : 
+                                [{ value: null, label: 'No Options Found' }]"
+                                [value]="option.value"
+                                [attr.data-is-selected]="val === option.value"
+                                [ngClass]="[ 'mb-1']"
+                                style="border-radius: .3em;">
+                                <i *ngIf="!!option?.icon?.length" style="font-size: 8px"
+                                        [ngClass]="['gicon my-auto mr-2 ml-0', 'gicon-' + option.icon ]"></i>
+                                <span class="relative top-1">{{!!option.label?.length ? option.label : option.value}}</span>
+                        </mat-option>
+
+                </mat-select>
+        </ng-template>
+        
+        <ng-template #wysiwygInput>
+                <app-wysiwyg-editor
+                        [data]="data.value"
+                        [editorType]="!!data?.options?.editorType ? data.options.editorType : null"
+                        (changed)="updatedSubject.next($event)"></app-wysiwyg-editor>
+        </ng-template>
+
+        <ng-template #textInput>
+                <input *ngIf="data.inputType === 'textarea'; else textareaInput"
+                        #txtInput
+                        matInput
+                        [ngClass]="[
+                                'w-full text-field focus:border-0 border-0 bg-transparent px-2',
+                                ['title', 'name'].includes(data.optionKey) ? 'text-lg md:text-xl' : 'text-base'
+                        ]"
+                        [placeholder]="data?.placeholder ? data.placeholder : '...'"
+                        [value]="!!data?.value ? data.value : !!data?.defaultValue ? data.defaultValue : ''" 
+                        (keyup)="data.value = $event.target.value"
+                        (keydown.return)="updatedSubject.next($event.target.value)"
+                        (change)="updatedSubject.next($event.target.value)" />
+        </ng-template>
+
+        <ng-template #textareaInput>
+                 <textarea matInput
+                        [ngClass]="[
+                                'w-full ring-0 focus:border-0 border-0 outline-none focus:outline-none focus:ring-0 text-field bg-transparent m-2 py-0',
+                                ['title', 'name'].includes(data.optionKey) ? 'text-lg md:text-xl' : 'text-base'
+                        ]"
+                        cdkTextareaAutosize
+                        #textareaAutoresize="cdkTextareaAutosize"
+                        #textareaElem="matInput"
+                        [matAutosize]="true"
+                        [matAutosizeMinRows]="2"
+                        [matAutosizeMaxRows]="5"
+                        [enabled]="true"
+                        [placeholder]="data?.placeholder ? data.placeholder : '...'"
+                        [value]="!!data?.value ? data.value : !!data?.defaultValue ? data.defaultValue : ''" 
+                        (click)="!!textareaElem?.resizeToFitContent ? textareaElem.resizeToFitContent() : ''"
+                        (keyup)="data.value = $event.target.value; !!textareaElem?.resizeToFitContent ? textareaElem.resizeToFitContent() : ''; changed.emit($event.target.value)"
+                        (keydown.return)="updatedSubject.next($event.target.value); !!textareaElem?.resizeToFitContent ? textareaElem.resizeToFitContent() : ''"
+                        (change)="updatedSubject.next($event.target.value); !!textareaElem?.resizeToFitContent ? textareaElem.resizeToFitContent() : ''">
+                </textarea>
+        </ng-template>
+
+        <ng-template #numberInput>
+                <input [value]="!!val ? val : 0"
+                        type="number"
+                        [ngClass]="['text-gray-600 box-shadow-lg', !!!data.hideInput ? 'hidden' : '']"
+                        [style.width]="
+                                !!!val || val < 10 ? '5ch' 
+                                : val < 100 ? '6ch' 
+                                : val < 1000 ? '7ch' 
+                                : val < 10000 ? '8ch' 
+                                :  val < 100000 ? '9ch' 
+                                : '5ch'"
+                        (keyup)="setVal($event.value); changed.emit($event.target.value)"
+                        (change)="setVal($event.target.value); updated.emit($event.target.value)" />
+        </ng-template>
+        
+
+        <ng-template #inputLabel let-text="text">
+                <label *ngIf="(!!data.label || !!text) && !!!data.hideLabel"
+                        [ngClass]="['label', !!data.labelClasses ? data.labelClasses : '']">
+                        {{ !!text ? text : data.label }}
+                </label>
+        </ng-template>
+        
+        
+</ng-container>

@@ -1,0 +1,27 @@
+<app-card #appCard
+        *ngIf="!!sectorMap"
+      [linkPath]="'/projects/' + doc.handle"
+      [cardStyle]="'overlay'" [aspectRatio]="aspectRatio"
+      [routerLink]="['/projects', doc.handle]"
+      [ngClass]="['w-full','project-block', !!doc?.classes?.card ? doc.classes.card : '']">
+      <div card-image class="bg-cover bg-center h-full w-full image-wrapper"
+        *ngIf="!!doc?.image ||( !!doc?.images?.length && !!doc?.images[0].src)">
+              <img imageLoader
+                #projectImage
+                  class="w-full h-auto text-white invisible"
+                  [aspectRatio]="aspectRatio"
+                  [image]="!!doc.image ? doc.image : !!doc?.images?.length ? doc.images[0] : null"
+                  [attr.src]="!!doc?.image?.thumbs && !!doc?.image?.thumbs['256'] ? doc.image.thumbs['256'] : 
+                        !!doc?.images?.length && !!doc?.images[0]?.thumbs && !!doc?.images[0]?.thumbs['256'] ? doc.images[0].thumbs['256'] :
+                        !!doc?.image?.src ? doc.image.src : doc.images[0].src"
+                  [isBackground]="true"
+                  [thumbs]="!!doc?.image?.thumbs ? doc.image.thumbs : !!doc.images[0]?.thumbs ? doc.images[0].thumbs : null" />
+      </div>
+      <h2 card-title [ngClass]="['project-card-title text-white font-medium capitalize', !!doc?.classes?.title ? doc.classes.title : '']">{{ doc.title }}</h2>
+      <div card-reveal class="ml-2">
+              <h4 class="prose text-white drop-shadow-lg tracking-wider text-base font-semibold">
+                      <i class="lowercase font-italic text-white font-medium"  *ngIf="!!sectorMap">{{ !!sectorMap.hasOwnProperty(doc.sector) ? sectorMap[doc.sector] : doc.sector }}</i><br>
+                      <span class="capitalize">{{ doc.location.city }},</span> <span class="uppercase">{{ doc.location.state }}</span>
+              </h4>
+      </div>
+</app-card>

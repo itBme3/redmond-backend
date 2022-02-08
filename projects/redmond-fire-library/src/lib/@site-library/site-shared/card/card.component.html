@@ -1,0 +1,52 @@
+<div #cardElem
+        [ngClass]="[ 'gg-card relative w-full', cardStyle ]"
+        [style.height]="(cardHeight$ | async)"
+        (isHovering)="hovered = revealOnHover ? $event : false">
+
+        <div [ngClass]="['image z-2 relative ramp-in']">
+                <ng-content select="[card-image]"></ng-content>
+                <div class="image-overlay quick-in absolute inset-x-0" *ngIf="textPresent"></div>
+        </div>
+        
+        <ng-content select="[card-before]"></ng-content>
+
+        <div [ngClass]="[
+                'card-content top-auto inset-x-0 bottom-0 z-10',
+                cardStyle === 'overlay' ? 'absolute text-white' : 'relative px-0 text-grey-dark']">
+                <ng-content select="[card-title]"></ng-content>
+
+                <div *ngIf="revealOnHover; else revealCardContent"
+                        class="overflow-hidden reveal-on-hover"
+                        [@revealContent]="hovered ? 'visible' : 'hidden'">
+                        <div class="my-auto flex items-center"
+                                [@revealContentChild]="hovered ? 'visible' : 'hidden'" class="w-full">
+                                <ng-container 
+                                        *ngTemplateOutlet="revealCardContent"></ng-container>
+                        </div>
+                        
+                </div>
+
+                <ng-content select="[card-after]"></ng-content>
+        </div>
+        
+        <ng-template [ngIf]="!!linkPath">
+                <a *ngIf="linkPath.includes('.')" [attr.href]="linkPath"
+                        class="absolute card-link inset-0 z-100 cursor-pointer">
+                </a>
+                <a *ngIf="!linkPath.includes('.')" [routerLink]="[linkPath]"
+                        class="absolute card-link inset-0 z-100 cursor-pointer">
+                </a>
+        </ng-template>
+       
+        <div *ngIf="!!!linkPath"  
+                class="absolute inset-0 z-3"></div>
+
+</div>
+
+
+
+
+
+<ng-template #revealCardContent>
+        <ng-content select="[card-reveal]"></ng-content>
+</ng-template>

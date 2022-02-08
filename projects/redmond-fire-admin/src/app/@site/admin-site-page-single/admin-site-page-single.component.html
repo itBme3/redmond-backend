@@ -1,0 +1,102 @@
+<app-shell #shell class="bg-white">
+        <ng-template #loading><app-loading-element title=""></app-loading-element></ng-template>
+
+        <ng-container *ngIf="!!doc; else loading">
+
+                <ng-template #pageToolbar let-hasSidebar="hasSidebar" let-maxWidth="maxWidth" let-titleKey="titleKey">
+                        <mat-toolbar class="flex px-0 w-full flex-nowrap space-x-2 content-between mx-auto max-w-full overflow-hidden"
+                                [style.max-width]="!!maxWidth ? maxWidth + ' !important' : '100% !important'"
+                                style="height: 50px">
+                                <!-- SETTINGS TOGGLE -->
+                                <button mat-mini-fab
+                                        *ngIf="!!hasSidebar"
+                                        class="bg-transparent mat-elevation-z0 text-gray-800 my-auto ml-0 mr-auto"
+                                        (click)="sidenavOpened = !sidenavOpened">
+                                        <i class="gicon-settings"></i>
+                                </button>
+                                
+                                <!-- STATUS -->
+                                <app-entity-status
+                                        class="ml-auto my-auto mr-2 block"
+                                        [data]="{ doc: doc, context: 'select' }"
+                                        (updated)="doc.status = $event">
+                                </app-entity-status>
+                        </mat-toolbar>
+                </ng-template>
+
+                <ng-template [ngIf]="!['page'].includes(doc.type)" [ngIfElse]="pageTemplate">
+
+                        <ng-container *ngTemplateOutlet="pageToolbar; 
+                                context: {
+                                        maxWidth: '960px',
+                                        titleKey: doc.type === 'team' ? 'name' : 'title'
+                                }">
+                        </ng-container>
+                        <ng-scrollbar
+                                thumbClass="bg-gray-200 w-1 hover:bg-red-400"
+                                barClass="bg-transparent shadow-none ring-none border-none ml-2"
+                                [compact]="true"
+                                [autoUpdate]="true"
+                                [visibility]="'hover'"
+                                class="single-entity-container w-full px-4 h-[calc(100vh-50px)] pb-0"
+                                [style.height]="'calc(100vh - 50px)'">
+                                <app-admin-site-single-project
+                                        #pageComponent
+                                        class="w-[calc(100%-50px)] block max-w-[960px] mx-auto pt-4"
+                                        *ngIf="doc.type === 'project'; else simplePage"
+                                        [doc]="doc">
+                                </app-admin-site-single-project>
+                                
+                                <ng-template #simplePage>
+                                        <app-admin-site-page-single-simple
+                                                #pageComponent
+                                                class="w-full block max-w-[960px] mx-auto pt-0"
+                                                [doc]="doc">
+                                        </app-admin-site-page-single-simple>
+                                </ng-template>
+                        </ng-scrollbar>
+                </ng-template>
+
+                <ng-template #pageTemplate>
+                        <mat-sidenav-container 
+                                [hasBackdrop]="false"
+                                class="bg-transparent border-0 h-full w-full">
+                                <mat-sidenav [opened]="sidenavOpened"
+                                        #drawer
+                                        mode="side"
+                                        [fixedInViewport]="true"
+                                        [ngClass]="[
+                                                'single-entity-sidebar-container w-full mx-auto border-0 px-4 bg-gray-200 pt-[50px] pl-[66px] left-0', editing === null ? 'max-w-[190px]' : 'max-w-[260px]'
+                                        ]">
+                                        <app-admin-site-page-single-sidebar *ngIf="!!doc" [doc]="doc">
+                                        </app-admin-site-page-single-sidebar>
+                                </mat-sidenav>
+                                <mat-sidenav-content class="bg-transparent p-0">
+                                        <div *ngIf="!!doc"
+                                                class="w-full mx-auto">    
+                                                
+                                                <ng-container *ngTemplateOutlet="pageToolbar; context: {  hasSidebar: true,  titleKey: 'title' }">
+                                                </ng-container>
+                                                
+                                                <div class="single-entity-container overflow-y-scroll overflow-x-hidden"
+                                                        [style.height]="'calc(100vh - 50px)'"
+                                                        [style.width]="'100%'">
+
+                                                        <app-admin-grid-blocks #adminGridBlocks 
+                                                                class="w-full overflow-x-hidden mx-auto"
+                                                                *ngIf="!!doc?.docPath?.length"
+                                                                [blocks]="!!doc?.blocks ? doc.blocks : []"
+                                                                [doc]="doc"
+                                                                (isHovering)="hovering = $event"
+                                                                [hovering]="hovering"
+                                                                (updateBlocks)="doc.blocks = $event"
+                                                                [ngClass]="['']">
+                                                        </app-admin-grid-blocks>
+                                                        
+                                                </div>
+                                        </div>
+                                </mat-sidenav-content>
+                        </mat-sidenav-container>
+                </ng-template>
+        </ng-container>
+</app-shell>

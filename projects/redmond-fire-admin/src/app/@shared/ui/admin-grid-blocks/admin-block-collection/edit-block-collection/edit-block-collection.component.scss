@@ -1,0 +1,12 @@
+:host {
+        .input-list-item {
+                .delete-buttons {
+                        @apply transform opacity-0 scale-0
+                }
+                &:hover {
+                        .delete-buttons {
+                                @apply transform opacity-100 scale-100
+                        }
+                }
+        }
+}

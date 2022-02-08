@@ -1,0 +1,110 @@
+:host {
+        @apply block w-screen;
+        ::ng-deep {
+                [class*="gicon-logo"] {
+                        &:before {
+                                @apply m-auto;
+                        }
+                }
+                .admin-navigation {
+                        @apply ml-px ease-quick-in duration-300 max-w-[160px] 
+                                transition-all block h-screen bottom-0 p-2 
+                                bg-gray-800 text-white fixed top-0 left-0 
+                                right-auto z-[999] rounded-xl shadow-xl;
+                        mat-icon {
+                                transition: 1s transform ease !important;
+                                transition-delay: 0.5s;
+                        }
+                        button {
+                                @apply overflow-hidden;
+                        }
+                        &.collapsed {
+                                padding: 0.25em;
+                                width: 50px;
+                                padding-left: 5px !important;
+                                padding-right: 5px !important;
+
+                                button,
+                                app-current-user {
+                                        width: 40px !important;
+                                        margin-left: auto;
+                                        margin-right: auto;
+                                        min-width: 40px;
+                                        transition: all 0.2s ease;
+                                        [class*="gicon"] + span,
+                                        .user-avatar + small {
+                                                opacity: 0 !important;
+                                                width: 0;
+                                        }
+                                }
+                                app-current-user {
+                                        padding: 0;
+                                        .logout-button {
+                                                display: none;
+                                        }
+                                        .user {
+                                                padding: 5px !important;
+                                                margin-top: 1em !important;
+                                                display: block;
+                                                border-color: transparent !important;
+                                                width: 100%;
+                                                .user-avatar {
+                                                        margin-left: 0 !important;
+                                                        margin-right: 0 !important;
+                                                }
+
+                                                .user-avatar {
+                                                        width: 30px;
+                                                        height: 30px;
+                                                        min-width: 30px !important;
+                                                        + small {
+                                                                @apply hidden;
+                                                        }
+                                                }
+                                                &:hover {
+                                                        .user-avatar {
+                                                                min-width: 0 !important;
+                                                                width: 0 !important;
+                                                                opacity: 0;
+                                                        }
+                                                }
+                                                small {
+                                                        @apply whitespace-nowrap inline-block overflow-hidden text-[9px] overflow-ellipsis max-w-full;
+                                                }
+                                        }
+                                }
+                                + div + .admin-shell-content {
+                                        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2), 0 0 0 0 rgba(0, 0, 0, 0.14),
+                                                0 0 0 0 rgba(0, 0, 0, 0.12);
+                                }
+                        }
+                        @media screen and (max-width: 420px) {
+                                .admin-navigation {
+                                        @apply right-0 left-0 top-0;
+                                        
+                                        &:not(:hover) {
+                                                @apply bg-transparent shadow-none;
+                                                :not(.collapsed) {
+                                                        @apply transform scale-90 text-black;
+                                                        button {
+                                                                @apply h-0 opacity-0;
+                                                        }
+                                                        mat-icon {
+                                                                @apply transform rotate-180;
+                                                        }
+                                                        app-current-user {
+                                                                @apply opacity-0 w-0 h-0 overflow-hidden block;
+
+                                                        }
+                                                        mat-toolbar-row {
+                                                                button {
+                                                                        @apply hidden m-0 p-0 opacity-100 border-0;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+}

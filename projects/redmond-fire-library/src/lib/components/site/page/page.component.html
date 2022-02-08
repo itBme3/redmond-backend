@@ -1,0 +1,44 @@
+<ng-template #loading> <app-loading-element title=""></app-loading-element></ng-template>
+
+<site-shell [ngClass]="['w-screen', !!isHomePage ? 'home-page' : '', !!doc?.blocks?.length && doc?.blocks[0]?.blockType === 'carousel' ? 'max-w-screen' : 'max-w-screen-xl']"
+        *ngIf="!!collectionDoc || !!doc; else loading">
+        <div [ngClass]="['page-content', !!doc?.blocks?.length && doc?.blocks[0]?.blockType === 'carousel' ? 'px-0' : 'px-3 sm:px-4 md:px-9 lg:px-13']">
+
+                <ng-template #pageHeading let-title="title" let-description="description">
+                        <app-page-header class="page-heading"
+                                *ngIf="!!title?.length">
+                                <h1 class="header-title">{{title}}</h1>
+                                <h4 class="header-text">{{description}}</h4>
+                        </app-page-header>
+                </ng-template>
+                
+
+                <ng-template [ngIf]="!!collectionDoc?.title">
+                        <ng-container *ngTemplateOutlet="pageHeading; context: { title: collectionDoc.title, description: collectionDoc.description }"></ng-container>
+                </ng-template>
+
+
+                <div *ngIf="collection === 'projects'">
+                        <app-collection-projects *ngIf="!!collectionDoc" state="page"></app-collection-projects>
+                        <app-page-project *ngIf="!!doc?.handle" [doc]="doc"></app-page-project>
+                </div>
+
+                <app-contact-page *ngIf="page === 'contact'">
+                </app-contact-page>
+
+                 <div *ngIf="postTypes.includes(collection)">
+                        <app-collection-posts *ngIf="!!!doc?.handle" state="page"></app-collection-posts>
+                        <app-page-post *ngIf="!!doc?.handle" [doc]="doc"></app-page-post>
+                </div>
+                
+                
+                <div *ngSwitchCaseDefault>
+                        <!-- <app-four-oh-four></app-four-oh-four> -->
+                        404
+                </div>
+
+                <app-grid-blocks *ngIf="!!doc?.blocks?.length" [doc]="doc"></app-grid-blocks>
+
+        </div>
+
+</site-shell>

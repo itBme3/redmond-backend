@@ -1,0 +1,37 @@
+<app-loading-element *ngIf="docs === 'loading'" title=""></app-loading-element>
+<div [ngClass]="['flex nowrap items-center content-center relative', data.fieldClasses ? data.fieldClasses : '']"
+        *ngIf="!!docs && docs !== 'loading'"
+        floatLabel="never"
+        style="max-width: 320px; background-color: #39394c; color: rgba(255,255,255,.6); border-radius: .3em;">
+        <input matInput
+                type="text"
+                [placeholder]="!!data.type ? data.type + '...' :  '...'"
+                [attr.aria-label]="data.type"
+                [matAutocomplete]="auto"
+                (keyup)="filterFunc($event.target.value)"
+                (change)="emitSelection($event.target.value)"
+                #autoInput
+                style="padding: .5em; z-index: 1;  max-width: calc(100% - 1em); margin-right: 1.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                class="bg-transparent text-gray-400 w-100 text-center"
+                [value]="!!data.selectedValue ? data.selectedValue : ''"
+                [showPanel]="openPanel">
+                <mat-icon class="cursor-pointer text-gray-400 my-auto mr-2 absolute"
+                        style="top: 50%; transform: scale(.8) translateY(-65%); right: 0; z-index: 0"
+                        *ngIf="(filteredOptions | async).length > 0 "
+                        (click)="autoInput.focus(); openPanel = !openPanel">keyboard_arrow_down</mat-icon>
+                <button matSuffix mat-button
+                        class="bg-green text-white"
+                        (click)="emitCreateNew(autoInput)"
+                        *ngIf="!!data.canCreate && !!autoInput.value && autoInput.value.length > 0 && !values.includes(autoInput.value.toLowerCase())">create</button>
+        <mat-autocomplete [autoActiveFirstOption]="true"
+                (optionSelected)="emitSelection($event.option.value)"
+                #auto="matAutocomplete"
+                [classList]="'text-gray-700'">
+                <ng-template ngFor let-doc [ngForOf]="filteredOptions | async">
+                        <mat-option *ngIf="!selectedValues.includes(doc[data.field])" [value]="doc[data.field]">
+                                {{doc[data.field]}}
+                        </mat-option>
+                </ng-template>
+        </mat-autocomplete>
+</div>
+

@@ -1,0 +1,42 @@
+:host {
+        @apply pr-3 block w-full;
+
+        ::ng-deep {
+                .project-image-item {
+                        @apply overflow-hidden z-1;
+                        &:hover {
+                                @apply z-10 shadow-lg overflow-visible;
+                        }
+                        .image-wrapper {
+                                @apply bg-cover bg-center h-32 overflow-hidden;
+                                &:hover {
+                                        @apply z-10 shadow-lg overflow-visible;
+                                }
+                        }
+                        .edit-buttons {
+                                @apply opacity-100 scale-100 ease-quick-in transform transition-all;
+                        }
+                        .drag-handle {
+                                @apply transform scale-75 opacity-100;
+                        }
+                        &:not(:hover) {
+                                .edit-buttons,
+                                .drag-handle {
+                                        @apply opacity-0 scale-50;
+                                }
+                        }
+                }
+                :not(.cdk-drop-list-dragging) {
+                        .project-image-item {
+                                &:hover {
+                                        @apply z-10 shadow-lg overflow-visible;
+                                }
+                        }
+                        .image-wrapper {
+                                &:hover {
+                                        @apply overflow-visible;
+                                }
+                        }
+                }
+        }
+}

@@ -1,0 +1,34 @@
+
+<div class="edit-embed-options" [ngSwitch]="embedType">
+        
+        <div *ngSwitchCase="EmbedType.VIMEO"
+                class="vimeo-embed-options">
+                <div #vimeoPreview></div>
+        </div>
+
+        <div *ngSwitchCase="EmbedType.PDF"
+                class="pdf-embed-options">
+                <div id="pdfPreviewDiv"></div>
+                <!-- <div id="adobe-dc-view"></div> -->
+        </div>
+
+        <div *ngSwitchDefault>
+                <div class="input-field rounded">
+                        <input matInput
+                                placeholder="paste a Vimeo or PDF url..."
+                                (change)="src = $event.target.value"
+                                [value]="src" />
+                </div>
+        </div>
+</div>
+
+
+<ng-template #checkBox let-key="key" let-val="val" >
+        <app-custom-input 
+                [data]="{
+                        inputType: 'iconCheckbox',
+                        value: val,
+                        label: key
+                }"
+                (updated)="updateOptions({ key: key, value: $event })"></app-custom-input>
+</ng-template>

@@ -1,0 +1,37 @@
+
+
+<mat-sidenav-container *ngIf="!!collection"
+        class="w-full max-w-full h-screen">
+        <mat-sidenav #filtersNav
+                [opened]="showFilters"
+                mode="side"
+                class="border-0 p-2 bg-transparent"
+                style="width: 150px">
+                <div class="search-input">
+                        <input matInput
+                                class="outline-none ring-0 ring-transparent"
+                                autocomplete="true" 
+                                [value]="search"
+                                (keyup)="searchSubject.next($event.target.value)"
+                                (change)="searchSubject.next($event.target.value)" />
+                </div>
+        </mat-sidenav>
+        <mat-sidenav-content>
+                <app-db-collection
+                        [query]="query"
+                        [path]="'admin/' + collection + '/collection'"
+                        (theDocs)="docs = $event"
+                        (appendDocs)="appendingDocs($event)"
+                        >
+                        <div db-docs>
+                                <ng-template ngFor let-doc [ngForOf]="docs">
+                                        {{ doc | json }}
+                                </ng-template>
+                        </div>
+                </app-db-collection>
+        </mat-sidenav-content>
+</mat-sidenav-container>
+
+<div *ngIf="!!!collection">
+        <strong>{{ collection }}</strong> is not a know collection type
+</div>

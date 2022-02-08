@@ -1,0 +1,49 @@
+<!-- <app-toggle-responsive
+        class="block w-full"
+        [responsive]="responsive"
+        (updated)="responsive = $event"></app-toggle-responsive> -->
+
+<div class="p-10 w-full m-10">
+        <app-custom-input [data]="{ optionKey: 'responsive' }"
+                class="block w-full"
+                (updated)="responsive = $event"></app-custom-input>
+
+        <mat-form-field>
+                <input #breakpointInput matInput placeholder="breakpoint"
+                        [value]="responsive">
+        </mat-form-field>
+
+        <mat-form-field>
+                <input #classNames matInput placeholder="classNames" [value]="classString">
+        </mat-form-field>
+        <mat-form-field>
+                <input #classNamespace matInput placeholder="classNamespace"
+                        [value]="defaultClassNamespace">
+        </mat-form-field>
+
+        <p>get  value:</p>
+        <mat-form-field>
+                <input matInput placeholder="from className" [value]="''"
+                        (keyup)="val = parseClasses.getValueFromClassName($event.target.value)">
+        </mat-form-field>
+        <mat-form-field>
+                <input matInput placeholder="from classNames" [value]="''"
+                        (keyup)="val = parseClasses.getValueFromClassNames($event.target.value, classNames.value, breakpointInput.value)">
+        </mat-form-field>
+
+<p>set value:</p>
+
+<mat-form-field>
+        <input #valueInput matInput placeholder="value"
+                [value]="defaultClassName">
+</mat-form-field>
+
+
+
+<mat-form-field>
+        <input matInput placeholder="classes" [value]="classString"
+                (keyup)="val = parseClasses.setClassValue(classNamespace.value, valueInput.value, $event.target.value, breakpointInput.value)">
+</mat-form-field>
+
+{{ val | json }}
+</div>

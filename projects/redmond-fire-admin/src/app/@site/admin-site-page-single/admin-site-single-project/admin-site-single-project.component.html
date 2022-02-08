@@ -1,0 +1,98 @@
+
+ <div class="w-full flex flex-wrap sm:flex-nowrap space-x-3">
+         
+         <div class="w-full max-w-[420px] sm:w-7/12 project-info position-relative">
+
+                <div class="w-full flex-col items-center content-start">
+                        <app-admin-site-entity-form 
+                                class="w-6/12 position-relative"
+                                [doc]="doc"
+                                [shouldSave]="true"
+                                [keys]="['title', 'handle','sector', 'client', 'city',  'state', 'redirects']">
+                        </app-admin-site-entity-form>
+                </div>
+        </div>
+        <div class="project-images w-full sm:w-5/12 flex-grow">
+                <small class="mb-2 text-gray-500">Images:</small>
+                <ng-container *ngTemplateOutlet="addImagesButton; context: { push: false }"></ng-container>
+                <div class="drag-list position-relative"
+                        *ngIf="!!doc?.images?.length"
+                        cdkDropList
+                        #contentList="cdkDropList"
+                        cdkDropListOrientation="vertical"
+                        [cdkDropListData]="doc.images"
+                        (cdkDropListDropped)="drop($event)"
+                        [@animatedList]="doc.images">
+                        <div *ngFor="let image of doc.images; let i = index; trackBy: trackByFn"
+                                class="project-image-item"
+                                cdkDrag>
+                                <div class="w-full overflow-hidden relative my-1 mb-1 shadow-lg tansition-all ease-quick-in rounded w-100 text-grey-dark bg-white flex content-start items-center flex-nowrap border border-transparent hover:border-white hover:shadow-lg p-0">
+                                        <div class="image-wrapper my-auto w-full flex items-centercursor-pointer absolute inset-0 rounded">
+                                                <img imageLoader 
+                                                        [attr.src]="!!image?.src ? image.src : image"
+                                                        [thumbs]="!!image?.thumbs ? image.thumbs : null"
+                                                        [aspectRatio]="'16:9'"
+                                                        [isBackground]="true"
+                                                        class="w-full h-auto max-w-full relative z-0" />
+                                                <mat-form-field 
+                                                        *ngIf="editing === i"
+                                                        class="ml-4 w-full absolute top-0 left-3 right-3 z-10">
+                                                        <input matInput placeholder="image alt" [value]="!!image.alt?.length ? image.alt : ''">
+                                                </mat-form-field>
+                                        </div>
+
+                                        <button mat-mini-fab
+                                                cdkDragHandle
+                                                [ngClass]="['drag-handle relative mat-elevation-z0 z-10 cursor-move shadow-sm hover:shadow-lg mx-auto hover:text-opacity-75 bg-gray-50 hover:bg-white text-opacity-75 text-black ml-2']">
+                                                <mat-icon>
+                                                        drag_handle
+                                                </mat-icon>
+                                        </button>
+
+
+                                        <div class="edit-buttons transform scale-90 flex flex-col ml-auto mr-0 items-center rounded full bg-gray-100 z-10">
+                                                <ng-template [ngIf]="removing !== i" [ngIfElse]="confirmDelete">
+                                                        <button mat-icon-button
+                                                                #removeImageButton
+                                                                matTooltip="image alt"
+                                                                matTooltipPosition="above"
+                                                                (click)="editing = editing === i ? null : i"
+                                                                [ngClass]="['transform scale-75 shadow-none mx-auto hover:text-opacity-75 bg-white text-opacity-50 text-black', editing === i ? 'hover:bg-green' : 'hover:bg-yellow' ]">
+                                                                <mat-icon>{{ editing === i ? 'done' : 'edit' }}</mat-icon>
+                                                        </button>
+                                                        <button mat-icon-button
+                                                                #removeImageButton
+                                                                matTooltip="remove image"
+                                                                matTooltipPosition="above"
+                                                                (click)="removing = i"
+                                                                class="transform scale-75 shadow-none hover:bg-red mx-auto hover:text-opacity-75 bg-white text-opacity-50 text-black">
+                                                                <mat-icon>delete</mat-icon>
+                                                        </button>
+                                                </ng-template>
+                                                <ng-template #confirmDelete>
+                                                        <div class="flex flex-nowrap items-center content-start">
+                                                                <button mat-button
+                                                                        class="bg-red hover:bg-red-600 text-black text-opacity-75 my-6 ml-3"
+                                                                        (click)="removeImage()">confirm</button>
+                                                                <mat-icon (click)="removing = null" 
+                                                                        class="cursor-pointer transform scale-75 mx-1 my-auto text-gray-500 hover:text-gray-800">close</mat-icon>
+                                                        </div>
+                                                </ng-template>
+                                                
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <ng-container *ngTemplateOutlet="addImagesButton; context: { push: true }"></ng-container>
+        </div>
+
+        <ng-template #addImagesButton let-push="push">
+                <button mat-button 
+                        class="w-full bg-gray-200"
+                        (click)="addImages($event, !!push)">
+                        <mat-icon>add</mat-icon>
+                </button>
+        </ng-template>
+        
+ </div>
+       

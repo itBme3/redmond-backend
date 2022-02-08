@@ -1,0 +1,8 @@
+:host {
+
+        ::ng-deep {
+                .mat-button-wrapper {
+                        @apply w-full mx-0 flex items-center;
+                }
+        }
+}

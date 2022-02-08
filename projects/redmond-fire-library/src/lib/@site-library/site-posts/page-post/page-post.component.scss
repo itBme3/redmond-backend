@@ -1,0 +1,20 @@
+:host {
+        @apply block h-auto pt-10;
+        overflow-y: auto;
+        touch-action: pan-y !important;
+        .post-content {
+                a {
+                        @apply text-rcc-red;
+                }
+        }
+        .next-prev-post {
+                i {
+                        font-size: 50px;
+                }
+                &:hover {
+                        * {
+                                @apply text-rcc-red;
+                        }
+                }
+        }
+}

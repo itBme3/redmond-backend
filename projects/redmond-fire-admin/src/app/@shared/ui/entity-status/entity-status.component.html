@@ -1,0 +1,41 @@
+<ng-container *ngIf="!!!dialogOpened; else loading">
+
+        <span *ngIf="data.context === 'indicator'; else selectStatus"
+                [matTooltip]="data.doc.status"
+                [matTooltipClass]="'text-darken-07 bg-' +  statusColors[status]"
+                matTooltipPosition="above"
+                style="display: block; width: .66em; height: .66em; border-radius: .66em;"
+                [ngClass]="['status-indicator', 'bg-' + statusColors[status]]">
+        </span>
+
+        <button *ngIf="data.doc.status === entityStatus.UNSAVED && !!data.doc && !!data.doc.docPath"
+                (click)="saveChanges(); data.doc.status = entityStatus.PUBLISHED"
+                class="save-button flex items-center p-2 rounded bg-gray-300 bg-opacity-30 hover:text-block hover:text-opacity-75 text-blue hover:text-black hover:bg-blue">
+                <small class="my-auto leading-normal text-black text-opacity-75 relative -top-px">save</small> <mat-icon class="transform translate-x-[10%] scale-75 my-auto">save</mat-icon>
+        </button>
+
+        <ng-template #selectStatus>
+                <ng-template [ngIf]="data.doc.status !== entityStatus.UNSAVED">
+                        <app-custom-input 
+                                *ngIf="!!!confirmStatus; else confirmStatusUpdate"
+                                [ngClass]="data.context == 'buttons' ? '' : 'status-select-input' "
+                                [data]="{ inputType: data.context === 'buttons' ? 'statusButtons' : 'status', optionKey: 'status', value: !!data.doc.status ? data.doc.status : 'draft' }"
+                                (updated)="confirmStatus = $event">
+                        </app-custom-input>
+                        <ng-template #confirmStatusUpdate>
+                                <div class="flex items-center content-end">
+                                        <button mat-button
+                                                [ngClass]="['text-black text-opacity-75', 'bg-' + statusColors[confirmStatus]]"
+                                                (click)="updateStatus(confirmStatus)">
+                                                confirm
+                                        </button>
+                                        <mat-icon (click)="confirmStatus = null"
+                                                class="ml-2 cursor-pointer text-black text-opacity-50 hover:text-opacity-80">close</mat-icon>
+                                </div>
+                        </ng-template>
+                </ng-template>
+        </ng-template>
+</ng-container>
+
+
+<ng-template #loading><app-loading-element title="" style="max-width: 80px" [loaderColor]="statusColors[status]"></app-loading-element></ng-template>

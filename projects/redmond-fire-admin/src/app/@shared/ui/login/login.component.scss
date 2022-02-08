@@ -1,0 +1,46 @@
+:host {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 100vh;
+        background-color: whitesmoke;
+}
+.email-login-wrapper {
+        @apply p-4 w-full mb-2 bg-white shadow-lg rounded-md relative;
+}
+
+.logout {
+        strong {
+                @apply block mt-2;
+        }
+}
+::ng-deep {
+        .mat-form-field-subscript-wrapper  {
+                @apply relative text-xs;
+                
+        }
+        // [appGoogleSignin] {
+        //         @apply w-full transform mb-5 bg-white shadow-xl rounded-md flex items-center flex-nowrap text-center border-gray-100 border-b hover:bg-gray-50 py-4;
+        //         .mat-button-wrapper {
+        //                 // @apply w-full flex flex-nowrap items-center py-3;
+        //                 img {
+        //                         @apply w-6 h-auto ml-0 mr-2 block;
+        //                 }
+        //                 span {
+        //                         @apply w-full;
+        //                 }
+        //         }
+        // }
+        mat-error {
+                @apply text-red-500;
+        }
+        .mat-form-field-label {
+                @apply text-gray-400;
+        }
+        mat-form-field {
+                &.mat-focused .mat-form-field-label {
+                        @apply opacity-30;
+                }
+        }
+}

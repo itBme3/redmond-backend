@@ -1,0 +1,24 @@
+
+:host {
+                @apply block w-full;
+}
+
+::ng-deep {
+        .mat-select-arrow {
+		font-family: 'icomoon' !important;
+		speak: never;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 0 !important;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		border: 0 !important;
+		margin-right: auto;
+		&:before {
+				content: "\e900";
+                                @apply text-grey-dark;
+		}
+        }
+}

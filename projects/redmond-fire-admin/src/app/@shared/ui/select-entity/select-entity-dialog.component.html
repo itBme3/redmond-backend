@@ -1,0 +1,13 @@
+<app-selected-items-sidenav
+        [data]="{ selected: data.selected }"
+        (selectionChanged)="data.selected = $event; !!data.updateCallback ? data.updateCallback($event) : ''"
+        (saved)="data.selected = $event; dialogRef.close($event)"
+        (canceled)="data.selected = $event; dialogRef.close($event)"
+        (showingSelected)="showSelected = $event">
+        <app-select-entity
+          class="block w-full h-full"
+          [data]="data"
+          (selectionUpdated)="!!!$event[0] ? '' : !!!data.multiple ? save($event[0]) : data.selected = $event"
+          (saved)="save($event)">
+        </app-select-entity>
+    </app-selected-items-sidenav>

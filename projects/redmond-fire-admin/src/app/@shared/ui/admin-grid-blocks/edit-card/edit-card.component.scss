@@ -1,0 +1,25 @@
+:host {
+        ::ng-deep {
+                .custom-input-option-textSize {
+                                max-width: 100px !important;
+                        label {
+                                margin: auto 0.25em auto 0.5em !important;
+                        }
+                        mat-select {
+                                padding-top: 0.25em !important;
+                                padding-bottom: 0.25em !important;
+                                padding-left: 0 !important;
+                        }
+                        textarea,
+                        input {
+                                padding-top: 0.25em !important;
+                                padding-bottom: 0.25em !important;
+                        }
+                }
+                .input-field {
+                        > div {
+                                padding: 0.33em 0 !important;
+                        }
+                }
+        }
+}

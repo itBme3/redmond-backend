@@ -1,0 +1,38 @@
+<mat-icon (click)="blockType = null"
+        class="cursor-pointer transform scale-70"
+        *ngIf="!!blockType">arrow_back</mat-icon>
+<div *ngIf="blockType === 'card'"
+        class="button-group">
+        <button mat-button 
+                *ngFor="let _type of cardStyles"
+                (click)="cardStyle = _type; createBlock()">
+                <span class="flex flex-nowrap items-center content-stretch w-full my-auto">
+                        <i [ngClass]="['gicon my-auto mr-2 gicon-' + _type]"></i>
+                        <small class="my-auto">{{ _type }}</small>
+                </span>
+        </button>
+</div>
+<div *ngIf="blockType === 'collection'"
+        class="button-group">
+        <button mat-button 
+                class="text-uppercase"
+                *ngFor="let _type of collectionTypes"
+                (click)="collectionType = _type; createBlock()">
+                <span class="flex flex-nowrap items-center content-stretch w-full my-auto">
+                        <i [ngClass]="['gicon my-auto mr-2 gicon-' + _type]"></i>
+                        <small class="my-auto">{{ _type }}</small>
+                </span>
+        </button>
+</div>
+<div *ngIf="!['collection', 'card'].includes(blockType)"
+        class="button-group">
+        <button mat-button 
+                class="text-uppercase"
+                *ngFor="let _type of blockTypes"
+                (click)="blockType = _type; !hasSecondParam.includes(_type) ? createBlock() : ''">
+                <span class="flex flex-nowrap items-center content-stretch w-full my-auto">
+                        <i [ngClass]="['gicon my-auto mr-2 gicon-' + _type]"></i>
+                        <small class="my-auto">{{ _type }}</small>
+                </span>
+        </button>
+</div>

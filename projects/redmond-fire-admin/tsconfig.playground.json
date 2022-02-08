@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  "files": [
+    "../../projects/redmond-fire-admin/src/main.playground.ts",
+    "../../projects/redmond-fire-admin/src/polyfills.ts"
+  ],
+  "include": [
+    "../../projects/redmond-fire-admin/src",
+    "../../projects/redmond-fire-admin/src/**/*.d.ts",
+    "../../projects/redmond-fire-admin/src/**/*.sandbox.ts"
+  ]
+}

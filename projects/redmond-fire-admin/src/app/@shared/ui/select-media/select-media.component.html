@@ -1,0 +1,126 @@
+<mat-sidenav-container
+        [hasBackdrop]="isHandset$ | async"
+        [attr.data-is-handset]="isHandset$ | async"
+        [attr.data-sidenav-opened]="showSelected">
+        <mat-sidenav #sideNav 
+                [mode]="(isHandset$ | async) ? 'over' : 'side'" 
+                [opened]="showSelected"
+                [position]="'end'"
+                [fixedInViewport]="false"
+                (closedStart)="showSelected = false; resetSizing()"
+                (openedStart)="showSelected = true; resetSizing()"
+                class="max-w-[200px]">
+                <mat-toolbar style="height: 50px; padding: 10px;"
+                        [ngClass]="['flex rounded items-center overflow-hidden']">
+                        <button mat-button 
+                                *ngIf="!!this[dataKey].selected?.length"
+                                class="ml-auto mr-2 my-1 h-full px-0 flex items-center justify-center"
+                                (click)="sideNav.toggle()"
+                                style="min-width: 40px; width: 40px;">
+                                <i class="gicon-close transform scale-75 mr-2 d-inline-block my-auto"
+                                        *ngIf="!!showSelected"></i>
+                                <i class="gicon-images my-auto"></i>
+                        </button>
+                        <button mat-stroked-button
+                                class="text-red bg-red-hvr border-red-hvr text-white-hvr ml-auto mr-2"
+                                (click)="cancel()">
+                                cancel
+                        </button>
+                        <button mat-stroked-button
+                                class="text-green bg-green-hvr border-green-hvr text-white-hvr mx-0"
+                                (click)="emitSelection()">
+                                save
+                        </button>
+                </mat-toolbar>
+                <div class="selected-media"
+                        *ngIf="!!selectedMedia?.length">
+                        
+                        <ng-template ngFor let-item [ngForOf]="selectedMedia" let-i="index">
+                                <app-card cardStyle="overlay"
+                                        [aspectRatio]="'5:4'" 
+                                        class="w-full scale-90">
+                                        <div card-image class="h-full flex items-center image-wrapper bg-cover bg-center"
+                                                style=""
+                                                *ngIf="!!item?.src || !!item?.image || !!item?.images">
+                                                <img imageLoader
+                                                        [aspectRatio]="'5:4'"
+                                                        [ssBackground]="true"
+                                                        [thumbs]="!!item?.thumbs ? item.thumbs : !!item.image && !!item?.image?.thumbs ? item?.image?.thumbs : !!item?.images && !!item?.images[0] && !!item?.images[0]?.thumbs ? item.images[0].thumbs : null"
+                                                        class="w-full h-auto object-cover object-center text-white flex-shrink-1 min-w-full min-h-full"
+                                                        [attr.src]="!!item?.src ? item.src : !!item?.image ? !!item?.image?.src ? item.image.src : item.image : !!item?.images[0] ? !!item?.images[0]?.src ? item.images[0].src : item.images[0] : null" />
+                                        </div>
+                                        <div card-after class="remove-item ml-auto mr-0 cursor-pointer" 
+                                                [ngSwitch]="removing === i">
+                                                <button *ngSwitchCase="false"
+                                                        (click)="removing = i">
+                                                        <mat-icon>delete</mat-icon>
+                                                </button>
+                                                <div *ngSwitchCase="true"
+                                                        class="flex items-center">
+                                                        <button class="rounded px-2 pt-1 pb-2 text-black text-opacity-50 bg-red"
+                                                                (click)="removeItem(i)">confirm </button>
+                                                        <mat-icon (click)="removing = null">close</mat-icon>
+                                                </div>
+                                        </div>
+                                </app-card>
+                        </ng-template>
+                </div>
+        </mat-sidenav>
+        <mat-sidenav-content [style.height]="!!dialogRef ? 'calc(100vh - 4em)' : '100vh'">
+                
+                <mat-toolbar class="pr-0 bg-transparent flex flex-nowrap overflow-hidden">
+                        <mat-button-toggle-group 
+                                name="sourceToggle" 
+                                (change)="data.source = $event.value"
+                                class="mr-2">
+                                <mat-button-toggle class="transform scale-95"
+                                        [checked]="data.source === 'firebase'" value="firebase">
+                                        <i class="gicon gicon-collection"></i>
+                                </mat-button-toggle>
+                                <mat-button-toggle
+                                        class="transform scale-95"
+                                        [checked]="data.source === 'upload'" value="upload">
+                                        <i class="gicon gicon-upload"></i>
+                                </mat-button-toggle>
+                        </mat-button-toggle-group>
+                        <app-db-search-bar
+                                *ngIf="data.source === 'firebase'"
+                                [data]="searchData"
+                                (updateSearch)="updatingSearch($event); !!dbSearch?.filteredDocsSubject?.next ? dbSearch.filteredDocsSubject.next($event.search) : ''"></app-db-search-bar>
+                        <button mat-button 
+                                *ngIf="!!!showSelected && !!selectedMedia?.length"
+                                class="ml-auto mr-5 my-0 h-full"
+                                style="width: 50px; height: 50px; min-width: auto;"
+                                (click)="sideNav.toggle()">
+                                <i class="gicon-images"></i>
+                        </button>
+                        <button *ngIf="!!!selectedMedia?.length"
+                                (click)="cancel()"
+                                class="text-right mr-0 ml-auto my-auto">
+                                <mat-icon>close</mat-icon>
+                        </button>
+                </mat-toolbar>
+                <mat-dialog-content class="overflow-scroll"
+                        style="max-height: calc(100vh - 120px); height: calc(100vh - 120px)">
+                        <app-db-search 
+                                *ngIf="data.source === 'firebase'"
+                                #dbSearch
+                                [data]="{
+                                        searchData: searchData,
+                                        selected: selectedMedia,
+                                        containerClasses: 'grid grid-cols-2 md:grid-cols-3 gap-3',
+                                        mediaOnly: true
+                                }"
+                                (updateSelection)="updateMediaSelection($event); sideNav.open()">
+                        </app-db-search>
+
+                        <!-- UPLOAD -->
+                        <div *ngIf="data.source === 'upload'">
+                                <app-uploader 
+                                        [inputData]="searchData"
+                                        (uploadTaskCompleted)="uploadTaskCallback($event)">
+                                </app-uploader>
+                        </div>
+                </mat-dialog-content>
+        </mat-sidenav-content>
+</mat-sidenav-container>

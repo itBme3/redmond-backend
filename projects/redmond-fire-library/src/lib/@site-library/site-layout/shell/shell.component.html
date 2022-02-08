@@ -1,0 +1,26 @@
+
+
+<app-header #appHeader
+        class="w-full block fixed inset-x-0 top-0 bottom-auto mx-auto"
+        [style.box-shadow]="scrolled || !overlayNav ? '10px 0 0 white, -10px 0 0 white' : 'none'"
+        style="z-index: 999 !important"
+        [scrolled]="scrolled"
+        [overlayNav]="overlayNav"
+        [isHomePage]="isHomePage">
+</app-header>
+
+<main #mainContent
+        [ngClass]="['min-h-[60vh] w-full mx-auto',
+                (appHeader.isHandset$ | async) ? 'is-handset' : '',
+                overlayNav ? '0' : scrolled ? 'mt-4' : 'mt-10'
+        ]"
+        [style.padding-right]="scrollbarWidth">
+        
+                <ng-content></ng-content>
+        
+</main>
+
+<footer class="w-screen overflow-x-hidden block mx-auto mt-20">
+        <app-footer class="w-full flex flex-wrap sm:flex-nowrap content-between items-start mt-8 md:mt-16 lg:mt-22 py-6 px-3"></app-footer>
+</footer>
+

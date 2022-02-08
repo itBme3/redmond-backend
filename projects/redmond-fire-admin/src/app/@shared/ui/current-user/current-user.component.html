@@ -1,0 +1,12 @@
+<div *ngIf="!!user"
+     class="user my-auto ml-auto mr-0 border-1 p-2 border text-white bg-black bg-opacity-0 border-black border-opacity-30 hover:border-transparent hover:bg-opacity-10 cursor-pointer flex flex-nowrap items-center"
+     style="border-radius: .4em">
+         <div [ngClass]="['user-avatar my-auto mr-2 ml-0 w-8 h-8 bg-cover bg-center rounded-full', 'role-' + user.access.role ]"
+                [style.background-image]="'url(' + user.photoURL + ')'">
+        </div>
+        <small class="text-xs leading-snug font-light tracking-wide">{{ user.name }}</small>
+</div>
+
+<button mat-stroked-button
+        class="logout-button mt-3"
+        (click)="logout()">Logout</button>

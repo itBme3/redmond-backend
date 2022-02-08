@@ -1,0 +1,27 @@
+<button 
+        mat-icon-button
+        [ngClass]="[
+                blockIndex === null ? 'bg-gray-900 hover:bg-gray-800 px-3 text-gray-200 rounded-full w-auto' : 'bg-gray-100 bg-opacity-75 text-gray-500 rounded-ful w-12',
+                'hover:bg-gray-50 shadow-lg hover:bg-opacity-100 ml-auto mr-0 bg-opacity-90 transform scale-75 min-w-0 h-12 px-0 mat-elevation-z0'
+        ]"
+        [matMenuTriggerFor]="menu"
+        #menuTrigger
+        [matTooltip]="blockIndex === null ? 'Edit Container' : 'Edit Block'"
+        [matTooltipClass]="['bg-gray-900', 'bg-opacity-95', 'text-gray-100']"
+        aria-label="content block options"
+        (menuClosed)="optionMenuOpened = false"
+        (menuOpened)="optionMenuOpened = true">
+        {{ blockIndex === null ? 'blocks ' : '' }}<mat-icon>{{  blockIndex === null ? 'grid_view' : 'edit' }}</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu"
+        [overlapTrigger]="true">
+        <button mat-menu-item
+                *ngFor="let menuItem of menuItems"
+                (click)="clickedItem(menuTrigger._elementRef.nativeElement, menuItem.key)">
+                <span class="w-full flex items-center content-start -my-2 py-0">
+                        <i [ngClass]="['gicon my-auto mx-0', 'gicon-' + menuItem.icon]"></i>
+                        <small class="my-auto ml-2">{{ menuItem.label }}</small>
+                </span>
+        </button>
+</mat-menu>

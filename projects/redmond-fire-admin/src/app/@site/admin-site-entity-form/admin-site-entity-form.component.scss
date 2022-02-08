@@ -1,0 +1,19 @@
+:host {
+        ::ng-deep {
+                mat-expansion-panel {
+                        @apply shadow-none bg-gray-100 hover:bg-gray-100 mx-3 my-1;
+                        &.mat-expanded {
+                                @apply mx-1 mt-2 mb-4;
+                        }
+                        mat-expansion-panel-header {
+                                @apply bg-transparent;
+                        }
+                        .mat-expansion-panel-body {
+                                @apply px-0;
+                        }
+                        .expansion-content {
+                                @apply px-3;
+                        }
+                }
+        }
+}

@@ -1,0 +1,53 @@
+<header [ngClass]="['w-full flex flex-nowrap items-center relative content-between z-100',
+                overlayNav ? 'overlay-nav' : '', 
+                scrolled ? 'scrolled bg-white' : ''
+        ]">
+        <a [routerLink]="['/']"
+                [ngClass]="['relative z-100 inline-block cursor-pointer mr-auto logo home-link', scrolled ? 'sm:pb-[.3em]' : '']">
+                <i [ngClass]="[
+                        'gicon mr-auto inline-block transform transition duration-200 quick-in', 
+                        !!!scrolled && isHomePage ? 'gicon-logo-type' : 'gicon-logo-icon',
+                        !!!scrolled && overlayNav ? 'text-white mt-3 ml-0 md:ml-3 text-2xl md:text-3xl' : 'text-rcc-red',
+                        scrolled && isHomePage ? 'pl-3' : 'pl-0',
+                        scrolled ? 'text-2xl top-px my-auto ml-0' : logoIcon === 'logo-icon' ? '-ml-2 text-3xl md:text-4xl translate-x-1/4' : 'text-2xl',
+                ]"></i>
+        </a>
+        <ng-container *ngIf="(isHandset$ | async); else desktopNav">
+                <button mat-icon-button 
+                        [matMenuTriggerFor]="mobileNav" 
+                        aria-label="icon-button with a menu"
+                        [ngClass]="[
+                                'pr-2 pl-6 max-h-full min-h-full rounded h-10 w-auto flex items-center content-center',
+                                overlayNav && !scrolled ?  'text-white -mr-2' : 'text-grey-dark'
+                                ]">
+                        <mat-icon class="inline-block h-auto m-auto">{{mobileNav.opened ? 'close' : 'menu'}}</mat-icon>
+                </button>
+                <mat-menu #mobileNav="matMenu">
+                         <button mat-menu-item 
+                                class="relative z-100 nav-link btn px-4 py-2 cursor-pointer items-center flex hover:bg-gray-50 font-sans" *ngFor="let link of pageLinks"
+                                [routerLink]="[link.link]">
+                                {{ link.title }}
+                        </button>
+                </mat-menu>
+        </ng-container>
+
+        <ng-template #desktopNav>
+                <nav [ngClass]="[
+                        'flex content-end items-start p-0 m-0 sm:w-8/12 md:w-6/12 content-stretch flex-nowrap',
+                        scrolled ? '' : 'border-b',
+                        overlayNav && !scrolled ? 'border-white' : 'border-grey-dark'
+                ]">
+                        <a [ngClass]="[
+                                'relative whitespace-nowrap z-100 nav-link hover:text-rcc-red btn mx-0 px-2 py-4 cursor-pointer text-sm md:text-base text-center flex-grow transition duration-300',
+                                rootPage === link.path ? 'text-rcc-red' : overlayNav && !scrolled ? 'text-white' : 'text-grey-dark',
+                                overlayNav && !scrolled ? 'text-white' : 'hover:bg-gray-50'
+                        ]" 
+                                *ngFor="let link of pageLinks"
+                                [routerLink]="[link.link]">
+                                {{ link.title }}
+                        </a>
+                </nav>
+        </ng-template>
+
+</header>
+

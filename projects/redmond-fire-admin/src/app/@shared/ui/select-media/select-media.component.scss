@@ -1,0 +1,7 @@
+.selected-media-item {
+        &:not(:hover) {
+                .delete {
+                        display: none;
+                }
+        }
+}

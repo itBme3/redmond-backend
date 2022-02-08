@@ -1,0 +1,81 @@
+<ng-template #loading><app-loading-element title=""></app-loading-element></ng-template>
+
+<ng-template [ngIf]="!!collectionDoc" [ngIfElse]="loading">
+        
+        <ng-template [ngIf]="!!collectionDoc?.filters">
+                <div *ngFor="let key of collectionDoc.filters | objectKeys"
+                        class="rounded p-3 bg-white border border-gray-200">
+                        <div [ngClass]="['w-full filter-options drag-list relative']"
+                                *ngIf="!!collectionDoc.filters[key]?.length"
+                                cdkDropList
+                                #contentList="cdkDropList"
+                                cdkDropListOrientation="vertical"
+                                [cdkDropListData]="collectionDoc.filters[key]"
+                                (cdkDropListDropped)="drop($event, key)"
+                                [@animatedList]="collectionDoc.filters[key]">
+                                <div *ngFor="let item of collectionDoc.filters[key]; let i = index; trackBy: trackByFn"
+                                        (click)="editingFilter = {key: key, index: i}"
+                                        [ngClass]="['input-filter-option flex content-start items-center flex-nowrap w-full mb-1 relative rounded bg-gray-100 py-2 focus-with:shadow-md']"
+                                        cdkDrag>
+                                        <ng-container *ngTemplateOutlet="listItem; context: { filterKey: key, itemIndex: i }"></ng-container>
+                                </div>
+                        </div>
+                        <button mat-button
+                                (click)="addItem(key)"
+                                matTooltip="add item">
+                                <mat-icon>add</mat-icon>
+                        </button>
+                </div>
+
+                <ng-template #listItem let-filterKey="filterKey" let-itemIndex="itemIndex">
+                        <mat-icon cdkDragHandle
+                                class="cursor-move text-gray-300 hover:text-gray-600 mr-3">
+                                drag_handle
+                        </mat-icon>
+                        <div class="w-full flex flex-col space-y-2 ml-1">
+                                <ng-container *ngTemplateOutlet="optionInputTemplate; context: { optionKey: 'label', itemIndex: itemIndex }"></ng-container>
+                                <ng-container *ngTemplateOutlet="optionInputTemplate; context: { optionKey: 'handle', itemIndex: itemIndex }"></ng-container>
+                        </div>
+                        <ng-template #optionInputTemplate let-optionKey="optionKey" let-itemIndex="itemIndex">
+                                <div class="flex w-full rounded items-center content-start hover:bg-white bg-transparent hover:shadow-md focus-within:shadow-md focus-within:bg-white pl-2">
+                                        <small class="text-blue">{{ optionKey }}</small>
+                                        
+                                        <input matInput placeholder="..."
+                                                [value]="!!collectionDoc?.filters[filterKey] && !!collectionDoc?.filters[filterKey][itemIndex] && !!collectionDoc?.filters[filterKey][itemIndex][optionKey] ? 
+                                                        collectionDoc.filters[filterKey][itemIndex][optionKey] : 
+                                                        ''"
+                                                class="w-full py-1 px-3 bg-transparent"
+                                                (keyup)="collectionDoc.filters[filterKey][itemIndex][optionKey] = $event.target.value"
+                                                (keyup.tab)="updateSubject.next({ filterKey:filterKey, optionKey: optionKey, itemIndex: itemIndex, value: $event.target.value })"
+                                                (keyup.return)="updateSubject.next({ filterKey:filterKey, optionKey: optionKey, itemIndex: itemIndex, value: $event.target.value })"
+                                                (change)="updateSubject.next({ filterKey:filterKey, optionKey:optionKey, itemIndex: itemIndex, value: $event.target.value })"
+                                                />
+
+                                        
+                                </div>
+                        </ng-template>
+                        <div [ngClass]="[
+                                'edit-buttons flex flex-nowrap ml-auto mr-0 items-center bg-transparent'
+                        ]">
+                                <button mat-icon-button
+                                        *ngIf="removing !== itemIndex && editingFilter !== filterKey; else confirmDelete"
+                                        matTooltip="remove item"
+                                        tooltipPosition="after"
+                                        (click)="removing = itemIndex"
+                                        class="transform scale-75 shadow-none hover:bg-red mx-auto hover:text-opacity-75 bg-white text-opacity-50 text-black">
+                                        <mat-icon>delete</mat-icon>
+                                </button>
+                                <ng-template #confirmDelete>
+                                        <div class="flex flex-nowrap items-center content-start py-1">
+                                                <button mat-button
+                                                        class="bg-red hover:bg-red-600 text-black text-opacity-75 my-auto"
+                                                        (click)="removeItem(filterKey, itemIndex)">confirm</button>
+                                                <mat-icon (click)="removing = null" 
+                                                        class="cursor-pointer transform scale-75 mx-1 my-auto text-gray-500 hover:text-gray-800">close</mat-icon>
+                                        </div>
+                                </ng-template>
+                        </div>
+
+                </ng-template>
+        </ng-template>
+</ng-template>

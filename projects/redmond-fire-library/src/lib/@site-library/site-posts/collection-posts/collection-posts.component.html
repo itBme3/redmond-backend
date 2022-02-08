@@ -1,0 +1,53 @@
+<ng-container *ngIf="collectionDoc && !!pageTitle">
+        
+        <app-page-header class="page-heading mb-0">
+                <h1 class="header-title">{{pageTitle}}</h1>
+                <h4 class="header-text my-auto pl-0">{{collectionDoc.description}}</h4>
+        </app-page-header>
+
+        <app-collection-filter 
+                *ngIf="!!filterOptions && !!filterOptions.categories && !!!hideFilter"
+                [options]="filterOptions.categories"
+                [selectedValue]="activeFilter"
+                placeholder="All Posts"
+                (selectionChanged)="changeFilter($event)"></app-collection-filter>
+
+        <ng-template [ngIf]="!!docs && !!docs.length">
+
+                <div [ngClass]="[
+                        'grid grid-cols-1 sm:grid-cols-2',
+                        state === 'page' ? 'gap-8' : 'gap-6'
+                ]">
+                        <app-card *ngFor="let doc of docs"
+                                cardStyle="overlay"
+                                [aspectRatio]="'5:4'" 
+                                [linkPath]="'/' + doc.category + '/' + doc.handle"
+                                class="w-full bg-cover bg-center">
+                                <h5 card-before class="absolute top-2 left-4 z-50 uppercase tracking-wider text-white font-bold">{{ doc.category }}</h5>
+                                <div card-image class="h-full flex items-center bg-top">
+                                        <img #postImage imageLoader="theImage" [aspectRatio]="'5:4'"
+                                                [isBackground]="true"
+                                                [image]="!!doc.image ? doc.image : !!doc?.images?.length ? doc.images[0] : null"
+                                                [thumbs]="!!doc.image && !!doc.image.thumbs ? doc.image.thumbs : null"
+                                                class="w-full h-auto object-cover object-center text-white flex-shrink-1 min-w-full min-h-full"
+                                                [attr.src]="!!doc?.image?.thumbs && !!doc?.image?.thumbs['256'] ? doc.image.thumbs['256'] : 
+                                                        !!doc?.images?.length && !!doc?.images[0]?.thumbs && !!doc?.images[0]?.thumbs['256'] ? doc.images[0].thumbs['256'] :
+                                                        doc.image.src" />
+                                </div>
+                                <h2 card-title class="prose text-white text-2xl text:lg-3xl mb-2 tracking-wider leading-snug w-10/12 drop-shadow-lg">
+                                        {{ doc.title }}
+                                </h2>
+                                <small card-after class="red-on-hover font-bold">see more</small>
+                        </app-card>
+                </div>
+
+
+        </ng-template>
+
+        <app-loading-element 
+                *ngIf="canLoadMore"
+                (onVisible)="loadMore()"
+                title="" class="max-w-xs mx-auto" loaderColor="red"></app-loading-element>
+</ng-container>
+
+<app-loading-element *ngIf="!!!collectionDoc" title=""></app-loading-element>

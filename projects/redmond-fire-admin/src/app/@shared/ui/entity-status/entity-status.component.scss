@@ -1,0 +1,39 @@
+:host {
+        @apply block w-auto;
+        ::ng-deep {
+                .status-select-input {
+                        width: auto;
+                        transition: var(--default-transition);
+                        text-align: center;
+                        .custom-input-option {
+                                padding-top: .25em !important;
+                                padding-bottom: .25em !important;
+                                font-size: 60%;
+                        }
+                        .mat-select-min-line {
+                                @apply transform transition-all ease-quick-in text-opacity-0 scale-0 min-w-0 overflow-hidden;
+                        }
+                        &:hover {
+                                width: 100px;
+                                .mat-select-min-line {
+                                        @apply scale-100 text-opacity-100
+                                }
+                        }
+                }
+        }
+        .save-button {
+                .save-text {
+                        width: 0;
+                        overflow: hidden;
+                        line-height: 1;
+                        padding: 0;
+                        margin: auto;
+                        transition: var(--default-transition);
+                }
+                &:hover {
+                        .save-text {
+                                width: 8ch;
+                        }
+                }
+        }
+}

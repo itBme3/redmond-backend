@@ -1,0 +1,18 @@
+<app-card cardStyle="overlay"
+        [aspectRatio]="aspectRatio" 
+        [routerLink]="['/' + !!doc?.category ? doc.category : 'posts' + '/', doc.handle]"
+        class="w-full bg-cover bg-center cursor-pointer"
+        [style.background-image]="'url(' + doc.image + ')'">
+        <h5 card-before class="absolute top-2 left-4 z-50 uppercase tracking-wider text-white font-bold">{{ doc.category }}</h5>
+        <div card-image class="h-full flex items-center">
+                <img imageLoader="theImage" [aspectRatio]="'5:4'"
+                        [image]="!!doc.image ? doc.image : !!doc?.images?.length ? doc.images[0] : null"
+                        [thumbs]="!!doc.image && !!doc.image.thumbs ? doc.image.thumbs : null"
+                        class="w-full h-auto object-cover object-center text-white flex-shrink-1 min-w-full min-h-full"
+                        [attr.src]="!!doc?.image?.thumbs && !!doc?.image?.thumbs['256'] ? doc.image.thumbs['256'] : doc.image.src" />
+        </div>
+        <h2 card-title class="prose text-white text-2xl text:lg-3xl mb-2 tracking-wider leading-snug w-10/12 drop-shadow-lg">
+                {{ doc.title }}
+        </h2>
+        <small card-after class="red-on-hover font-bold">see more</small>
+</app-card>

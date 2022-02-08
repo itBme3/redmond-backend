@@ -1,0 +1,39 @@
+<div *ngIf="!!doc" class="relative block w-full">
+      <h2 mat-dialog-title *ngIf="!!creating || doc.type === 'collection'"
+        class="text-grey-light">
+        <ng-template [ngIf]="!!creating">New {{ doc.type | formatString: 'capitalize' }}</ng-template>
+        <ng-template [ngIf]="doc.type === 'collection'">Update: /<span class="text-gray-900">{{ doc.handle }}</span></ng-template>
+      </h2>
+      <button mat-button
+        tabIndex="-1"
+              *ngIf="!!!hideCancel && (!!creating || doc.type === 'collection')"
+              type="reset"
+              [mat-dialog-close]="null"
+              class="pl-2 pr-1 absolute top-1 -right-1 text-xs text-black text-opacity-70 hover:text-red-600 hover:bg-black hover:bg-opacity-5 z-10">
+              cancel <mat-icon class="transform scale-75">close</mat-icon>
+      </button>
+
+      <mat-dialog-content class="overflow-y-scroll max-h-[70vh]">
+          <app-admin-site-entity-form
+            [doc]="doc"
+            [keys]="keys"
+            [classes]="classes"
+            [creating]="!!creating"
+            (updatedDoc)="!!updateCallback ? updateCallback($event) : ''">
+          </app-admin-site-entity-form>
+      </mat-dialog-content>
+        
+      <mat-dialog-actions *ngIf="!!creating || doc.type === 'collection'"
+        align="end"
+        class="flex flex-column items-stretch content-center mb-2">
+        
+        <button mat-button 
+                [mat-dialog-close]="doc"
+                type="submit" [ngClass]="['bg-green uppercase w-full py-2 text-black text-opacity-75 hover:bg-green-600']">
+                {{ !!creating ? 'create' : 'update' }}
+        </button>
+
+
+
+      </mat-dialog-actions>
+    </div>

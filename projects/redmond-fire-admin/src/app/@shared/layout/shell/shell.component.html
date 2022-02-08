@@ -1,0 +1,23 @@
+
+<button [routerLink]="['/']"
+        class="fixed z-100 w-full">
+        <i [ngClass]="[
+                'fixed top-0 left-0 text-rcc-red h-[50px] flex items-center content-center',
+                navCollapsed ? 'gicon-logo-icon text-xl w-[50px]' :  'bg-white gicon-logo-type text-base ml-0 w-[150px]']">
+        </i>
+</button>
+<div [ngClass]="['admin-navigation top-[50px] block z-200 bottom-auto h-auto', !!navCollapsed ? 'collapsed' : '']"
+        #adminNavigation
+        appIsHovering
+        (isHovering)="navCollapsed = !$event; setNavWidth()">
+        <button mat-icon-button
+                (click)="navCollapsed = !navCollapsed; setNavWidth()"
+                *ngIf="!!navCollapsed && (isHandset$ | async) === true">
+                <mat-icon class="transoform rotate-180">{{ !!navCollapsed ? 'menu' : 'arrow_back' }}</mat-icon>
+        </button>
+        <app-navigation></app-navigation>
+</div>
+<main [ngClass]="['min-h-[60vh] mr-0 pr-0 ml-auto bg-white']"
+        [style.width]="'calc(100% - 50px)'">
+        <ng-content></ng-content>
+</main>

@@ -1,0 +1,33 @@
+
+<button mat-icon-button (click)="dialogRef.close()"
+        class="-right-4 -top-4 left-auto close-button absolute rounded">
+        <mat-icon class="text-rcc-red">close</mat-icon>
+</button>
+
+
+
+
+        <div class="image-container mt-auto mb-0 w-full max-w-full flex flex-wrap items-center content-start bg-center bg-cover">
+                <img imageLoader
+                        #theImage
+                        [image]="!!doc.image ? doc.image : !!doc?.images?.length ? doc.images[0] : null"
+                        [thumbs]="!!doc?.image?.thumbs ? doc.image.thumbs: null"
+                        [attr.src]="!!doc && !!doc.image ? !!doc.image.thumbs && !!doc.image.thumbs['256'] ? doc.image.thumbs['256'] : !!doc.image.src ? doc.image.src : null : null" 
+                        [attr.alt]="!!doc && !!doc.image && !!doc.image.alt ? doc.image.alt : null" 
+                        class="w-5/12 max-w-[400px] flex-shrink h-auto mr-4 object-cover"/>
+                <div class="min-w-[180px] w-auto -mr-4 sm:-mr-p-6 md:-mr-8 my-auto flex-grow ">
+                        <h2 class="flex-grow leading-snug font-medium text-2xl lg:text-3xl"
+                                [@revealContentChild]="'visible'">{{ doc.name }}</h2>
+                        <h5 class="text-rcc-red text-sm leading-normal" 
+                                [@revealContentChild]="'visible'">{{doc.jobTitle}}</h5>
+                </div>
+        </div>
+        <ng-scrollbar class="w-full h-[calc(100% - 3em)] pb-0"
+                barClass="w-1 bg-transparent"
+                thumbClass="bg-grey-light bg-opacity-50"
+                [compact]="false">
+                <app-wysiwyg-editor class="bio prose mt-4 -mb-3 pb-4 pr-3 tracking-wide"
+                        [@revealContentChild]
+                        [data]="doc.bio"
+                        [readOnly]="true"></app-wysiwyg-editor>
+        </ng-scrollbar>

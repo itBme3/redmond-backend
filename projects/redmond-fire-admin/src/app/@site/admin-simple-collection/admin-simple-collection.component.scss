@@ -1,0 +1,39 @@
+:host {
+        .input-item { 
+                @apply w-full;
+                .remove-item {
+                        @apply text-gray-500 hover:text-gray-800 transform transition-all ease-quick-in opacity-0 scale-0;
+                }
+                .inputs {
+                        @apply flex flex-nowrap items-start overflow-hidden h-auto rounded my-3;
+                        app-custom-input {
+                                @apply mx-2 w-[calc(100%-1em)] !important;
+                        }
+                        .inputs {
+                                @apply my-1 border border-gray-200 w-full;
+                        }
+                }
+                .inputs-wrapper {
+                        &:hover {
+                                > .remove-item {
+                                        @apply scale-90 opacity-100;
+                                }
+                        }
+                }
+        }
+        ::ng-deep {
+                mat-expansion-panel {
+                        .mat-expansion-panel-body {
+                                @apply p-0;
+                        }
+                        &.mat-expanded {
+                                mat-expansion-panel-header {
+                                        @apply pr-12 h-[40px];
+                                }
+                                h2 {
+                                        font-size: 0 !important;
+                                }
+                        }
+                }
+        }
+}

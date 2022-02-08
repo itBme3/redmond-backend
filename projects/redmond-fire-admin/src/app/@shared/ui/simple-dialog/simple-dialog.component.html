@@ -1,0 +1,25 @@
+<ng-template [ngIf]="!onlyButton" [ngIfElse]="submitButton">
+        <h1 [ngClass]="[classes.title]" mat-dialog-title>{{ title }}</h1>
+        <mat-dialog-content class="overflow-y-scroll">
+                <p [ngClass]="[classes.text]">{{ text }}</p>
+        </mat-dialog-content>
+        <mat-dialog-actions class="flex flex-column items-stretch content-center">
+                
+                <ng-container *ngTemplateOutlet="submitButton"></ng-container>
+
+                <button mat-button 
+                        *ngIf="!!!hideCancel"
+                        type="reset"
+                        mat-dialog-close
+                        class="text-xs text-black text-opacity-70 hover:text-red-600 hover:bg-black hover:bg-opacity-5">
+                        <mat-icon>close</mat-icon> cancel
+                </button>
+        </mat-dialog-actions>
+</ng-template>
+<ng-template #submitButton>
+        <button mat-button 
+                [mat-dialog-close]="true"
+                type="submit" [ngClass]="[classes.button]">
+                {{ button }}
+        </button>
+</ng-template>

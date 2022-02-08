@@ -1,0 +1,25 @@
+:host {
+	@apply block h-full w-full;
+}
+
+.search_field { 
+	width: 100% !important;
+	input {
+		width: 100% !important;
+		padding: .5em 0;
+	}
+}
+app-db-search-bar {
+	margin-bottom: 16px !important;
+}
+
+
+.d-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        grid-gap: .5em;
+}
+::ng-deep {
+        .mat-card-header-text {
+                margin: 0 !important;
+        }
+}

@@ -1,0 +1,25 @@
+<app-card [aspectRatio]="'4:6'"
+        [cardStyle]="'standard'"
+        [revealOnHover]="false"
+        [ngClass]="['cursor-pointer w-full bg-cover bg-center scale-100 hover:scale-[1.03] transition ease-quick-in']"
+        (click)="setViewing(doc)">
+        
+        <div card-image 
+                class="relative overflow-hidden bg-center bg-cover h-full flex items-center content-center text-white hover:text-rcc-red"
+                style>
+                <img imageLoader
+                        class="m-auto object-cover min-h-full min-w-full flex-shrink"
+                        [isBackground]="true"
+                        [aspectRatio]="'4:6'"
+                        [image]="!!doc.image ? doc.image : !!doc?.images?.length ? doc.images[0] : null"
+                        [thumbs]="!!doc?.image?.thumbs ? doc.image.thumbs : null"
+                        [src]="!!doc?.image?.thumbs && !!doc?.image?.thumbs['256'] ? doc.image.thumbs['256'] : 
+                                !!doc?.images?.length && !!doc?.images[0]?.thumbs && !!doc?.images[0]?.thumbs['256'] ? doc.images[0].thumbs['256'] :
+                                !!doc && !!doc.image ? !!doc.image.thumbs && !!doc.image.thumbs.large ? doc.image.thumbs.large : !!doc.image.src ? doc.image.src : null : null" 
+                        [attr.alt]="!!doc && !!doc.image && !!doc.image.alt ? doc.image.alt : null" />
+                <mat-icon card-before class="absolute bottom-1 left-1 z-50">add</mat-icon>
+        </div>
+
+        <h1 card-title class="prose font-medium text-grey-dark mb-0 text-sm sm:text-base md:text-xl">{{ doc.name }}</h1>
+        <h4 card-after class="prose font-medium text-[8px] md:text-sm text-dark-gey tracking-wider">{{ doc.jobTitle }}</h4>
+</app-card>

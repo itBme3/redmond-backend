@@ -1,0 +1,81 @@
+
+<ng-template [ngIf]="!!searchData?.noFilters || !!searchData?.externalFilters">
+        <ng-container *ngTemplateOutlet="searchTemplate"></ng-container>
+</ng-template>
+
+
+<mat-sidenav-container class="bg-transparent h-full"
+        #filtersNavContainer
+        *ngIf="!!!searchData?.noFilters && !!!searchData?.externalFilters">
+        <mat-sidenav #filtersNav
+                [opened]="!!searchData?.showFilters"
+                [disableClose]="false"
+                mode="side"
+                class="border-0 p-2 bg-transparent"
+                style="width: 150px">
+                <app-db-filters
+                        [data]="{query: searchData?.query, filterOptionTypes: !!searchData?.filterOptionTypes ? searchData?.filterOptionTypes : []}"
+                        (updateQuery)="searchData.query = $event">
+                </app-db-filters>
+        </mat-sidenav>
+        <mat-sidenav-content class="bg-transparent overflow-hidden h-full">
+                <ng-container *ngTemplateOutlet="searchTemplate"></ng-container>
+        </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+<ng-template #searchTemplate>
+        <div class="search-layout mx-auto mx-w-full w-full h-full mt-1">
+                <!-- SEARCH BAR -->
+                <div #searchBar 
+                        *ngIf="!!!searchData?.externalSearch"
+                        class="search-bar-header p-0 rouded w-full">
+                       
+                        <app-db-search-bar 
+                                class="w-full"
+                                [data]="searchData"
+                                (updateSearch)="searchData = $event.data; updateSearchData($event); !!$event.shouldSearch ? searchSubject.next($event.data) : ''; filteredDocsSubject.next($event.data.search)"
+                                (toggleFiltersNav)="searchData.showFilters = $event"></app-db-search-bar>
+                </div>
+
+                <ng-scrollbar
+                        thumbClass="bg-gray-200 w-1 hover:bg-red-400"
+                        barClass="bg-transparent shadow-none ring-none border-none ml-2"
+                        [compact]="true"
+                        [autoUpdate]="true"
+                        [visibility]="'hover'"
+                        class="single-entity-container px-2 h-[calc(100vh-100px)] pb-0">
+                        <div class="flex flex-col flex-xs-wrap w-full h-full">
+
+                                <div *ngIf="!!searchData && !!!searchData?.externalDocs && !!docs?.length && docs !== 'loading'"
+                                        [ngClass]="['mat-elevation-10 grid', !!data.containerClasses ? data.containerClasses : '']"
+                                        [@animatedList]="filteredDocs">
+                                        
+                                        <ng-container *ngFor="let doc of filteredDocs; let i = index">
+
+                                                <db-search-item
+                                                        class="cursor-pointer rounded overflow-hidden"
+                                                        [data]="{ selecting: true }"
+                                                        [mediaOnly]="data.mediaOnly"
+                                                        [doc]="doc"
+                                                        [ngClass]="['cursor-pointer']"
+                                                        (click)="selectItem(doc)"></db-search-item>
+
+                                        </ng-container>
+                                </div>
+                                <ng-content [ngIf]="!!searchData?.externalDocs && !!docs && docs !== 'loading'"></ng-content>
+                        </div>
+                        <app-loading-element *ngIf="fetching || !!!docs"
+                                                title="fetching more...">
+                        </app-loading-element>
+
+                        <ng-template [ngIf]="docs !== 'loading' && !!canLoadMore">
+                                <div *ngIf="!!canLoadMore"
+                                        (onVisible)="loadMoreSubject.next({searchData: searchData, docs: docs})"
+                                        class="relative block -top-12"
+                                        style="height: 50px; width: 60px"></div>
+                                <app-loading-element title=""></app-loading-element>
+                        </ng-template>
+                </ng-scrollbar>
+        </div>
+</ng-template>

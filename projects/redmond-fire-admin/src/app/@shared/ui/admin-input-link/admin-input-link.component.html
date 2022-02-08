@@ -1,0 +1,15 @@
+<input matInput placeholder="link..."
+        class="w-full bg-transparent"
+        [value]="link"
+        (change)="updateLink($event.target.value)">
+
+<small *ngIf="linkStatus"
+        [ngClass]="['text-' + linkStatusColors[linkStatus]]">{{ linkStatus }}</small>
+
+<button class="my-auto mr-0 ml-3"
+        matTooltip="Select Link"
+        matTooltipClass="bg-gray-900 bg-opacity-95 text-gray-100"
+        matTooltipPosition="above"
+        (click)="selectEntity($event)">
+        <i class="gicon gicon-select"></i>
+</button>

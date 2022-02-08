@@ -1,0 +1,10 @@
+.slide {
+        .edit-buttons {
+                @apply opacity-0 transform scale-50;
+        }
+        &:hover{
+                .edit-buttons {
+                       @apply opacity-100 scale-100;
+                }
+        }
+}
